@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:inline="javascript">
+    </script>
+
+    <style>
+    </style>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3>메인입니다.</h3>
+    <a href="/member/login">로그인</a>
+    <a href="/member/new">회원가입</a>
+</div>
+</body>
+
+
+</html>
