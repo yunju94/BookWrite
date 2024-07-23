@@ -1,29 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <header th:fragment="header">
 
     <head>
-        <style>
+        <meta charset="UTF-8">
+        <meta name="_csrf" th:content="${_csrf.token}" />
+        <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+        <style>
+            .sidebar {
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                background-color: #ffffff;
+                position: fixed; /* 상단으로 고정 */
+                top: 20%; /* 화면 중앙으로 이동 */
+                left: 0%;
+                transform: translateY(-50%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                z-index: 1000; /* 필요시 설정 */
+            }
+            .sidebar > ul {
+                list-style: none;
+                margin-right: 20px;
+                margin-left: -10px;
+            }
         </style>
     </head>
     <body>
-        <div>
-            <div>
-                <ul>
-                    <li>베스트 모음</li>
-                    <li>판타지</li>
-                    <li>로맨스판타지</li>
-                    <li>글쓰기</li>
-                    <li>포인트 적립</li>
-                    <li>포인트 충전</li>
-                    <li href="/member/login">로그인</li>
-                    <li>로그아웃</li>
-                    <li href="/member/new">회원가입</li>
-                </ul>
-            </div>
-        </div>
+
+    <div class="sidebar">
+        <ul>
+            <li>베스트 모음</li>
+            <li>판타지</li>
+            <li>로맨스판타지</li>
+            <li>글쓰기</li>
+            <li>포인트 적립</li>
+            <li>포인트 충전</li>
+            <li>도서 추천</li>
+            <li><a href="/member/login">로그인</a></li>
+            <li><a href="/member/logout">로그아웃</a></li>
+            <li><a href="/member/agreement">회원가입</a></li>
+            <!-- 사용자 이름을 숨은 필드로 추가 -->
+            <li><input type="hidden" id="username"  sec:authorize = "isAuthenticated()" th:value="${#authentication.name}"></li>
+            <li><a sec:authorize = "isAuthenticated()" id="result"></a></li>
+        </ul>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var username = $("#username").val(); // 사용자 이름을 숨은 필드에서 가져옴
+
+            var url = "/member/" + encodeURIComponent(username); // URL 경로에 사용자 이름 추가
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                beforeSend: function (xhr) {
+                    // CSRF 토큰을 헤더에 추가
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
+                    console.log(result); // 결과를 콘솔에 출력
+                   // alert("조회 성공: " + result.name); // 성공 시 처리 (결과 객체의 이름 속성 출력)
+                    // 여기서 result 값을 필요한 곳에 적용하거나 처리할 수 있습니다.
+                    document.getElementById('result').textContent = result.name; // 이름 출력
+                }
+            });
+        });
+    </script>
+
     </body>
 </header>
 </html>
