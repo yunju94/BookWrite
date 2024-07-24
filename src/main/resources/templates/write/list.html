@@ -29,6 +29,18 @@
                 <a href="/write/InfoForm">새글 작성</a>
             </div>
             <div>
+                <div >
+                    <table>
+                        <tbody >
+                        <tr th:each="Info: ${writeInfo}">
+                            <td th:text="${Info.title}"></td>
+                            <td th:text="${Info.detail}"></td>
+                            <td th:text="${Info.category}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
 
 
             </div>
