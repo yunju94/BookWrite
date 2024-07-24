@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "member")
-
 @Getter
 @Setter
 public class Member {

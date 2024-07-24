@@ -21,7 +21,43 @@
 
 
     <style>
+        * {
+                   padding: 0;
+                   margin: 0;
+                   box-sizing: border-box;
+                   font: inherit;
+               }
 
+
+               .inputName>li {
+                   border-bottom: 1px solid #CCC;
+                   margin-top: 30px;
+                   margin-bottom: 50px;
+                   width: 300px;
+                   height: 30px;
+                   list-style: none;
+               }
+
+               .inputName>li>input {
+                   width: 100%;
+                   padding: 8px;
+                   border: none;
+                   outline: none;
+                   background-color: transparent;
+                   color: rgba(0, 0, 0, 0.85);
+                   font-size: 16px;
+                   line-height: 24px;
+                   cursor: text;
+               }
+
+                button {
+                   width: 100px;
+                   height: 40px;
+                   background-color: #7FCEFF;
+                   border: none;
+                   border-radius: 15px;
+                   cursor: pointer;
+               }
 
     </style>
 
@@ -32,14 +68,14 @@
     <h3>로그인</h3>
     <form action="/member/login" role="form" method="post">
     <div>
-        <ul>
+        <ul class="inputName">
             <li>
-                아이디
+
                 <input type="text" name="loginId" id="loginId" placeholder="아이디를 입력해주세요">
             </li>
 
             <li>
-                비밀번호
+
                 <input type="password" name="loginPassword" id="loginPassword" placeholder="비밀번호를 입력해주세요">
             </li>
         </ul>

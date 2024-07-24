@@ -3,7 +3,6 @@ package com.book.write.controller;
 import com.book.write.dto.MemberFormDto;
 import com.book.write.entity.Member;
 import com.book.write.service.MemberService;
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
 
     @GetMapping(value = "/member/login")
     public String login(){
@@ -31,14 +29,12 @@ public class MemberController {
 
     @GetMapping(value = "/member/agreement")
     public  String agreement(){
-
         return "member/Agreement";
     }
 
     @GetMapping(value = "/member/{Id}")
     public  @ResponseBody  ResponseEntity  searchName(@PathVariable String Id){
         Member member =memberService.SearchIdtoName(Id);
-
         return  new ResponseEntity<Member>(member, HttpStatus.OK);
     }
 
@@ -49,34 +45,34 @@ public class MemberController {
     }
     @PostMapping(value = "/member/new")
     public String membersave(@Valid MemberFormDto memberFormDto){
-
         memberService.saveMemberForm(memberFormDto);
         return "redirect:/";
-
-
     }
 
     @PostMapping(value = "/member/Idch/{IdCheck}")
-    public @ResponseBody ResponseEntity IdCheck(@PathVariable String IdCheck){
-        Member member = memberService.SearchIdtoName(IdCheck);
+    public @ResponseBody ResponseEntity IdCheckPage(@PathVariable("IdCheck") String CheckId){
+        Member member = memberService.SearchIdtoName(CheckId);
 
         if (member == null) {
 
-            return new ResponseEntity<>("사용 가능한 아이디입니다.", HttpStatus.OK);
+            String jsonResponse = "{ \"message\": \"사용 가능한 아이디입니다.\" }";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         }
-
-        return new ResponseEntity<>("중복된 아이디입니다.", HttpStatus.BAD_REQUEST);
+        String jsonResponse = "{ \"message\": \"중복된 아이디입니다.\" }";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST);
 
     }
 
     @PostMapping(value = "/member/{NickName}")
-    public @ResponseBody ResponseEntity NickNameCheck(@PathVariable String NickName){
+    public @ResponseBody ResponseEntity NickNameCheck(@PathVariable("NickName") String NickName){
         Member member = memberService.SearchNickName(NickName) ;
         if (member == null) {
-            return new ResponseEntity<>("사용 가능한 아이디입니다.", HttpStatus.OK);
+            String jsonResponse = "{ \"message\": \"사용 가능한 별명입니다.\" }";
+            return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         }
 
-        return new ResponseEntity<>("중복된 아이디입니다.", HttpStatus.BAD_REQUEST);
+        String jsonResponse = "{ \"message\": \"중복된 별명입니다.\" }";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST);
 
     }
 

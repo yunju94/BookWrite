@@ -25,6 +25,7 @@
             }
             .sidebar > ul {
                 list-style: none;
+                margin-top: 20px;
                 margin-right: 20px;
                 margin-left: -10px;
             }
@@ -33,11 +34,15 @@
     <body>
 
     <div class="sidebar">
+        <div>
+            <a href="/"><img th:src="@{/css/image/logo.png}" height="30"></a>
+        </div>
+
         <ul>
             <li>베스트 모음</li>
             <li>판타지</li>
             <li>로맨스판타지</li>
-            <li>글쓰기</li>
+            <li><a href="/write"> 글쓰기</a></li>
             <li>포인트 적립</li>
             <li>포인트 충전</li>
             <li>도서 추천</li>

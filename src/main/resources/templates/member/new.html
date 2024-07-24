@@ -16,10 +16,10 @@
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
             var IdCheck = $("#loginId").val();
-            console.log(IdCheck)
-             var url = "/member/Idch/IdCheck";
+
+             var url = "/member/Idch/"+IdCheck;
             var paramData = {
-                IdCheck: IdCheck
+                IdCheck: $("#loginId").val()
             };
             var param = JSON.stringify(paramData);
 
@@ -34,8 +34,9 @@
                 },
                 dataType: "json",
                 cache: false,
+
                 success: function (result, status) {
-                    alert(result);
+                    alert(result.message);
 
                 },
                 error: function (jqXHR, status, error) {
@@ -43,7 +44,6 @@
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
                     } else {
-                        alert(jqXHR);
                         alert("사용 불가능한 아이디입니다.");
                     }
                 }
@@ -51,13 +51,11 @@
         }
 
 
-
-
               function NickCheck(){
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
-            var NickCheck = $("#NickCheck").val();
-             var url = "/member/NickCheck";
+            var NickCheck = $("#NickName").val();
+            var url = "/member/"+NickCheck;
             var paramData = {
                 NickCheck: NickCheck
             };
@@ -74,16 +72,17 @@
                 },
                 dataType: "json",
                 cache: false,
+
                 success: function (result, status) {
-                    alert(result);
+                   alert(result.message);
 
                 },
+
                 error: function (jqXHR, status, error) {
                     if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
                     } else {
-                        alert(jqXHR);
                         alert("사용 불가능한 별명입니다.");
 
                     }
@@ -103,9 +102,6 @@
             font: inherit;
         }
 
-        label {
-            cursor: default;
-        }
 
         .inputName>li {
             border-bottom: 1px solid #CCC;
@@ -142,7 +138,7 @@
             float: left;
             position: absolute;
             margin-left:20px;
-            margin-top:-10px;
+            margin-top:-1px;
 
         }
 
@@ -150,7 +146,7 @@
             float: left;
             position: absolute;
             margin-left:20px;
-             margin-top:-10px;
+             margin-top:-1px;
         }
         .subBtn{
              margin: 0 auto;
@@ -178,7 +174,7 @@
 
             </li>
             <li>
-                <input type="text" th:field="*{nickname}" placeholder="별명">
+                <input type="text" th:field="*{nickname}" id="NickName" placeholder="별명">
                 <button class="NickCheck" type="button" onclick="NickCheck()">별명 확인</button>
 
             </li>

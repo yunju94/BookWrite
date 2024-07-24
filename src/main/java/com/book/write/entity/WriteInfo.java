@@ -1,0 +1,42 @@
+package com.book.write.entity;
+
+import com.book.write.constant.Category;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Entity
+@Table(name = "WriteInfo")
+@Getter
+@Setter
+public class WriteInfo {
+    @Id
+    @Column(name = "writeinfo_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    private String title;//제목
+
+    @Enumerated(EnumType.STRING)
+    private Category category;//종류
+
+    @Column(columnDefinition = "TEXT")
+    private String detail;//설명
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;//글쓴이
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "writeImg_id")
+    private List<WriteImg> writeImg;//이미지
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "write_id")
+    private List<Write> write;//작성글
+
+
+
+}
