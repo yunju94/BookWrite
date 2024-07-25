@@ -47,6 +47,7 @@ public class WriteController {
 
     @PostMapping(value = "/write/InfoForm")
     public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto){
+
         writeInfoService.save(writeInfoDto);
 
 
