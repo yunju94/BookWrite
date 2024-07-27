@@ -37,9 +37,10 @@ public class WriteController {
     }
 
     @GetMapping(value = "/write/InfoForm")
-    public String writeInfoForm(Model model){
+    public String writeInfoForm(Model model, Principal principal){
 
-
+        Member member = memberService.SearchIdtoName(principal.getName());
+        model.addAttribute("member", member.getId());
 
         model.addAttribute("writeInfoDto", new WriteInfoDto());
         return "write/InfoForm";

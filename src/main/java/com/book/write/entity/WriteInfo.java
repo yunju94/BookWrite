@@ -40,6 +40,11 @@ public class WriteInfo {
 
 
     public static WriteInfo createDto(WriteInfoDto writeInfoDto){
+        System.out.println(writeInfoDto.getWrite());
+        System.out.println(writeInfoDto.getMember().getId());
+        System.out.println(writeInfoDto.getTitle());
+        System.out.println(writeInfoDto.getTitle());
+        System.out.println(writeInfoDto.getCategory());
         WriteInfo writeInfo = new WriteInfo();
         writeInfo.setMember(writeInfoDto.getMember());
         writeInfo.setCategory(writeInfoDto.getCategory());

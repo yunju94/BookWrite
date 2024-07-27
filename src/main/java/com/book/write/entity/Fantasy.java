@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Fantasy")
 @Getter
@@ -16,7 +18,7 @@ public class Fantasy {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "category")
-    private WriteInfo writeInfo;
+    private List<WriteInfo> writeInfo;
 
 
 }

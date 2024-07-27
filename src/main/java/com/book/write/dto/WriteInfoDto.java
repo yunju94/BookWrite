@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class WriteInfoDto {
+    private Long id;
 
     private String title;//제목
 
