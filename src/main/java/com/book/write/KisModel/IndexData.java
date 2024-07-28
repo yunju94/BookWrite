@@ -1,9 +1,12 @@
 package com.book.write.KisModel;
 
 public class IndexData {
-    private String rt_cd;
-    private String msg_cd;
-    private String msg1;
+    private String rt_cd;    // 인덱스 데이터의 결과 코드
+
+    private String msg_cd;    // 인덱스 데이터의 메시지 코드
+
+    private String msg1;    // 인덱스 데이터의 메시지
+
     private Object output1;
     private Object[] output2;
 

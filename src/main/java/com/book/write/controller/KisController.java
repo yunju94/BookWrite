@@ -134,4 +134,46 @@ public class KisController {
                 .thenReturn("equities");
     }
 
+    @GetMapping("/equities/020120")
+    public Mono<String> CurrentPriceKDR( Model model) {
+        String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=020120" ;
+
+        return webClient.get()
+                .uri(url)
+                .header("content-type","application/json")
+                .header("authorization","Bearer " + accessTokenManager.getAccessToken())
+                .header("appkey",KisConfig.APPKEY)
+                .header("appsecret",KisConfig.APPSECRET)
+                .header("tr_id","FHKST01010100")
+                .retrieve()
+                .bodyToMono(Body.class)
+                .doOnSuccess(body -> {
+                    model.addAttribute("equity", body.getOutput());
+                    model.addAttribute("jobDate", getJobDateTime());
+                })
+                .doOnError(result -> System.out.println("*** error: " + result))
+                .thenReturn("CurrentPrice");
+    }
+
+    @GetMapping("/equities/053280")
+    public Mono<String> CurrentPrice24( Model model) {
+        String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=053280" ;
+
+        return webClient.get()
+                .uri(url)
+                .header("content-type","application/json")
+                .header("authorization","Bearer " + accessTokenManager.getAccessToken())
+                .header("appkey",KisConfig.APPKEY)
+                .header("appsecret",KisConfig.APPSECRET)
+                .header("tr_id","FHKST01010100")
+                .retrieve()
+                .bodyToMono(Body.class)
+                .doOnSuccess(body -> {
+                    model.addAttribute("equity", body.getOutput());
+                    model.addAttribute("jobDate", getJobDateTime());
+                })
+                .doOnError(result -> System.out.println("*** error: " + result))
+                .thenReturn("CurrentPrice_24");
+    }
+
 }
