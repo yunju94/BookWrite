@@ -30,6 +30,8 @@ public class WriteController {
         String Id = principal.getName();
         Member member = memberService.SearchIdtoName(Id);
         WriteInfo writeInfo = writeInfoService.SearchMemberId(member.getId());
+
+
         model.addAttribute("writeInfo", writeInfo);
 
 
@@ -40,9 +42,10 @@ public class WriteController {
     public String writeInfoForm(Model model, Principal principal){
 
         Member member = memberService.SearchIdtoName(principal.getName());
-        model.addAttribute("member", member.getId());
+        WriteInfoDto writeInfoDto = new WriteInfoDto();
+        writeInfoDto.setMember(member);
 
-        model.addAttribute("writeInfoDto", new WriteInfoDto());
+        model.addAttribute("writeInfoDto", writeInfoDto);
         return "write/InfoForm";
     }
 
@@ -50,8 +53,6 @@ public class WriteController {
     public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto){
 
         writeInfoService.save(writeInfoDto);
-
-
         return "redirect:/";
     }
 

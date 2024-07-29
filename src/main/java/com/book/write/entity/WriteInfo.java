@@ -34,22 +34,17 @@ public class WriteInfo {
     @JoinColumn(name = "writeImg_id")
     private List<WriteImg> writeImg;//이미지
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id")
-    private List<Write> write;//작성글
+
+
 
 
     public static WriteInfo createDto(WriteInfoDto writeInfoDto){
-        System.out.println(writeInfoDto.getWrite());
-        System.out.println(writeInfoDto.getMember().getId());
-        System.out.println(writeInfoDto.getTitle());
-        System.out.println(writeInfoDto.getTitle());
-        System.out.println(writeInfoDto.getCategory());
+
         WriteInfo writeInfo = new WriteInfo();
         writeInfo.setMember(writeInfoDto.getMember());
         writeInfo.setCategory(writeInfoDto.getCategory());
-        writeInfo.setDetail(writeInfo.getDetail());
-        writeInfo.setTitle(writeInfo.getTitle());
+        writeInfo.setDetail(writeInfoDto.getDetail());
+        writeInfo.setTitle(writeInfoDto.getTitle());
         return writeInfo;
     }
 

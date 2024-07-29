@@ -4,17 +4,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.book.write.KisModel.Body;
 import com.book.write.KisModel.IndexData;
 import com.book.write.config.AccessTokenManager;
 import com.book.write.config.KisConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Flux;
@@ -38,10 +44,16 @@ public class KisController {
     public KisController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(KisConfig.REST_BASE_URL).build();
     }
+    @GetMapping("/coinList")
+    public String coinList(Model model) {
+        return "coin/Listup";
+    }
+
+
 
     @GetMapping("/index")
     public String index(Model model) {
-        return "index";
+        return "coin/index";
     }
 
     @GetMapping("/indices")
@@ -69,7 +81,7 @@ public class KisController {
 
         model.addAttribute("jobDate", getJobDateTime());
 
-        return "indices";
+        return "coin/indices";
     }
 
     public String getStringToday() {
@@ -131,49 +143,58 @@ public class KisController {
                     model.addAttribute("jobDate", getJobDateTime());
                 })
                 .doOnError(result -> System.out.println("*** error: " + result))
-                .thenReturn("equities");
+                .thenReturn("coin/equities");
+
+
     }
 
-    @GetMapping("/equities/020120")
-    public Mono<String> CurrentPriceKDR( Model model) {
-        String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=020120" ;
+    @PostMapping("/equities/020120")
+    public Mono<ResponseEntity<Map<String, Object>>> currentPriceKDR() {
+        String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=020120";
 
         return webClient.get()
                 .uri(url)
-                .header("content-type","application/json")
-                .header("authorization","Bearer " + accessTokenManager.getAccessToken())
-                .header("appkey",KisConfig.APPKEY)
-                .header("appsecret",KisConfig.APPSECRET)
-                .header("tr_id","FHKST01010100")
+                .header("content-type", "application/json")
+                .header("authorization", "Bearer " + accessTokenManager.getAccessToken())
+                .header("appkey", KisConfig.APPKEY)
+                .header("appsecret", KisConfig.APPSECRET)
+                .header("tr_id", "FHKST01010100")
                 .retrieve()
                 .bodyToMono(Body.class)
-                .doOnSuccess(body -> {
-                    model.addAttribute("equity", body.getOutput());
-                    model.addAttribute("jobDate", getJobDateTime());
-                })
-                .doOnError(result -> System.out.println("*** error: " + result))
-                .thenReturn("CurrentPrice");
+                .map(body -> {
+                    // JSON 형식으로 변환
+                    Map<String, Object> map= new HashMap<>();
+                    map.put("equity",body.getOutput() );
+                    Object ob = map.get("equity");
+
+                    return new ResponseEntity<>(map, HttpStatus.OK);
+                });
+
     }
 
-    @GetMapping("/equities/053280")
-    public Mono<String> CurrentPrice24( Model model) {
-        String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=053280" ;
+
+    @PostMapping("/equities/053280")
+    public @ResponseBody Mono<ResponseEntity<Map<String, Object>>> CurrentPrice24() {
+        String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=053280";
 
         return webClient.get()
                 .uri(url)
-                .header("content-type","application/json")
-                .header("authorization","Bearer " + accessTokenManager.getAccessToken())
-                .header("appkey",KisConfig.APPKEY)
-                .header("appsecret",KisConfig.APPSECRET)
-                .header("tr_id","FHKST01010100")
+                .header("content-type", "application/json")
+                .header("authorization", "Bearer " + accessTokenManager.getAccessToken())
+                .header("appkey", KisConfig.APPKEY)
+                .header("appsecret", KisConfig.APPSECRET)
+                .header("tr_id", "FHKST01010100")
                 .retrieve()
                 .bodyToMono(Body.class)
-                .doOnSuccess(body -> {
-                    model.addAttribute("equity", body.getOutput());
-                    model.addAttribute("jobDate", getJobDateTime());
-                })
-                .doOnError(result -> System.out.println("*** error: " + result))
-                .thenReturn("CurrentPrice_24");
+                .map(body -> {
+                    // JSON 형식으로 변환
+                    Map<String, Object> map= new HashMap<>();
+                    map.put("equity",body.getOutput() );
+                    Object ob = map.get("equity");
+
+                    return new ResponseEntity<>(map, HttpStatus.OK);
+                });
+
     }
 
 }

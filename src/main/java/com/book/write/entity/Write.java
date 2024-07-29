@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "write")
 @Getter
@@ -13,6 +15,11 @@ public class Write {
     @Column(name = "write_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "writeInfo_id")
+    private WriteInfo writeInfo;//작성단위
+
 
     private String miniTitle;//회차 제목
 
