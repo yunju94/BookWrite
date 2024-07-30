@@ -12,11 +12,16 @@ public class WriteImg {
     @Id
     @Column(name = "writeImg_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  int id;
+    private  Long id;
 
     private String imgName;
     private String oriImgName;
     private String imgUrl;
 
+    public  void  uploadImg(String oriImgName, String imgName, String imgUrl){
+        this.imgName = imgName;
+        this.imgUrl = imgUrl;
+        this.oriImgName = oriImgName;
+    }
 
 }

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WriteInfoRepository extends JpaRepository<WriteInfo, Long> {
 
-    WriteInfo findByMemberId(int memberId);
+    WriteInfo findByMemberId(Long memberId);
 }

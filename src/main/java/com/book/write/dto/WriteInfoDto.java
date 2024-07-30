@@ -30,7 +30,7 @@ public class WriteInfoDto {
     private Member member;//글쓴이
 
 
-    private List<WriteImg> writeImg;//이미지
+    private WriteImg writeImg;//이미지
 
 
     private Write write;//작성글

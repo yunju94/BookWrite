@@ -11,6 +11,7 @@ public class MemberFormDto {
     private String tel;
     private String loginId;
     private String loginPassword;
+    private String email;
 
 
 

@@ -16,13 +16,14 @@ public class Member {
     @Id
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     private String name;
     private String nickname;
     private String tel;
     private String loginId;
     private String loginPassword;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -35,6 +36,7 @@ public class Member {
         member.setLoginId(memberFormDto.getLoginId());
         String password = passwordEncoder.encode(memberFormDto.getLoginPassword());
         member.setLoginPassword(password);
+        member.setEmail(memberFormDto.getEmail());
         member.setRole(Role.ADMIN);
         return member;
     }

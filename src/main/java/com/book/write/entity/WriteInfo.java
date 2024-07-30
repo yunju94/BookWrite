@@ -16,7 +16,7 @@ public class WriteInfo {
     @Id
     @Column(name = "writeinfo_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     private String title;//제목
 
@@ -30,9 +30,9 @@ public class WriteInfo {
     @JoinColumn(name = "member_id")
     private Member member;//글쓴이
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writeImg_id")
-    private List<WriteImg> writeImg;//이미지
+    private WriteImg writeImg;//이미지
 
 
 
@@ -45,6 +45,7 @@ public class WriteInfo {
         writeInfo.setCategory(writeInfoDto.getCategory());
         writeInfo.setDetail(writeInfoDto.getDetail());
         writeInfo.setTitle(writeInfoDto.getTitle());
+        writeInfo.setWriteImg(writeInfoDto.getWriteImg());
         return writeInfo;
     }
 

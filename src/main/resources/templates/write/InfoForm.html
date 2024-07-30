@@ -16,9 +16,11 @@
         .container {
             max-width: 800px;
             margin: 20px auto;
+            margin-left: 170px;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
         }
 
         h3 {
@@ -79,7 +81,7 @@
         }
 
         .form-group .preview img {
-            max-width: 100%;
+            max-width: 130px;
             height: auto;
             display: block;
             margin-top: 10px;
@@ -113,11 +115,11 @@
             <label for="ImgFile">대표 이미지</label>
             <input type="file" id="ImgFile" name="ImgFile" onchange="previewImage(event)">
             <div class="preview">
-                <img id="preview" src="#" alt="이미지 미리 보기">
+                <img th:src="@{/css/image/basic.jpg}" id="preview" alt="이미지 미리 보기">
             </div>
         </div>
         <div class="form-group">
-            <ul>
+            <ul style=" list-style: none;">
                 <li>
                     <input type="hidden" th:field="*{member.id}" >
                 </li>

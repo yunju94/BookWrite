@@ -12,8 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,8 +33,6 @@ public class WriteController {
         String Id = principal.getName();
         Member member = memberService.SearchIdtoName(Id);
         WriteInfo writeInfo = writeInfoService.SearchMemberId(member.getId());
-
-
         model.addAttribute("writeInfo", writeInfo);
 
 
@@ -50,9 +51,11 @@ public class WriteController {
     }
 
     @PostMapping(value = "/write/InfoForm")
-    public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto){
+    public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto,
+                                    @RequestParam("ImgFile") MultipartFile imgFile) throws Exception {
 
-        writeInfoService.save(writeInfoDto);
+        writeInfoService.save(writeInfoDto, imgFile);
+
         return "redirect:/";
     }
 

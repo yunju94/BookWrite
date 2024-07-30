@@ -14,7 +14,7 @@ public class Write {
     @Id
     @Column(name = "write_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writeInfo_id")
