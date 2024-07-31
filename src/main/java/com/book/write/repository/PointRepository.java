@@ -20,8 +20,5 @@ public interface PointRepository extends JpaRepository<Point, Long> {
             " left join fetch o.payment p" +
             " where o.orderUid = :orderUid")
     Point findOrderAndPayment(String orderUid);
-
-    Point findByOrderUid(String orderUid);
-
     List<Point> findByMemberId(Long memberId);
 }

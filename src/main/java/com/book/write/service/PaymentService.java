@@ -12,8 +12,8 @@ public interface PaymentService {
     // 결제(콜백)
     IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request);
 
-    void updatePayment(String orderUid);
-    void canclePayment(String orderUid);
+
+    void canclePayment(String paymentUid);
 
 
 }

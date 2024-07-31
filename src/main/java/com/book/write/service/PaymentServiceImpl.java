@@ -86,7 +86,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
 
             // 결제 상태 변경
-            order.getPayment().changePaymentBySuccess(OK, iamportResponse.getResponse().getImpUid(), order);
+            order.getPayment().changePaymentBySuccess(OK, iamportResponse.getResponse().getImpUid());
 
             return iamportResponse;
 
@@ -97,14 +97,10 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    public void  updatePayment(String orderUid){
-        com.book.write.entity.Payment payment =paymentRepository.findByOrderUid(orderUid);
-        payment.setStatus(OK);
 
-    }
 
-    public void  canclePayment(String orderUid){
-        com.book.write.entity.Payment payment =paymentRepository.findByOrderUid(orderUid);
+    public void  canclePayment(String paymentUid){
+        com.book.write.entity.Payment payment =paymentRepository.findBypaymentUid(paymentUid);
         payment.setStatus(CANCEL);
 
     }

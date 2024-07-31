@@ -23,8 +23,7 @@ public class Payment {
     private PaymentStatus status;
     private String paymentUid; // 결제 고유 번호
 
-    @Column(name = "order_uid")
-    private  String OrderUid;
+
 
 
     @Builder
@@ -33,10 +32,9 @@ public class Payment {
         this.status = status;
     }
 
-    public void changePaymentBySuccess(PaymentStatus status, String paymentUid,  Point point) {
+    public void changePaymentBySuccess(PaymentStatus status, String paymentUid) {
         this.status = status;
         this.paymentUid = paymentUid;
-        this.OrderUid = point.getOrderUid();
     }
 
 }

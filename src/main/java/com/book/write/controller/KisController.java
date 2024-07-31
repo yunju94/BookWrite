@@ -1,17 +1,20 @@
 package com.book.write.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.book.write.KisModel.Body;
 import com.book.write.KisModel.IndexData;
 import com.book.write.config.AccessTokenManager;
 import com.book.write.config.KisConfig;
+import com.book.write.constant.Order;
+import com.book.write.entity.Member;
+import com.book.write.entity.Point;
+import com.book.write.service.MemberService;
+import com.book.write.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Controller
+
 public class KisController {
     @Autowired
     private AccessTokenManager accessTokenManager;
@@ -41,11 +45,37 @@ public class KisController {
     private String path;
     private String tr_id;
 
+    //--------------------------//
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private PointService pointService;
+
     public KisController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(KisConfig.REST_BASE_URL).build();
     }
     @GetMapping("/coinList")
-    public String coinList(Model model) {
+    public String coinList(Model model, Principal principal) {
+        if (principal == null){
+
+        }
+        Member member = memberService.memberLoginId(principal.getName());
+        if (member == null){
+            return "member/login";
+        }
+        List<Point> pointList = pointService.SearchIdtopoint(member.getId());
+        int total = 0;
+        if (pointList.size() != 0){
+            for (int i = 0 ; i < pointList.size() ; i++){
+                if (pointList.get(i).getOrderstatus().equals(Order.OK)){
+                    total += pointList.get(i).getPoint();
+                }
+            }
+        }
+        String totalPoint = total+"";
+        System.out.println(totalPoint);
+        model.addAttribute("totalPoint", total);
+
         return "coin/Listup";
     }
 

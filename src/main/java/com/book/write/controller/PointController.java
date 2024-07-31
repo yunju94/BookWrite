@@ -1,5 +1,6 @@
 package com.book.write.controller;
 
+import com.book.write.constant.Order;
 import com.book.write.dto.PaymentCallbackRequest;
 import com.book.write.dto.RequestPayDto;
 import com.book.write.entity.Member;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -30,13 +32,10 @@ public class PointController {
 
     @GetMapping(value = "/charge")
     public String pointMainCharge(Principal principal, Model model){
-        if (principal == null){
+        if (principal.getName() == null){
             return "member/login";
         }
-        Member member = memberService.SearchIdtoName(principal.getName());
-        List<Point> pointList = pointService.SearchIdtopoint(member.getId());
 
-        model.addAttribute("pointList", pointList);
 
         return  "point/Charge";
     }
@@ -48,7 +47,9 @@ public class PointController {
                                                      Principal principal){
        String id = principal.getName();
         Member member = memberService.SearchIdtoName(id);
+
         Point p = pointService.paymentPoint(member, price, point);
+
         RequestPayDto requestDto = paymentService.findRequestDto(p.getId());
 
         return new ResponseEntity<RequestPayDto>(requestDto, HttpStatus.OK);
@@ -65,7 +66,6 @@ public class PointController {
 
     @GetMapping("/success-payment/{orderUid}")
     public String successPaymentPage(@PathVariable String orderUid) {
-        paymentService.updatePayment(orderUid);
         return "redirect:/";
     }
 
@@ -73,6 +73,7 @@ public class PointController {
     public String failPaymentPage(@PathVariable String orderUid) {
         //파라미터 값이 없으면 null값으로
         paymentService.canclePayment(orderUid);
+        pointService.cancelOrder(orderUid);
 
         return "point/fail-payment";
     }

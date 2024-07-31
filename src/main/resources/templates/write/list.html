@@ -15,35 +15,118 @@
 
 
     <style>
+        .nofloat {
+             width: 700px;
+             padding: 20px;
+             box-sizing: border-box;
+         }
+
+         .list_info {
+              width: 350px;
+             height: 120px;
+             display: flex;
+             flex-direction: column;
+             justify-content: flex-start
+             flex: 1;
+             float: left;
+         }
+
+         .img_info {
+             width: 100px;
+             height: 100px;
+             margin-right: 18px;
+             border-radius: 4px;
+             overflow: hidden;
+             float: left;
+         }
+
+         .img_info img {
+             width: 100px;
+             height: 100px;
+             object-fit: cover;
+         }
+
+         .item-container {
+
+             display: flex;
+             align-items: center;
+             margin-bottom: 20px;
+             padding: 10px;
+             box-sizing: border-box;
+             border-radius: 4px;
+
+         }
+
+         .item-content {
+             display: flex;
+             flex: 1;
+         }
+
+         .btn {
+            display: flex; /* Flexbox 레이아웃을 사용하여 정렬 */
+             flex-direction: column; /* 자식 요소들을 세로 방향으로 배치 */
+             gap: 10px; /* 버튼들 사이의 간격 */
+         }
 
 
     </style>
-
 </head>
 
 <body>
 <div layout:fragment="content">
     <h3>나의 글 목록</h3>
-       <div>
-            <div>
-                <a href="/write/InfoForm">새글 작성</a>
+    <div>
+        <div>
+            <a href="/write/InfoForm">소설 만들기</a>
+        </div>
+
+        <div class="nofloat">
+            <div th:each="Info : ${writeInfo}" class="item-container">
+                <a th:href="'/writeNovel/' + ${Info.id}" style="text-decoration: none; color: inherit;">
+                    <div class="img_info">
+                        <img th:if="${#strings.isEmpty(Info.writeImg.imgUrl)}" th:src="@{/css/image/basic.jpg}" alt="Basic Image">
+                        <img th:unless="${#strings.isEmpty(Info.writeImg.imgUrl)}" th:src="${Info.writeImg.imgUrl}" alt="Write Image">
+                    </div>
+                    <div class="list_info">
+                        <p th:text="${Info.title}"></p>
+                        <p th:text="${Info.category}"></p>
+                        <p th:text="${Info.detail}"></p>
+                    </div>
+                </a>
+
+                    <div class="btn">
+                        <button type="button" class="btn btn-outline-secondary">작품 관리</button>
+
+                        <button type="button" class="btn btn-outline-secondary">회차 작성</button>
+                    </div>
+
             </div>
-            <div>
-                <div >
-                    <table>
-                        <tbody >
-                        <tr th:each="Info: ${writeInfo}">
-                            <td th:text="${Info.title}"></td>
-                            <td th:text="${Info.detail}"></td>
-                            <td th:text="${Info.category}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+        </div>
 
-                </div>
+        <div th:with="start=${(writeInfo.number/maxPage)*maxPage + 1},
+                end=(${(writeInfo.totalPages ==0) ?
+                1 : (start + (maxPage-1) <writeInfo.totalPages ? start + (maxPage -1) : writeInfo.totalPages)})">
+               <ul class="pagination justify-content-center">
+                   <li class="page-item" th:classappend="${writeInfo.first}? 'disabled'">
+                       <a th:href="@{'/write/'+${writeInfo.number -1 } }" aria-label="Previous"
+                          class="page-link">
+                           <span aria-hidden="true">이전</span>
+                       </a>
+                   </li>
+                   <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
+                       th:classappend="${writeInfo.number eq page-1}?'active':''">
+                       <a th:href="@{'/write/' + ${page -1}}" th:inline="text"
+                          class="page-link">[[${page}]]</a>
+                   </li>
+                   <li class="page-item" th:classappend="${writeInfo.last}?'disabled'">
+                       <a th:href="@{'/write/' + ${writeInfo.number +1} }" aria-label="Next"
+                          class="page-link">
+                           <span aria-hidden="true">다음</span>
+                       </a>
+                   </li>
+               </ul>
+           </div>
 
-
-            </div>
 
 
         </div>

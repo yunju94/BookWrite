@@ -62,4 +62,8 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByNickname(NickName);
     }
 
+    public  Member memberLoginId(String LoginId){
+        return  memberRepository.findByLoginId(LoginId);
+    }
+
 }

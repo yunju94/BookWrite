@@ -1,14 +1,20 @@
 package com.book.write.service;
 
 import com.book.write.dto.WriteInfoDto;
+import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.WriteImg;
 import com.book.write.entity.WriteInfo;
 import com.book.write.repository.WriteImgRepository;
 import com.book.write.repository.WriteInfoRepository;
+import com.book.write.repository.WriteInfoRepositoryCustom;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -18,7 +24,8 @@ public class WriteInfoService {
     private  final WriteImgService writeImgService;
 
 
-    public WriteInfo SearchMemberId(Long Id){
+
+    public List<WriteInfo> SearchMemberId(Long Id){
        return writeInfoRepository.findByMemberId(Id);
     }
 
@@ -29,8 +36,14 @@ public class WriteInfoService {
 
         WriteInfo writeInfo = WriteInfo.createDto(writeInfoDto);
         writeInfoRepository.save(writeInfo);
-
-
-
     }
+
+    public List<WriteInfo> AllSearch(){
+        return writeInfoRepository.findAll();
+    }
+
+    public Page<WriteInfo> getMyWritePage(WriteInfoSerchDto writeInfoSerchDto, Long memberId, Pageable pageable){
+        return writeInfoRepository.getMyWritePage(writeInfoSerchDto, memberId, pageable);
+    }
+
 }

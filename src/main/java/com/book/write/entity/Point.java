@@ -1,5 +1,6 @@
 package com.book.write.entity;
 
+import com.book.write.constant.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,6 @@ public class Point {
 
     private int point;//변경 포인트
 
-
     private int coin;//변경 코인
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,6 +33,9 @@ public class Point {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
+    @Enumerated(EnumType.STRING)
+    private Order orderstatus;
+
     public  static Point createOrder(Member member, Payment payment, int price, int point){
         Point order = new Point();
         order.setOrderUid(UUID.randomUUID().toString());
@@ -40,6 +43,7 @@ public class Point {
         order.setPayment(payment);
         order.setPoint(point);
         order.setMoney(price);
+        order.setOrderstatus(Order.OK);
 
         return  order;
         //주문서 생성

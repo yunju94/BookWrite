@@ -34,8 +34,9 @@ public class WriteInfo {
     @JoinColumn(name = "writeImg_id")
     private WriteImg writeImg;//이미지
 
+    private Long Heart;//관심수
 
-
+    private Long view;//조회수
 
 
     public static WriteInfo createDto(WriteInfoDto writeInfoDto){
