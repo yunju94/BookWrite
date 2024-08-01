@@ -141,8 +141,12 @@ public class WriteController {
 
 
     @GetMapping(value = "/writeNovel/{id}")
-    public  String WriteInfoDetail(@PathVariable Long id){
-        return "write/detailNovel";
+    public  String WriteInfoDetail(@PathVariable Long id, Model model){
+        WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
+        System.out.println("writeInfo: "+writeInfo);
+
+        model.addAttribute("writeInfo", writeInfo);
+        return "writeDetail/detailNovel";
     }
 
 

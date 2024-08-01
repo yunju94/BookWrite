@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:inline="javascript">
+        function newWrite(id){
+            location.href='/detail/new/'+id
+        }
+    </script>
+
+    <style>
+        .contents{
+            display: flex;
+
+        }
+        .img_list{
+            float: left;
+            margin: 10px;
+        }
+        .img_list>img{
+            width:200px;
+            height:200px;
+        }
+
+        .Info_list{
+             width:300px;
+            height:200px;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .btn{
+            margin-top: 30px;
+        }
+
+        .list{
+            float: none;
+             width:800px;
+             border: 1px solid #f8f8f8;
+        }
+        .list > table> thead{
+            background-color : #f8f8f8;
+            text-align:center;
+        }
+    </style>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3 th:text="${writeInfo.title}"></h3>
+    <div>
+        <div>
+            <div class="contents">
+                <div class="img_list">
+                    <img th:if="${#strings.isEmpty(writeInfo.writeImg.imgUrl)}" th:src="@{/css/image/basic.jpg}" alt="Basic Image">
+                    <img  th:unless="${#strings.isEmpty(writeInfo.writeImg.imgUrl)}" th:src="${writeInfo.writeImg.imgUrl}" alt="Write Image">
+
+                </div>
+                <div class="Info_list">
+                    <p th:text="${writeInfo.member.nickname}"></p>
+                    <p th:text="${writeInfo.category}"></p>
+                    <p th:text="${writeInfo.detail}"></p>
+                </div>
+                <div class="btn" >
+                    <button type="button"  class="btn btn-outline-secondary" th:id="${writeInfo.id}" onclick=newWrite(this.id)>회차쓰기</button>
+                </div>
+
+
+            </div>
+            <div class="list">
+                <table>
+                    <thead>
+                    <tr>
+                        <td style="width: 100px;">번호</td>
+                        <td style="width: 200px;">제목</td>
+                        <td style="width: 200px;">등록일</td>
+                        <td style="width: 100px;">댓글수</td>
+                        <td style="width: 100px;">조회수</td>
+                        <td style="width: 100px;">
+                            추천
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
+                            </svg>
+
+                        </td>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</div>
+</body>
+
+
+</html>

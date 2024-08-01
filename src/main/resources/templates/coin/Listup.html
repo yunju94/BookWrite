@@ -21,7 +21,12 @@
 </head>
 <th:block layout:fragment="script">
     <script th:inline="javascript">
+
         $(document).ready(function () {
+
+
+
+
               $('#current').change(function() {
                   // 선택된 값 가져오기
                   var selectValue = $(this).val();
@@ -32,6 +37,7 @@
                   // 선택된 값에 따라 카드 표시
                   if (selectValue === "KDR") {
                       $('#KDR').show();
+
                       KDR();
                   } else if (selectValue === "YES") {
                       $('#YES').show();
@@ -53,6 +59,17 @@
             var total =  (KDR_stck) * (count);
             $('#KDR_total').text(total);
 
+               var client = [[${total}]]
+
+             if(client<total){
+                 $('#KDR_coinBtn').hide();
+                 $('#KDR_pointBtn').show();
+             }else{
+                $('#KDR_coinBtn').show();
+                $('#KDR_pointBtn').hide();
+             }
+
+
         })
 
 
@@ -64,6 +81,17 @@
 
             var total =  (YES_stck) * (count);
             $('#YES_total').text(total);
+
+             var client = [[${total}]]
+
+             if(client<total){
+                 $('#YES_coinBtn').hide();
+                 $('#YES_pointBtn').show();
+             }else{
+                $('#YES_coinBtn').show();
+                $('#YES_pointBtn').hide();
+             }
+
 
         })
 
@@ -94,9 +122,33 @@
 
                     var stck_prpr = equity.stck_prpr;
 
+                        var prdy_vrss = equity.prdy_vrss;
+                        var prdy_vrss_sign = equity.prdy_vrss_sign;
+
+                           var color;
+                            if (prdy_vrss_sign < 3) {
+                                color = 'red';
+                            } else if (prdy_vrss_sign > 3) {
+                                color = 'blue';
+                            } else {
+                                color = 'black';}
+
                     $('#KDR_stck_prpr').text(stck_prpr);
+                    $('#KDR_prdy_vrss').text(prdy_vrss).css('color', color);
 
                     $('#KDR_total').text(stck_prpr);
+
+                    var client = [[${total}]]
+
+                        if(client<stck_prpr){
+                         $('#KDR_coinBtn').hide();
+                         $('#KDR_pointBtn').show();
+                     }else{
+                        $('#KDR_coinBtn').show();
+                        $('#KDR_pointBtn').hide();
+                     }
+
+
                 },
                 error: function (jqXHR, status, error) {
                     if (jqXHR.status == '401') {
@@ -132,11 +184,32 @@
                         var equity = result.equity;
 
                         var stck_prpr = equity.stck_prpr;
-                         console.log(stck_prpr);
+                        var prdy_vrss = equity.prdy_vrss;
+                        var prdy_vrss_sign = equity.prdy_vrss_sign;
+
+                              var color;
+                            if (prdy_vrss_sign < 3) {
+                                color = 'red';
+                            } else if (prdy_vrss_sign > 3) {
+                                color = 'blue';
+                            } else {
+                                color = 'black';}
+
                         $('#YES_stck_prpr').text(stck_prpr);
+                        $('#YES_prdy_vrss').text(prdy_vrss).css('color', color);
+
+                        $('#YES_total').text(stck_prpr)
 
 
-                        $('#YES_total').text(stck_prpr);
+                        var client = [[${total}]]
+
+                        if(client<stck_prpr){
+                         $('#YES_coinBtn').hide();
+                         $('#YES_pointBtn').show();
+                     }else{
+                        $('#YES_coinBtn').show();
+                        $('#YES_pointBtn').hide();
+                     }
 
 
                     },
@@ -151,10 +224,23 @@
                 });
             }
 
+        function point(){
+            location.href="/charge"
+        }
 
-        $(document).ready(function(){
 
-        })
+
+
+          function sliding() {
+        var context = document.getElementById('slide_context');
+        // 'show' 클래스를 토글하여 슬라이드 효과 적용
+        if (context.classList.contains('show')) {
+            context.classList.remove('show');
+        } else {
+            context.classList.add('show');
+        }
+    }
+
 
 
     </script>
@@ -162,8 +248,81 @@
 
     <th:block layout:fragment="css">
     <style>
+                /* 부모 컨테이너 */
+         .container {
+             max-width: 600px; /* 최대 너비 설정 */
+             min-width: 300px; /* 최소 너비 설정 */
+             margin: 0 auto; /* 중앙 정렬 */
+             padding: 0 15px; /* 좌우 여백 설정 */
+         }
+
+         /* card */
+         .card {
+             width: 100%;
+             max-width: 600px; /* 최대 너비 설정 */
+             min-width: 300px; /* 최소 너비 설정 */
+             margin: 20px auto;
+             text-align: center;
+         }
+
+           .sel_1, .sel_2 {
+             margin: 10px;
+         }
+
+         .sel_2 {
+             text-align: right;
+         }
+
+         .fs-2 {
+             font-size: 0.8em; /* 폰트 사이즈 조정 */
+         }
+
+         .btnBtn {
+             margin-top: 10px;
+         }
+
+         /* 미디어 쿼리로 모바일에서의 스타일 조정 */
+         @media (max-width: 576px) {
+             .sel_1, .sel_2 {
+                 text-align: center;
+             }
+
+             .sel_2 {
+                 margin-left: 0;
+             }
+
+             .fs-2 {
+                 font-size: 0.9em;
+             }
+
+             .btnBtn {
+                 margin-left: 0;
+             }
+         }
 
 
+         /* 슬라이드 컨테이너 */
+         #slide_context {
+             width: 100%; /* 폭을 부모에 맞춤 */
+             max-width: 600px; /* 최대 너비 설정 */
+             min-width: 300px; /* 최소 너비 설정 */
+             overflow: hidden; /* 내용이 넘치는 것을 숨김 */
+             max-height: 0; /* 초기 최대 높이 설정 */
+             opacity: 0; /* 초기 투명도 설정 */
+             transition: max-height 0.5s ease-out, opacity 0.5s ease-out; /* 애니메이션 트랜지션 설정 */
+             background-color: white; /* 배경 색상 설정 (선택 사항) */
+             padding: 0; /* 여백 초기 설정 */
+             border: 1px solid #dee2e6; /* 테두리 설정 (선택 사항) */
+             border-radius: 4px; /* 테두리 둥글게 설정 (선택 사항) */
+             margin: 20px auto; /* 카드와 동일한 여백 설정 */
+         }
+
+         /* show 클래스 */
+         #slide_context.show {
+             max-height: 500px; /* 슬라이드가 열릴 때의 최대 높이 설정 */
+             opacity: 1; /* 보일 때 투명도 설정 */
+             padding: 10px; /* 여백 설정 (선택 사항) */
+         }
     </style>
     </th:block>
 
@@ -171,71 +330,116 @@
 
 <div layout:fragment="content">
 
+    <div class="sel_1">
+        <select id="current">
+            <option th:value="KDR">키다리스튜디오(020120)</option>
+            <option th:value="YES">예스24(053280)</option>
+        </select>
+    </div>
 
-    <select id="current">
-        <option th:value="KDR">키다리스튜디오(020120)</option>
-        <option th:value="YES">예스24(053280)</option>
-    </select>
+
+    <div class="sel_2">
+
+        현재 포인트: <span th:text="${total}"></span>point
+
+    </div>
+    <div class="container">
     <div class="h4 pb-2 mb-4 text-danger border-bottom border-info"></div>
-    <div class="card" id="KDR">
-        <div class="card-header">
-            <h2>키다리스튜디오(020120)</h2>
-        </div>
-        <div class="card-body">
-            <div>
-                <span class="fs-1" id="KDR_stck_prpr"></span>원<!--주식의 현재 가격을 나타내는 변수나 속성 이름-->
+        <div class="card" id="KDR">
+            <div class="card-header">
+                <h2>키다리스튜디오(020120)</h2>
             </div>
-            <div>
-                <span>변경 코인 수량</span>
-                <select id="KDR_coin">
-                    <option value="1">1코인</option>
-                    <option value="10">10코인</option>
-                    <option value="25">25코인</option>
-                    <option value="50">50코인</option>
-                    <option value="100">100코인</option>
-                </select>
+            <div class="card-body">
+                <div>
+                    <span class="fs-1" id="KDR_stck_prpr"></span>원<!--주식의 현재 가격을 나타내는 변수나 속성 이름-->
+                    <span class="fs-2" id="KDR_prdy_vrss"></span>
+                              <!-- 주식 변동 가격을 여기에 표시 -->
+                <div>
+                    <span>변경 코인 수량</span>
+                    <select id="KDR_coin">
+                        <option value="1">1코인</option>
+                        <option value="10">10코인</option>
+                        <option value="25">25코인</option>
+                        <option value="50">50코인</option>
+                        <option value="100">100코인</option>
+                    </select>
+
+                </div>
+                <div>
+                    총<span id="KDR_total"></span>포인트
+                </div>
 
             </div>
-            <div>
-                총<span id="KDR_total"></span>포인트
-            </div>
+                <div class="btnBtn">
+                    <button type="button" id="KDR_coinBtn"  class="btn btn-outline-secondary">코인 결제</button>
+                    <button type="button" id="KDR_pointBtn"  class="btn btn-outline-secondary"
+                            onclick='point()'>포인트 결제</button>
 
-        </div>
-    </div>
+                </div>
 
-
-    <div class="card" id="YES">
-        <div class="card-header">
-            <h2>예스24(053280)</h2>
-        </div>
-        <div class="card-body">
-            <div>
-                <span class="fs-1" id="YES_stck_prpr"></span>원<!--주식의 현재 가격을 나타내는 변수나 속성 이름-->
-            </div>
-            <div>
-                <span>변경 코인 수량</span>
-                <select id="YES_coin">
-                    <option value="1">1코인</option>
-                    <option value="10">10코인</option>
-                    <option value="25">25코인</option>
-                    <option value="50">50코인</option>
-                    <option value="100">100코인</option>
-                </select>
-
-            </div>
-            <div>
-                총<span id="YES_total"></span>포인트
-            </div>
         </div>
     </div>
 
+        <div class="card" id="YES">
+            <div class="card-header">
+                <h2>예스24(053280)</h2>
+            </div>
+            <div class="card-body">
+                <div>
+                    <span class="fs-1" id="YES_stck_prpr"></span>원<!--주식의 현재 가격을 나타내는 변수나 속성 이름-->
+                    <span class="fs-2" id="YES_prdy_vrss" ></span>
+                </div>
+                <div>
+                    <span>변경 코인 수량</span>
+                    <select id="YES_coin">
+                        <option value="1">1코인</option>
+                        <option value="10">10코인</option>
+                        <option value="25">25코인</option>
+                        <option value="50">50코인</option>
+                        <option value="100">100코인</option>
+                    </select>
 
+                </div>
+                <div>
+                    총<span id="YES_total"></span>포인트
+                </div>
+                <div class="btnBtn">
+                    <button type="button" id="YES_coinBtn"  class="btn btn-outline-secondary">코인 결제</button>
+                    <button type="button" id="YES_pointBtn"  class="btn btn-outline-secondary"
+                            onclick='point()'>포인트 결제</button>
+
+                </div>
+            </div>
+
+        </div>
     <div>
-        <div>
-            현재 포인트: <span th:text="${totalPoint}"></span>
+        <div onclick="sliding()">
+            <span>결제 내역</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+            </svg>
+        </div>
+        <div id="slide_context" >
+            <table>
+                <thead>
+                <tr>
+                    <th style="width:100px;">포인트</th>
+                    <th>코인</th>
+
+                </tr>
+                </thead>
+                <tbody th:each="ch : ${pointList}">
+                <tr>
+                    <td th:text="${ch.point}" ></td>
+                    <td th:text="${ch.coin}"></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
+
+    </div>
 
 
 
@@ -243,7 +447,4 @@
 
 
 </div>
-
-
-
 </html>

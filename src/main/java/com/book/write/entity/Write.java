@@ -23,12 +23,18 @@ public class Write {
 
     private String miniTitle;//회차 제목
 
+
     @Column(columnDefinition = "TEXT")
     private String miniWrite;//회차 내용
 
-    private int count;//조회수
+    private int viewcount;//조회수
 
-    private int heart;//별점
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private List<WriteComment> comment;//댓글
+
+    private int heart;//추천
+
 
 
 

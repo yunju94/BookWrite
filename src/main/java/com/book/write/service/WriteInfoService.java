@@ -46,4 +46,8 @@ public class WriteInfoService {
         return writeInfoRepository.getMyWritePage(writeInfoSerchDto, memberId, pageable);
     }
 
+    public WriteInfo SearchWriteInfoId(Long id){
+        return  writeInfoRepository.findById(id).orElseThrow();
+    }
+
 }

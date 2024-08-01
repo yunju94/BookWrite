@@ -73,8 +73,8 @@ public class KisController {
             }
         }
         String totalPoint = total+"";
-        System.out.println(totalPoint);
-        model.addAttribute("totalPoint", total);
+        model.addAttribute("total", totalPoint);
+        model.addAttribute("pointList", pointList);
 
         return "coin/Listup";
     }
