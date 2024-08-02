@@ -24,9 +24,6 @@
 
         $(document).ready(function () {
 
-
-
-
               $('#current').change(function() {
                   // 선택된 값 가져오기
                   var selectValue = $(this).val();
@@ -59,15 +56,16 @@
             var total =  (KDR_stck) * (count);
             $('#KDR_total').text(total);
 
-               var client = [[${total}]]
-
-             if(client<total){
+            var client = [[${total}]]
+               var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
+             if(clientNumber<total){
                  $('#KDR_coinBtn').hide();
                  $('#KDR_pointBtn').show();
              }else{
                 $('#KDR_coinBtn').show();
                 $('#KDR_pointBtn').hide();
              }
+
 
 
         })
@@ -82,9 +80,10 @@
             var total =  (YES_stck) * (count);
             $('#YES_total').text(total);
 
-             var client = [[${total}]]
+               var client = [[${total}]]
+               var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
 
-             if(client<total){
+             if(clientNumber<total){
                  $('#YES_coinBtn').hide();
                  $('#YES_pointBtn').show();
              }else{
@@ -139,10 +138,12 @@
                     $('#KDR_total').text(stck_prpr);
 
                     var client = [[${total}]]
+                    var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
 
-                        if(client<stck_prpr){
+                        if(clientNumber<stck_prpr){
                          $('#KDR_coinBtn').hide();
                          $('#KDR_pointBtn').show();
+                          console.log("2222222")
                      }else{
                         $('#KDR_coinBtn').show();
                         $('#KDR_pointBtn').hide();
@@ -202,8 +203,9 @@
 
 
                         var client = [[${total}]]
+                    var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
 
-                        if(client<stck_prpr){
+                        if(clientNumber<stck_prpr){
                          $('#YES_coinBtn').hide();
                          $('#YES_pointBtn').show();
                      }else{
@@ -227,6 +229,97 @@
         function point(){
             location.href="/charge"
         }
+
+        function KDR_coin(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+
+            var coinMoney = $('#KDR_total').text();
+            var client = [[${total}]]
+            var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
+            var coin=$('#KDR_coin').val()
+
+            url="/coin/KDRadd/"+ coin + "/" + coinMoney
+            var paramData = {
+                coinMoney: coinMoney,
+                coin: coin,
+            };
+
+             var param = JSON.stringify(paramData);
+               $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: param,
+                beforeSend: function (xhr) {
+                    // 데이터 전송하기 전에 헤더에 csrf 값을 설정
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
+                    alert("코인 구매 완료!");
+                    location.href="/coinList"
+                },
+                error: function (jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요.');
+                        location.href = '/members/login';
+                    } else {
+                        alert(jqXHR.responseText);
+                    }
+                }
+            });
+        }
+
+
+        function YES_coin(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+
+            var coinMoney = $('#YES_total').text();
+            var client = [[${total}]]
+            var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
+            var coin=$('#KDR_coin').val()
+
+            url="/coin/YESadd/"+ coin + "/" + coinMoney
+            var paramData = {
+                coinMoney: coinMoney,
+                coin: coin,
+            };
+
+             var param = JSON.stringify(paramData);
+               $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: param,
+                beforeSend: function (xhr) {
+                    // 데이터 전송하기 전에 헤더에 csrf 값을 설정
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
+                    alert("코인 구매 완료!");
+                    location.href="/coinList"
+                },
+                error: function (jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요.');
+                        location.href = '/members/login';
+                    } else {
+                        alert(jqXHR.responseText);
+                    }
+                }
+            });
+        }
+
+
+
+
 
 
 
@@ -371,7 +464,8 @@
 
             </div>
                 <div class="btnBtn">
-                    <button type="button" id="KDR_coinBtn"  class="btn btn-outline-secondary">코인 결제</button>
+                    <button type="button" id="KDR_coinBtn"  class="btn btn-outline-secondary"
+                            onclick="KDR_coin()">코인 결제</button>
                     <button type="button" id="KDR_pointBtn"  class="btn btn-outline-secondary"
                             onclick='point()'>포인트 결제</button>
 
@@ -404,7 +498,8 @@
                     총<span id="YES_total"></span>포인트
                 </div>
                 <div class="btnBtn">
-                    <button type="button" id="YES_coinBtn"  class="btn btn-outline-secondary">코인 결제</button>
+                    <button type="button" id="YES_coinBtn"  class="btn btn-outline-secondary"
+                            onclick="coin()">코인 결제</button>
                     <button type="button" id="YES_pointBtn"  class="btn btn-outline-secondary"
                             onclick='point()'>포인트 결제</button>
 
@@ -424,14 +519,16 @@
                 <thead>
                 <tr>
                     <th style="width:100px;">포인트</th>
-                    <th>코인</th>
+                    <th>키다리 코인</th>
+                    <th>예스 코인</th>
 
                 </tr>
                 </thead>
                 <tbody th:each="ch : ${pointList}">
                 <tr>
                     <td th:text="${ch.point}" ></td>
-                    <td th:text="${ch.coin}"></td>
+                    <td th:text="${ch.KDR_coin}"></td>
+                    <td th:text="${ch.YES_coin}"></td>
                 </tr>
                 </tbody>
             </table>

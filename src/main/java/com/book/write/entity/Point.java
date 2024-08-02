@@ -21,9 +21,7 @@ public class Point {
 
     private int money;//결제 금액
 
-    private int point;//변경 포인트
 
-    private int coin;//변경 코인
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -36,12 +34,12 @@ public class Point {
     @Enumerated(EnumType.STRING)
     private Order orderstatus;
 
-    public  static Point createOrder(Member member, Payment payment, int price, int point){
+    public  static Point createOrder(Member member, Payment payment, int price){
         Point order = new Point();
         order.setOrderUid(UUID.randomUUID().toString());
         order.setMember(member);
         order.setPayment(payment);
-        order.setPoint(point);
+
         order.setMoney(price);
         order.setOrderstatus(Order.OK);
 

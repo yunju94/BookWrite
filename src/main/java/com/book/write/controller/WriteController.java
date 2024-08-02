@@ -1,6 +1,7 @@
 package com.book.write.controller;
 
 import com.book.write.constant.Category;
+import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.Member;
@@ -66,6 +67,16 @@ public class WriteController {
         return "write/InfoForm";
     }
 
+    @GetMapping(value = "/write/InfoForm/update/{Id}")
+    public String writeInfoFormUpdate(Model model,
+                                      @PathVariable Long Id){
+
+        WriteInfoDto writeInfoDto = writeInfoService.searchInfo(Id);
+
+        model.addAttribute("writeInfoDto", writeInfoDto);
+        return "write/InfoForm";
+    }
+
     @PostMapping(value = "/write/InfoForm")
     public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto,
                                     @RequestParam("ImgFile") MultipartFile imgFile) throws Exception {
@@ -73,6 +84,24 @@ public class WriteController {
         writeInfoService.save(writeInfoDto, imgFile);
 
         return "redirect:/";
+    }
+
+
+
+    @GetMapping(value = "/novel/{category}")
+    public String NovelPage(@PathVariable Category category,
+                            Optional<Integer> page, Model model){
+        WriteInfoDto writeInfoDto = new WriteInfoDto();
+        writeInfoDto.setCategory(category);
+
+        Pageable pageable = PageRequest.of(page.orElse(0), 20);
+        Page<NovelListDto> items = writeInfoService.getCategoryPage(writeInfoDto, pageable);
+
+        model.addAttribute("items", items);
+        model.addAttribute("writeInfoDto", writeInfoDto);
+        model.addAttribute("pageable", pageable);
+        model.addAttribute("maxPage", 20);
+        return "write/Novel";
     }
 
     @GetMapping(value = "/fantasy")

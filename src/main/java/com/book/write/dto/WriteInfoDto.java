@@ -4,11 +4,13 @@ import com.book.write.constant.Category;
 import com.book.write.entity.Member;
 import com.book.write.entity.Write;
 import com.book.write.entity.WriteImg;
+import com.book.write.entity.WriteInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class WriteInfoDto {
     private Long id;
 
+    @NotEmpty(message = "제목은 필수 입력 값입니다.")
     private String title;//제목
 
 
@@ -34,4 +37,23 @@ public class WriteInfoDto {
 
 
     private Write write;//작성글
+
+
+    private Long Heart;//관심수
+
+    private Long view;//조회수
+
+
+
+    //---------------------------------------------//
+
+    private static ModelMapper modelMapper = new ModelMapper();
+
+    public  static  WriteInfoDto of(WriteInfo writeInfo){
+        return  modelMapper.map(writeInfo, WriteInfoDto.class);
+    }
+
+    //------------------------------------------------------//
+
+
 }

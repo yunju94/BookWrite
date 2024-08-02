@@ -11,6 +11,7 @@ import com.book.write.KisModel.IndexData;
 import com.book.write.config.AccessTokenManager;
 import com.book.write.config.KisConfig;
 import com.book.write.constant.Order;
+import com.book.write.entity.Coin;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
 import com.book.write.service.MemberService;
@@ -63,18 +64,17 @@ public class KisController {
         if (member == null){
             return "member/login";
         }
-        List<Point> pointList = pointService.SearchIdtopoint(member.getId());
+        List<Coin> coinList = pointService.SearchIdtopoint(member.getId());
         int total = 0;
-        if (pointList.size() != 0){
-            for (int i = 0 ; i < pointList.size() ; i++){
-                if (pointList.get(i).getOrderstatus().equals(Order.OK)){
-                    total += pointList.get(i).getPoint();
-                }
+        if (coinList.size() != 0){
+            for (int i = 0 ; i < coinList.size() ; i++){
+                    total += coinList.get(i).getPoint();
+
             }
         }
         String totalPoint = total+"";
         model.addAttribute("total", totalPoint);
-        model.addAttribute("pointList", pointList);
+        model.addAttribute("pointList", coinList);
 
         return "coin/Listup";
     }

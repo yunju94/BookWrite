@@ -29,13 +29,16 @@
 
 <body>
 <div layout:fragment="content">
-    <h3>>>판타지</h3>
+    <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).Fantasy}">판타지</h3>
+    <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).RomanceFantasy}">로맨스판타지</h3>
+    <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).Romance}">로맨스</h3>
+    <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).etc}">자유</h3>
     <div>
         <input type="text" id="search" placeholder="검색" class="search">
     </div>
     <div>
         <div class="books">
-            <div th:each="book : ${Fantasy}" >
+            <div th:each="book : ${items}" >
                 <div class="bookTable">
                     <div th:if="${#strings.isEmpty(book.writeImg.imgUrl)}">
                         <img th:src="@{/css/image/basic.jpg}" width="150px" height="155px">

@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "WriteInfo")
 @Getter
 @Setter
-public class WriteInfo {
+public class WriteInfo extends BaseEntity{
     @Id
     @Column(name = "writeinfo_id")
     @GeneratedValue(strategy = GenerationType.AUTO)

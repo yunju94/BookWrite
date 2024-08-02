@@ -1,5 +1,6 @@
 package com.book.write.service;
 
+import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.WriteImg;
@@ -16,12 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class WriteInfoService {
     private  final WriteInfoRepository writeInfoRepository;
     private  final WriteImgService writeImgService;
+    private  final  WriteImgRepository writeImgRepository;
 
 
 
@@ -48,6 +52,20 @@ public class WriteInfoService {
 
     public WriteInfo SearchWriteInfoId(Long id){
         return  writeInfoRepository.findById(id).orElseThrow();
+    }
+
+    public  WriteInfoDto searchInfo(Long Id){
+        WriteInfo writeInfo = writeInfoRepository.findById(Id).orElseThrow();
+
+        WriteInfoDto writeInfoDto = WriteInfoDto.of(writeInfo);
+
+        WriteImg writeImg = writeImgRepository.findById(writeInfo.getWriteImg().getId()).orElseThrow();
+        writeInfoDto.setWriteImg(writeImg);
+        return writeInfoDto;
+    }
+
+    public  Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable){
+      return   writeInfoRepository.getCategoryPage(writeInfoDto,pageable );
     }
 
 }
