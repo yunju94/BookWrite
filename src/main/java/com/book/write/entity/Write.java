@@ -1,5 +1,6 @@
 package com.book.write.entity;
 
+import com.book.write.dto.WriteDetailDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "write")
+@Table(name = "Write")
 @Getter
 @Setter
 public class Write {
@@ -35,7 +36,15 @@ public class Write {
 
     private int heart;//추천
 
+    public static Write createWrite(WriteDetailDto writeDetailDto){
+        Write write = new Write();
+        write.setMiniTitle(writeDetailDto.getMiniTitle());
+        write.setMiniWrite(writeDetailDto.getMiniWrite());
+        write.setWriteInfo(writeDetailDto.getWriteInfo());
 
+
+        return write;
+    }
 
 
 }

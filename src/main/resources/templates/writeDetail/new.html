@@ -7,16 +7,45 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script th:inline="javascript">
+        function update(){
+        location,href=""
+        }
     </script>
 
     <style>
+        .title{
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
     </style>
 
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h3>글쓰고 수정하는 곳입니다.</h3>
+    <h3 th:text="${writeInfo.title}" class="title"></h3>
+    <form action="/novel/new/add" role="form" method="post"  th:object="${WriteDetailDto}">
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{writeInfo.id}" >
+        <div>
+            <span>제목</span>
+            <input type="text"  th:field="*{miniTitle}">
+        </div>
+        <div>
+            <span>내용</span>
+            <textarea cols="100" rows="30" th:field="*{miniWrite}"></textarea>
+        </div>
+        <div>
+            <div th:if="${#strings.isEmpty(WriteDetailDto.miniTitle)}">
+                <button type="submit">저장</button>
+            </div>
+            <div th:unless="${#strings.isEmpty(WriteDetailDto.miniTitle)}">
+                <button type="button" onclick="update()">수정</button>
+            </div>
+        </div>
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    </form>
 
 
 

@@ -11,7 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -42,6 +44,10 @@ public class WriteInfoDto {
     private Long Heart;//관심수
 
     private Long view;//조회수
+
+    private LocalDateTime regTime;
+
+    private LocalDateTime updateTime;
 
 
 

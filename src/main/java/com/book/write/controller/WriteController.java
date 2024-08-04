@@ -104,75 +104,10 @@ public class WriteController {
         return "write/Novel";
     }
 
-    @GetMapping(value = "/fantasy")
-    public String fantasyPage(Model model){
-        List<WriteInfo> writeInfo=writeInfoService.AllSearch();
-        List<WriteInfo> F = new ArrayList<>();
-
-        for (int i = 0 ; i < writeInfo.size() ; i++){
-            if (writeInfo.get(i).getCategory().equals(Category.Fantasy)){
-                F.add(writeInfo.get(i));
-            }
-        }
-        model.addAttribute("Fantasy", F);
-        return "write/fantasy";
-    }
-    @GetMapping(value = "/fantasyRomance")
-    public String fantasyRomancePage(Model model){
-
-        List<WriteInfo> writeInfo=writeInfoService.AllSearch();
-        List<WriteInfo> RF = new ArrayList<>();
-
-        for (int i = 0 ; i < writeInfo.size() ; i++){
-            if (writeInfo.get(i).getCategory().equals(Category.RomanceFantasy)){
-                RF.add(writeInfo.get(i));
-            }
-        }
-        model.addAttribute("RomanceFantasy", RF);
-
-
-        return "write/fantasyRomance";
-    }
-
-    @GetMapping(value = "/romance")
-    public String romancePage(Model model){
-
-        List<WriteInfo> writeInfo=writeInfoService.AllSearch();
-        List<WriteInfo> R = new ArrayList<>();
-
-        for (int i = 0 ; i < writeInfo.size() ; i++){
-            if (writeInfo.get(i).getCategory().equals(Category.Romance)){
-                R.add(writeInfo.get(i));
-            }
-        }
-        model.addAttribute("Romance", R);
-
-
-        return "write/romance";
-    }
-
-    @GetMapping(value = "/etc")
-    public String etcPage(Model model){
-
-        List<WriteInfo> writeInfo=writeInfoService.AllSearch();
-        List<WriteInfo> etc = new ArrayList<>();
-
-        for (int i = 0 ; i < writeInfo.size() ; i++){
-            if (writeInfo.get(i).getCategory().equals(Category.etc)){
-                etc.add(writeInfo.get(i));
-            }
-        }
-        model.addAttribute("etc", etc);
-
-
-        return "write/etc";
-    }
-
 
     @GetMapping(value = "/writeNovel/{id}")
     public  String WriteInfoDetail(@PathVariable Long id, Model model){
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
-        System.out.println("writeInfo: "+writeInfo);
 
         model.addAttribute("writeInfo", writeInfo);
         return "writeDetail/detailNovel";

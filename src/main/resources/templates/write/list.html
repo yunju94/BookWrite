@@ -12,6 +12,10 @@
             location.href="/write/InfoForm/update/"+ id
         }
 
+        function novelDetailWrite(id){
+            location.href="/detail/new/"+id
+        }
+
 
     </script>
 
@@ -99,7 +103,7 @@
                     <div class="btn">
                         <button type="button" class="btn btn-outline-secondary" th:value="${Info.id}" onclick="novelManage(this.value)">작품 관리</button>
 
-                        <button type="button" class="btn btn-outline-secondary">회차 작성</button>
+                        <button type="button" class="btn btn-outline-secondary" th:value="${Info.id}" onclick="novelDetailWrite(this.value)">회차 작성</button>
                     </div>
 
             </div>
