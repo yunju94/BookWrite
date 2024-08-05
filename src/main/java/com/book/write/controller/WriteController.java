@@ -5,9 +5,11 @@ import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.Member;
+import com.book.write.entity.Purchanse;
 import com.book.write.entity.Write;
 import com.book.write.entity.WriteInfo;
 import com.book.write.service.MemberService;
+import com.book.write.service.PurchanseService;
 import com.book.write.service.WriteDetailService;
 import com.book.write.service.WriteInfoService;
 import jakarta.validation.Valid;
@@ -36,7 +38,7 @@ public class WriteController {
     private final MemberService memberService;
     private  final WriteInfoService writeInfoService;
     private final WriteDetailService writeDetailService;
-
+    private  final PurchanseService purchanseService;
     @GetMapping(value = {"/write", "/write/{page}"})
     public String writePage(Model model, Principal principal,
                             @PathVariable("page") Optional<Integer> page,
@@ -124,6 +126,17 @@ public class WriteController {
             count.add(counter);
             counter++;
         }
+        List<Optional<Purchanse>> purchanseList = purchanseService.seachwriteList(writeList);
+        List<Purchanse> pur = null;
+// 반복문을 사용하여 리스트의 각 Optional<Purchanse> 객체를 처리합니다
+        for (Optional<Purchanse> optionalPurchanse : purchanseList) {
+            if (optionalPurchanse.isPresent()) {
+                pur.add(optionalPurchanse.get());
+            }
+            System.out.println(pur+ "sdkdfjs,dskdsjfdldskfdfjdkf");
+        }
+        model.addAttribute("purchanse", pur);
+
 
         model.addAttribute("member", member);
         model.addAttribute("writeInfo", writeInfo);

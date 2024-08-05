@@ -7,12 +7,15 @@ import com.book.write.entity.WriteInfo;
 import com.book.write.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 
@@ -60,12 +63,13 @@ public class WriteDetailController {
     }
 
 
-    @GetMapping(value = "/Novel/{coin}/Pur/{id}")
-    public String PurchanNovel(@PathVariable Long id,
-                               @PathVariable String coin,
-                               Principal principal, Model model){
+    @PostMapping(value = "/Novel/{coin}/Pur/{id}")
+    public @ResponseBody ResponseEntity PurchanNovel(@PathVariable String id,
+                                                     @PathVariable String coin,
+                                                     Principal principal, Model model){
 
-        Write write = writeDetailService.searchDetailId(id);
+        Long writeId= Long.valueOf(id);
+        Write write = writeDetailService.searchDetailId(writeId);
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(write.getWriteInfo().getId());
         double KDR_coin=0;
         double YES_coin = 0;
@@ -80,9 +84,8 @@ public class WriteDetailController {
         Member member = memberService.memberLoginId(principal.getName());
         coinService.minusCoin(member, KDR_coin, YES_coin);
 
-        model.addAttribute("writeInfo", writeInfo);
-        model.addAttribute("write", write);
-        return "writeDetail/novelRead";
+
+        return new ResponseEntity(write.getId(), HttpStatus.OK);
 
 
 

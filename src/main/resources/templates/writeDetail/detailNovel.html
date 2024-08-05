@@ -11,32 +11,99 @@
             location.href='/detail/new/'+id
         }
 
-         $('td[data-id]').on('click', function() {
-                var id = $(this).data('id');
+       function pur_KDR(id){
+             var token = $("meta[name='_csrf']").attr("content");
+             var header = $("meta[name='_csrf_header']").attr("content");
 
-            });
+             var id = id
+               var url = '/Novel/KDR/Pur/'+id
+               var data = {
+                   id: id,
+
+               };
+               var param = JSON.stringify(data);
+
+               $.ajax({
+                   url: url,
+                   type: "POST",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("결제를 진행합니다.");
+                       location.href='/writeNovel/'+ result
+
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+                       }
+                   }
+               });
 
 
-          $(document).ready(function() {
-
-            var total = 0;
 
 
-            // Thymeleaf 템플릿에서 변수를 JavaScript 배열로 변환
-            var ListHeart =[ ]; // 이 값이 JavaScript 배열로 변환되어야 함
-                for(write : ${writeList}){
-                    ListHeart.put(write.heart)
-                }
 
-            // JavaScript 배열 길이 사용
-            for (let i = 0; i < ListHeart.length; i++) {
-                total += ListHeart[i]; // 각 요소를 합산
-            }
+       }
 
-            // ID가 totalHeart인 HTML 요소에 총합 표시
-            $('#totalHeart').text(total);
 
-              });
+
+
+        function pur_YES(id){
+             var token = $("meta[name='_csrf']").attr("content");
+             var header = $("meta[name='_csrf_header']").attr("content");
+
+             var id = id
+               var url = '/Novel/YES/Pur/'+id
+               var data = {
+                   id: id,
+
+               };
+               var param = JSON.stringify(data);
+
+               $.ajax({
+                   url: url,
+                   type: "POST",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("결제를 진행합니다.");
+                       location.href='/writeNovel/'+ result
+
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+                       }
+                   }
+               });
+
+
+
+
+
+       }
+
+
+
+
+
     </script>
 
     <style>
@@ -105,7 +172,7 @@
 
                 </div>
                 <div class="btn" >
-                    <button type="button"  class="btn btn-outline-secondary" th:id="${writeInfo.id}" onclick=newWrite(this.id)>회차쓰기</button>
+                    <button type="button"  class="btn btn-outline-secondary" th:value="${writeInfo.id}" onclick="newWrite(this.value)">회차쓰기</button>
                 </div>
 
 
@@ -133,31 +200,38 @@
                     <tbody th:each="write: ${writeList}">
                         <tr>
 
-                            <td >
-                                <a th:href="@{/detail/novel/{id}(id=${write.id})}" th:text="${write.miniTitle}">
-                                </a>
-                            </td>
+                            <td th:text="${write.miniTitle}"></td>
                             <td th:text="${write.regDate}"></td>
                             <td th:text="${write.viewcount}"></td>
                             <td th:text="${write.viewcount}"></td>
                             <td th:text="${write.heart}"></td>
+                                <div th:if="${purchanse == null}">
+                                    <td class="arris">
+                                        <a th:value="${write.id}" onclick="pur_KDR(this.value)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-euro" viewBox="0 0 16 16">
+                                                <path d="M4 9.42h1.063C5.4 12.323 7.317 14 10.34 14c.622 0 1.167-.068 1.659-.185v-1.3c-.484.119-1.045.17-1.659.17-2.1 0-3.455-1.198-3.775-3.264h4.017v-.928H6.497v-.936q-.002-.165.008-.329h4.078v-.927H6.618c.388-1.898 1.719-2.985 3.723-2.985.614 0 1.175.05 1.659.177V2.194A6.6 6.6 0 0 0 10.341 2c-2.928 0-4.82 1.569-5.244 4.3H4v.928h1.01v1.265H4v.928z"/>
+                                            </svg>
+                                            0.7코인<!--키다리 코인-->
+                                        </a>
+                                    </td>
+                                    <td  class="arris">
+                                        <a  th:value="${write.id}" onclick="pur_YES(this.value)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-yen" viewBox="0 0 16 16">
+                                                <path d="M8.75 14v-2.629h2.446v-.967H8.75v-1.31h2.445v-.967H9.128L12.5 2h-1.699L8.047 7.327h-.086L5.207 2H3.5l3.363 6.127H4.778v.968H7.25v1.31H4.78v.966h2.47V14h1.502z"/>
+                                            </svg>
+                                            0.5코인<!--예스24 코인-->
+                                        </a>
+                                    </td>
+                                </div>
 
-                            <td class="arris">
-                                <a th:href="@{/Novel/KDR/Pur/{id}(id=${write.id})}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-euro" viewBox="0 0 16 16">
-                                    <path d="M4 9.42h1.063C5.4 12.323 7.317 14 10.34 14c.622 0 1.167-.068 1.659-.185v-1.3c-.484.119-1.045.17-1.659.17-2.1 0-3.455-1.198-3.775-3.264h4.017v-.928H6.497v-.936q-.002-.165.008-.329h4.078v-.927H6.618c.388-1.898 1.719-2.985 3.723-2.985.614 0 1.175.05 1.659.177V2.194A6.6 6.6 0 0 0 10.341 2c-2.928 0-4.82 1.569-5.244 4.3H4v.928h1.01v1.265H4v.928z"/>
-                                </svg>
-                                0.7코인<!--키다리 코인-->
-                                </a>
-                            </td>
-                            <td  class="arris">
-                                <a th:href="@{/Novel/YES/Pur/{id}(id=${write.id})}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-yen" viewBox="0 0 16 16">
-                                    <path d="M8.75 14v-2.629h2.446v-.967H8.75v-1.31h2.445v-.967H9.128L12.5 2h-1.699L8.047 7.327h-.086L5.207 2H3.5l3.363 6.127H4.778v.968H7.25v1.31H4.78v.966h2.47V14h1.502z"/>
-                                </svg>
-                                0.5코인<!--예스24 코인-->
-                                </a>
-                            </td>
+                                <div th:unless="${purchanse == null}">
+                                    <td >
+
+                                        <button type="button">바로보기</button>
+
+                                    </td>
+                                </div>
+
                         </tr>
                     </tbody>
                 </table>
