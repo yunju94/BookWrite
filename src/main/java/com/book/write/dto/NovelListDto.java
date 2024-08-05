@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class NovelListDto {
+    private  Long id;
 
     private String title;//제목
     private Member member;//글쓴이
@@ -25,7 +26,8 @@ public class NovelListDto {
 
     private WriteImg writeImg;
     @QueryProjection
-    public NovelListDto(Member member, String title, Long heart, Long view, Category category, WriteImg imgUrl) {
+    public NovelListDto(Member member,Long id, String title, Long heart, Long view, Category category, WriteImg imgUrl) {
+        this.id = id;
         this.member = member;
         this.title = title;
         this.Heart = heart;

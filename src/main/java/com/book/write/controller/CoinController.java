@@ -20,7 +20,7 @@ public class CoinController {
     private  final MemberService memberService;
 
     @PostMapping(value = "/coin/KDRadd/{coin}/{coinMoney}")
-    public @ResponseBody ResponseEntity KDRcoinadd(@PathVariable int coin,
+    public @ResponseBody ResponseEntity KDRcoinadd(@PathVariable double coin,
                                                 @PathVariable int coinMoney,
                                                 Principal principal){
         Member member = memberService.memberLoginId(principal.getName());
@@ -29,7 +29,7 @@ public class CoinController {
     }
 
     @PostMapping(value = "/coin/YESadd/{coin}/{coinMoney}")
-    public @ResponseBody ResponseEntity YEScoinadd(@PathVariable int coin,
+    public @ResponseBody ResponseEntity YEScoinadd(@PathVariable double coin,
                                                 @PathVariable int coinMoney,
                                                 Principal principal){
         Member member = memberService.memberLoginId(principal.getName());

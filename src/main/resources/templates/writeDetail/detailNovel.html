@@ -10,6 +10,33 @@
         function newWrite(id){
             location.href='/detail/new/'+id
         }
+
+         $('td[data-id]').on('click', function() {
+                var id = $(this).data('id');
+
+            });
+
+
+          $(document).ready(function() {
+
+            var total = 0;
+
+
+            // Thymeleaf 템플릿에서 변수를 JavaScript 배열로 변환
+            var ListHeart =[ ]; // 이 값이 JavaScript 배열로 변환되어야 함
+                for(write : ${writeList}){
+                    ListHeart.put(write.heart)
+                }
+
+            // JavaScript 배열 길이 사용
+            for (let i = 0; i < ListHeart.length; i++) {
+                total += ListHeart[i]; // 각 요소를 합산
+            }
+
+            // ID가 totalHeart인 HTML 요소에 총합 표시
+            $('#totalHeart').text(total);
+
+              });
     </script>
 
     <style>
@@ -42,6 +69,7 @@
             float: none;
              width:1200px;
              border: 1px solid #f8f8f8;
+             text-align: center;
         }
         .list > table> thead{
             background-color : #f8f8f8;
@@ -69,6 +97,12 @@
                     <p th:text="${writeInfo.member.nickname}"></p>
                     <p th:text="${writeInfo.category}"></p>
                     <p th:text="${writeInfo.detail}"></p>
+                    <p id="totalHeart">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
+                        </svg>
+                    </p>
+
                 </div>
                 <div class="btn" >
                     <button type="button"  class="btn btn-outline-secondary" th:id="${writeInfo.id}" onclick=newWrite(this.id)>회차쓰기</button>
@@ -80,7 +114,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <td style="width: 100px;">번호</td>
+
                         <td style="width: 200px;">제목</td>
                         <td style="width: 200px;">등록일</td>
                         <td style="width: 100px;">댓글수</td>
@@ -92,28 +126,37 @@
                             </svg>
 
                         </td>
-                        <td style="width: 200px; colspan: 2;">코인</td>
+                        <td style="width: 100px; colspan: 2;">코인</td>
+                        <td></td>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody th:each="write: ${writeList}">
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+
+                            <td >
+                                <a th:href="@{/detail/novel/{id}(id=${write.id})}" th:text="${write.miniTitle}">
+                                </a>
+                            </td>
+                            <td th:text="${write.regDate}"></td>
+                            <td th:text="${write.viewcount}"></td>
+                            <td th:text="${write.viewcount}"></td>
+                            <td th:text="${write.heart}"></td>
+
                             <td class="arris">
+                                <a th:href="@{/Novel/KDR/Pur/{id}(id=${write.id})}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-euro" viewBox="0 0 16 16">
                                     <path d="M4 9.42h1.063C5.4 12.323 7.317 14 10.34 14c.622 0 1.167-.068 1.659-.185v-1.3c-.484.119-1.045.17-1.659.17-2.1 0-3.455-1.198-3.775-3.264h4.017v-.928H6.497v-.936q-.002-.165.008-.329h4.078v-.927H6.618c.388-1.898 1.719-2.985 3.723-2.985.614 0 1.175.05 1.659.177V2.194A6.6 6.6 0 0 0 10.341 2c-2.928 0-4.82 1.569-5.244 4.3H4v.928h1.01v1.265H4v.928z"/>
                                 </svg>
-                                0.5코인<!--키다리 코인-->
+                                0.7코인<!--키다리 코인-->
+                                </a>
                             </td>
                             <td  class="arris">
+                                <a th:href="@{/Novel/YES/Pur/{id}(id=${write.id})}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-yen" viewBox="0 0 16 16">
                                     <path d="M8.75 14v-2.629h2.446v-.967H8.75v-1.31h2.445v-.967H9.128L12.5 2h-1.699L8.047 7.327h-.086L5.207 2H3.5l3.363 6.127H4.778v.968H7.25v1.31H4.78v.966h2.47V14h1.502z"/>
                                 </svg>
-                                1코인<!--예스24 코인-->
+                                0.5코인<!--예스24 코인-->
+                                </a>
                             </td>
                         </tr>
                     </tbody>

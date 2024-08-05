@@ -5,8 +5,10 @@ import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.Member;
+import com.book.write.entity.Write;
 import com.book.write.entity.WriteInfo;
 import com.book.write.service.MemberService;
+import com.book.write.service.WriteDetailService;
 import com.book.write.service.WriteInfoService;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -33,6 +35,7 @@ public class WriteController {
 
     private final MemberService memberService;
     private  final WriteInfoService writeInfoService;
+    private final WriteDetailService writeDetailService;
 
     @GetMapping(value = {"/write", "/write/{page}"})
     public String writePage(Model model, Principal principal,
@@ -51,6 +54,7 @@ public class WriteController {
         model.addAttribute("writeInfo", writeInfo);
         model.addAttribute("writeInfoSerchDto", writeInfoSerchDto);
         model.addAttribute("maxPage", 5);
+
 
 
         return "write/list";
@@ -106,10 +110,26 @@ public class WriteController {
 
 
     @GetMapping(value = "/writeNovel/{id}")
-    public  String WriteInfoDetail(@PathVariable Long id, Model model){
+    public  String WriteInfoDetail(@PathVariable Long id, Model model, Principal principal){
+
+        Member member = memberService.memberLoginId(principal.getName());
+
+
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
 
+        List<Write> writeList = writeDetailService.searchListDetail(writeInfo.getId());
+        List<Integer> count = new ArrayList<>();
+        int counter = 1;
+        for (int i = 0 ; i<writeList.size(); i++){
+            count.add(counter);
+            counter++;
+        }
+
+        model.addAttribute("member", member);
         model.addAttribute("writeInfo", writeInfo);
+        model.addAttribute("writeList", writeList);
+        model.addAttribute("count", count);
+
         return "writeDetail/detailNovel";
     }
 

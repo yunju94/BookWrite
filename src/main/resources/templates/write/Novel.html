@@ -8,6 +8,10 @@
     <title>Title</title>
     <script th:inline="javascript">
 
+        function Novel(id){
+            location.href="/writeNovel/"+id
+        }
+
 
 
     </script>
@@ -39,7 +43,8 @@
     <div>
         <div class="books">
             <div th:each="book : ${items}" >
-                <div class="bookTable">
+                <a th:href="'/writeNovel/' + ${book.id}">
+                <div class="bookTable" >
                     <div th:if="${#strings.isEmpty(book.writeImg.imgUrl)}">
                         <img th:src="@{/css/image/basic.jpg}" width="150px" height="155px">
                     </div>
@@ -57,6 +62,7 @@
                     </div>
 
                 </div>
+                </a>
             </div>
         </div>
     </div>

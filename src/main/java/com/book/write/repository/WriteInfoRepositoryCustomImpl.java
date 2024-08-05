@@ -47,7 +47,7 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
                 .where(searchBymember(Id),
                         searchByLike(writeInfoSerchDto.getSearchQuery()),
                         searchByLikewritor(writeInfoSerchDto.getSearchQuery()))
-                .orderBy(QWriteInfo.writeInfo.id.desc())
+                .orderBy(QWriteInfo.writeInfo.updateTime.desc())
                 .offset(pageable.getOffset()).limit(pageable.getPageSize()).fetchResults();
 
         List<WriteInfo> content = results.getResults();
@@ -62,6 +62,7 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
 
         QueryResults<NovelListDto> results = queryFactory.select(new QNovelListDto(
                         writeInfo.member,
+                        writeInfo.id,
                         writeInfo.title,
                         writeInfo.Heart,
                         writeInfo.view,

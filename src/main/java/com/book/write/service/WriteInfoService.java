@@ -68,4 +68,8 @@ public class WriteInfoService {
       return   writeInfoRepository.getCategoryPage(writeInfoDto,pageable );
     }
 
+    public  void upupdateWriteInfo(WriteInfo writeInfo){
+        WriteInfo.updateWriteDetail(writeInfo);
+    }
+
 }

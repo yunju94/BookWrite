@@ -50,11 +50,11 @@ public class PointService {
        point.setOrderstatus(Order.CANCEL);
     }
 
-    public  void  KDR_coinChange(Member member, int coin, int coinMoney){
+    public  void  KDR_coinChange(Member member, double coin, int coinMoney){
         coinRepository.save( Coin.KDR_createCoin(member, coin, coinMoney));
     }
 
-    public  void  YES_coinChange(Member member, int coin, int coinMoney){
+    public  void  YES_coinChange(Member member, double coin, int coinMoney){
         coinRepository.save( Coin.YES_createCoin(member, coin, coinMoney));
     }
 

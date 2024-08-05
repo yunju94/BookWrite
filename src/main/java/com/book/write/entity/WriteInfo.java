@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -48,10 +50,16 @@ public class WriteInfo extends BaseEntity{
         writeInfo.setDetail(writeInfoDto.getDetail());
         writeInfo.setTitle(writeInfoDto.getTitle());
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
+        writeInfo.setRegDate(LocalDate.now());
+        writeInfo.setUpdateDate(LocalDate.now());
         writeInfo.setRegTime(LocalDateTime.now());
         writeInfo.setUpdateTime(LocalDateTime.now());
 
         return writeInfo;
+    }
+
+    public  static void updateWriteDetail(WriteInfo writeInfo){
+        writeInfo.setUpdateTime(LocalDateTime.now());
     }
 
 

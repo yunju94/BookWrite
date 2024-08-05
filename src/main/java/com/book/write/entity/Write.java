@@ -5,13 +5,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "Write")
+@Table(name = "`Write`")
 @Getter
 @Setter
-public class Write {
+public class Write extends BaseEntity{
     @Id
     @Column(name = "write_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,6 +43,7 @@ public class Write {
         write.setMiniTitle(writeDetailDto.getMiniTitle());
         write.setMiniWrite(writeDetailDto.getMiniWrite());
         write.setWriteInfo(writeDetailDto.getWriteInfo());
+        write.setRegDate(LocalDate.now());
 
 
         return write;
