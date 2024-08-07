@@ -35,8 +35,6 @@ public class PointController {
         if (principal.getName() == null){
             return "member/login";
         }
-
-
         return  "point/Charge";
     }
 

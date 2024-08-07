@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
@@ -54,6 +55,14 @@ public class WriteInfoService {
         return  writeInfoRepository.findById(id).orElseThrow();
     }
 
+    public void updateWriteInfoFromDto(WriteInfoDto writeInfoDto){
+        WriteInfo writeInfo = writeInfoRepository.findById(writeInfoDto.getId()).orElseThrow();
+        writeInfo.setTitle(writeInfoDto.getTitle());
+        writeInfo.setDetail(writeInfoDto.getDetail());
+        writeInfo.setWriteImg(writeInfoDto.getWriteImg());
+        writeInfo.setUpdateTime(LocalDateTime.now());
+    }
+
     public  WriteInfoDto searchInfo(Long Id){
         WriteInfo writeInfo = writeInfoRepository.findById(Id).orElseThrow();
 
@@ -68,8 +77,7 @@ public class WriteInfoService {
       return   writeInfoRepository.getCategoryPage(writeInfoDto,pageable );
     }
 
-    public  void upupdateWriteInfo(WriteInfo writeInfo){
-        WriteInfo.updateWriteDetail(writeInfo);
-    }
+
+
 
 }

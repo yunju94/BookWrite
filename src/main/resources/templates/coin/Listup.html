@@ -256,7 +256,7 @@
             var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
             var coin=$('#KDR_coin').val()
 
-            url="/coin/KDRadd/"+ coin + "/" + coinMoney
+            url="/coin/add/KDR/"+ coin + "/" + coinMoney
             var paramData = {
                 coinMoney: coinMoney,
                 coin: coin,
@@ -300,7 +300,7 @@
             var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
             var coin=$('#KDR_coin').val()
 
-            url="/coin/YESadd/"+ coin + "/" + coinMoney
+            url="/coin/add/YES/"+ coin + "/" + coinMoney
             var paramData = {
                 coinMoney: coinMoney,
                 coin: coin,
@@ -546,6 +546,7 @@
             <table>
                 <thead>
                 <tr>
+                    <th style="width:100px;">내용</th>
                     <th style="width:100px;">포인트</th>
                     <th>키다리 코인</th>
                     <th>예스 코인</th>
@@ -554,6 +555,7 @@
                 </thead>
                 <tbody th:each="ch : ${pointList}">
                 <tr>
+                    <td th:text="${ch.content}" ></td>
                     <td th:text="${ch.point}" ></td>
                     <td th:text="${ch.KDR_coin}"></td>
                     <td th:text="${ch.YES_coin}"></td>

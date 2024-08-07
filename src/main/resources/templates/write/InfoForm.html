@@ -105,9 +105,6 @@
             reader.readAsDataURL(event.target.files[0]);
         }
 
-        function update(){
-         location.href="/write/InfoForm/update"
-        }
 
     </script>
 </head>
@@ -115,7 +112,7 @@
 <body>
 <div layout:fragment="content" class="container">
     <h3>작품 정보 입력</h3>
-    <form action="/write/InfoForm" role="form" method="post" enctype="multipart/form-data" th:object="${writeInfoDto}">
+    <form  role="form" method="post" enctype="multipart/form-data" th:object="${writeInfoDto}">
         <div class="form-group">
             <label for="ImgFile">대표 이미지</label>
             <input type="file" id="ImgFile" name="ImgFile" onchange="previewImage(event)">
@@ -127,6 +124,7 @@
             <ul style=" list-style: none;">
                 <li>
                     <input type="hidden" th:field="*{member.id}" >
+                    <input type="hidden" th:field="*{id}" >
                 </li>
                 <li>
                     <span>제목</span>
@@ -149,12 +147,12 @@
         </div>
         <div th:if="${#strings.isEmpty(writeInfoDto.title)}">
             <div class="form-group">
-                <button type="submit">입력</button>
+                <button  th:formaction=@{/write/InfoForm} type="submit">입력</button>
             </div>
         </div>
         <div th:unless="${#strings.isEmpty(writeInfoDto.title)}">
             <div class="form-group">
-                <button type="button" onclick="update()">수정</button>
+                <button th:formaction=@{/write/InfoForm/update/complete} type="submit" >수정</button>
             </div>
         </div>
 

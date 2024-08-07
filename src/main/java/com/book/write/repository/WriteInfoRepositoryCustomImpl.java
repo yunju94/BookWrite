@@ -64,8 +64,6 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
                         writeInfo.member,
                         writeInfo.id,
                         writeInfo.title,
-                        writeInfo.Heart,
-                        writeInfo.view,
                         writeInfo.category,
                         writeInfo.writeImg
                 ))

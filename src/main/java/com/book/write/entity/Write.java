@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "`Write`")
+@Table(name = "`write`")
 @Getter
 @Setter
 public class Write extends BaseEntity{
@@ -19,24 +19,25 @@ public class Write extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writeInfo_id")
-    private WriteInfo writeInfo;//작성단위
-
-
     private String miniTitle;//회차 제목
 
 
     @Column(columnDefinition = "TEXT")
     private String miniWrite;//회차 내용
 
-    private int viewcount;//조회수
+    private int heart;//추천
+
+    private int commentCount;//댓글수
+
+    private int viewCount;//조회수
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private List<WriteComment> comment;//댓글
+    @JoinColumn(name = "coin_id")
+    private List<Coin> coin;
 
-    private int heart;//추천
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "writeInfo_id",  nullable = false)
+    private WriteInfo writeInfo;
 
     public static Write createWrite(WriteDetailDto writeDetailDto){
         Write write = new Write();

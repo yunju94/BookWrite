@@ -20,18 +20,13 @@ public class NovelListDto {
     private Category category;//종류
 
 
-    private Long Heart;//관심수
-
-    private Long view;//조회수
-
     private WriteImg writeImg;
     @QueryProjection
-    public NovelListDto(Member member,Long id, String title, Long heart, Long view, Category category, WriteImg imgUrl) {
+    public NovelListDto(Member member,Long id, String title, Category category, WriteImg imgUrl) {
         this.id = id;
         this.member = member;
         this.title = title;
-        this.Heart = heart;
-        this.view = view;
+
         this.category = category;
         this.writeImg= imgUrl;
 

@@ -1,10 +1,6 @@
 package com.book.write.dto;
 
-import com.book.write.entity.WriteComment;
 import com.book.write.entity.WriteInfo;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -26,7 +22,8 @@ public class WriteDetailDto {
 
     private int viewcount;//조회수
 
-    private List<WriteComment> comment;//댓글
+    private int commentCount;//댓글수
+
 
     private int heart;//추천
 

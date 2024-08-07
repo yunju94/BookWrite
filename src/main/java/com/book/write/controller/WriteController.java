@@ -5,7 +5,6 @@ import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.Member;
-import com.book.write.entity.Purchanse;
 import com.book.write.entity.Write;
 import com.book.write.entity.WriteInfo;
 import com.book.write.service.MemberService;
@@ -13,7 +12,6 @@ import com.book.write.service.PurchanseService;
 import com.book.write.service.WriteDetailService;
 import com.book.write.service.WriteInfoService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -77,11 +75,24 @@ public class WriteController {
     public String writeInfoFormUpdate(Model model,
                                       @PathVariable Long Id){
 
+
         WriteInfoDto writeInfoDto = writeInfoService.searchInfo(Id);
 
         model.addAttribute("writeInfoDto", writeInfoDto);
+
         return "write/InfoForm";
     }
+
+    @PostMapping(value = "/write/InfoForm/update/complete")
+    public  String updateComplete(@Valid WriteInfoDto writeInfoDto){
+
+
+            writeInfoService.updateWriteInfoFromDto(writeInfoDto);
+
+        return "redirect:/";
+    }
+
+
 
     @PostMapping(value = "/write/InfoForm")
     public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto,
@@ -126,17 +137,6 @@ public class WriteController {
             count.add(counter);
             counter++;
         }
-        List<Optional<Purchanse>> purchanseList = purchanseService.seachwriteList(writeList);
-        List<Purchanse> pur = null;
-// 반복문을 사용하여 리스트의 각 Optional<Purchanse> 객체를 처리합니다
-        for (Optional<Purchanse> optionalPurchanse : purchanseList) {
-            if (optionalPurchanse.isPresent()) {
-                pur.add(optionalPurchanse.get());
-            }
-            System.out.println(pur+ "sdkdfjs,dskdsjfdldskfdfjdkf");
-        }
-        model.addAttribute("purchanse", pur);
-
 
         model.addAttribute("member", member);
         model.addAttribute("writeInfo", writeInfo);

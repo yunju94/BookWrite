@@ -1,6 +1,6 @@
 package com.book.write.service;
 
-import com.book.write.entity.Purchanse;
+import com.book.write.entity.Purchase;
 import com.book.write.entity.Write;
 import com.book.write.repository.PurchanseRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -17,19 +16,12 @@ import java.util.Optional;
 public class PurchanseService {
     private  final PurchanseRepository purchanseRepository;
 
-    public void savePur(Write write, double KDR_coin, double YES_coin){
-        Purchanse purchanse = Purchanse.createSave(write, KDR_coin, YES_coin);
-        purchanseRepository.save(purchanse);
-    }
-
-    public List<Optional<Purchanse>> seachwriteList (List<Write> writeList){
-        List<Optional<Purchanse>> purchanseList = new ArrayList<>();
+    public List<Purchase> seachwriteList (List<Write> writeList){
+        List<Purchase> purchaseList = new ArrayList<>();
         for (int i = 0 ; i< writeList.size() ; i++){
-            purchanseList.add(purchanseRepository.findById(writeList.get(i).getId()));
-
+            purchaseList.add(purchanseRepository.findByWriteId(writeList.get(i).getId()));
         }
-
-        return purchanseList;
+        return purchaseList;
     }
 
 }

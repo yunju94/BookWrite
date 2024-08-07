@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class WriteInfo extends BaseEntity{
     @Id
-    @Column(name = "writeinfo_id")
+    @Column(name = "writeInfo_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -37,9 +37,13 @@ public class WriteInfo extends BaseEntity{
     @JoinColumn(name = "writeImg_id")
     private WriteImg writeImg;//이미지
 
-    private Long Heart;//관심수
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "write_id")
+    private List<Write> write;
 
-    private Long view;//조회수
+
+
+
 
 
     public static WriteInfo createDto(WriteInfoDto writeInfoDto){
@@ -58,8 +62,8 @@ public class WriteInfo extends BaseEntity{
         return writeInfo;
     }
 
-    public  static void updateWriteDetail(WriteInfo writeInfo){
-        writeInfo.setUpdateTime(LocalDateTime.now());
+    public  void updateWriteDetail(){
+        this.setUpdateTime(LocalDateTime.now());
     }
 
 

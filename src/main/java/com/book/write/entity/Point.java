@@ -21,6 +21,9 @@ public class Point {
 
     private int money;//결제 금액
 
+    private  int point;//포인트
+
+    private  String content; //내용
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,9 +40,9 @@ public class Point {
     public  static Point createOrder(Member member, Payment payment, int price){
         Point order = new Point();
         order.setOrderUid(UUID.randomUUID().toString());
+        order.setContent("포인트 구매");
         order.setMember(member);
         order.setPayment(payment);
-
         order.setMoney(price);
         order.setOrderstatus(Order.OK);
 
@@ -50,7 +53,28 @@ public class Point {
         //상태는 주문으로 세팅
         //주문 시간은 현재시간으로 세팅
         //주문서 리턴
+    }
 
+    public  static  Point saveCoin(Member member, Coin coin){
+        Point order = new Point();
+        order.setOrderUid(UUID.randomUUID().toString());
+        order.setContent("코인 사용");
+        order.setMember(member);
+        order.setMoney(0);
+        order.setOrderstatus(Order.OK);
+
+        return  order;
+    }
+
+    public  static Point coinChange(Member member, int coinMoney){
+        Point order = new Point();
+        order.setOrderUid(UUID.randomUUID().toString());
+        order.setContent("코인 환전");
+        order.setMember(member);
+        order.setMoney(-coinMoney);
+        order.setOrderstatus(Order.OK);
+
+        return order;
     }
 
 

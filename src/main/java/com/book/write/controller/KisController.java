@@ -14,6 +14,7 @@ import com.book.write.constant.Order;
 import com.book.write.entity.Coin;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
+import com.book.write.service.CoinService;
 import com.book.write.service.MemberService;
 import com.book.write.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Controller
-
 public class KisController {
     @Autowired
     private AccessTokenManager accessTokenManager;
@@ -52,29 +52,33 @@ public class KisController {
     @Autowired
     private PointService pointService;
 
+    @Autowired
+    private CoinService coinService;
+
     public KisController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(KisConfig.REST_BASE_URL).build();
     }
     @GetMapping("/coinList")
     public String coinList(Model model, Principal principal) {
         if (principal == null){
+            return "member/login";
 
         }
         Member member = memberService.memberLoginId(principal.getName());
         if (member == null){
             return "member/login";
         }
-        List<Coin> coinList = pointService.SearchIdtopoint(member.getId());
+        List<Point> pointList = pointService.SearchIdtopoint(member.getId());
         int total = 0;
-        if (coinList.size() != 0){
-            for (int i = 0 ; i < coinList.size() ; i++){
-                    total += coinList.get(i).getPoint();
+        if (pointList.size() != 0){
+            for (int i = 0 ; i < pointList.size() ; i++){
+                    total += pointList.get(i).getPoint();
 
             }
         }
         String totalPoint = total+"";
         model.addAttribute("total", totalPoint);
-        model.addAttribute("pointList", coinList);
+        model.addAttribute("pointList", pointList);
 
         return "coin/Listup";
     }

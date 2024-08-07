@@ -35,14 +35,12 @@ public class PointService {
         pointRepository.save(pointOrder);
         paymentRepository.save(payment);
 
-        Coin coin= Coin.pointOrder(member, point);
-        coinRepository.save(coin);
 
         return pointOrder;
     }
 
-    public  List<Coin> SearchIdtopoint(Long memberId){
-        return coinRepository.findByMemberId(memberId);
+    public  List<Point> SearchIdtopoint(Long memberId){
+        return pointRepository.findByMemberId(memberId);
     }
 
     public void  cancelOrder(String OrderUid){
@@ -50,12 +48,14 @@ public class PointService {
        point.setOrderstatus(Order.CANCEL);
     }
 
-    public  void  KDR_coinChange(Member member, double coin, int coinMoney){
-        coinRepository.save( Coin.KDR_createCoin(member, coin, coinMoney));
+
+    public  void  coinChanger(Member member,double KDR_coin, double YES_coin, int coinMoney){
+        coinRepository.save(Coin.PointcreateCoin(member, KDR_coin, YES_coin));
+        pointRepository.save(Point.coinChange(member, coinMoney));
     }
 
-    public  void  YES_coinChange(Member member, double coin, int coinMoney){
-        coinRepository.save( Coin.YES_createCoin(member, coin, coinMoney));
+    public void saveCoin(Member member, Coin coin){
+        Point point = Point.saveCoin(member, coin);
     }
 
 

@@ -90,8 +90,8 @@
             <div th:each="Info : ${writeInfo}" class="item-container">
                 <a th:href="'/writeNovel/' + ${Info.id}" style="text-decoration: none; color: inherit;">
                     <div class="img_info">
-                        <img th:if="${#strings.isEmpty(Info.writeImg.imgUrl)}" th:src="@{/css/image/basic.jpg}" alt="Basic Image">
                         <img th:unless="${#strings.isEmpty(Info.writeImg.imgUrl)}" th:src="${Info.writeImg.imgUrl}" alt="Write Image">
+
                     </div>
                     <div class="list_info">
                         <p th:text="${Info.title}"></p>

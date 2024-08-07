@@ -23,9 +23,6 @@ public class Payment {
     private PaymentStatus status;
     private String paymentUid; // 결제 고유 번호
 
-
-
-
     @Builder
     public Payment(int price, PaymentStatus status) {
         this.price = price;
