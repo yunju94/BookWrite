@@ -55,12 +55,23 @@ public class WriteInfoService {
         return  writeInfoRepository.findById(id).orElseThrow();
     }
 
-    public void updateWriteInfoFromDto(WriteInfoDto writeInfoDto){
+    public void updateWriteInfoFromDto(WriteInfoDto writeInfoDto, MultipartFile imgFile) throws Exception {
         WriteInfo writeInfo = writeInfoRepository.findById(writeInfoDto.getId()).orElseThrow();
         writeInfo.setTitle(writeInfoDto.getTitle());
         writeInfo.setDetail(writeInfoDto.getDetail());
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
         writeInfo.setUpdateTime(LocalDateTime.now());
+
+        writeImgService.updateImg(imgFile, writeInfo);
+    }
+
+    public void updaInfoFromDto(WriteInfoDto writeInfoDto){
+        WriteInfo writeInfo = writeInfoRepository.findById(writeInfoDto.getId()).orElseThrow();
+        writeInfo.setTitle(writeInfoDto.getTitle());
+        writeInfo.setDetail(writeInfoDto.getDetail());
+        writeInfo.setWriteImg(writeInfoDto.getWriteImg());
+        writeInfo.setUpdateTime(LocalDateTime.now());
+
     }
 
     public  WriteInfoDto searchInfo(Long Id){

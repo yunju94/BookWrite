@@ -90,7 +90,7 @@
             <div th:each="Info : ${writeInfo}" class="item-container">
                 <a th:href="'/writeNovel/' + ${Info.id}" style="text-decoration: none; color: inherit;">
                     <div class="img_info">
-                        <img th:unless="${#strings.isEmpty(Info.writeImg.imgUrl)}" th:src="${Info.writeImg.imgUrl}" alt="Write Image">
+                         <img th:src="${Info.writeImg.imgUrl}" alt="Write Image">
 
                     </div>
                     <div class="list_info">
@@ -100,11 +100,11 @@
                     </div>
                 </a>
 
-                    <div class="btn">
-                        <button type="button" class="btn btn-outline-secondary" th:value="${Info.id}" onclick="novelManage(this.value)">작품 관리</button>
+                <div class="btn">
+                    <button type="button" class="btn btn-outline-secondary" th:value="${Info.id}" onclick="novelManage(this.value)">작품 관리</button>
 
-                        <button type="button" class="btn btn-outline-secondary" th:value="${Info.id}" onclick="novelDetailWrite(this.value)">회차 작성</button>
-                    </div>
+                    <button type="button" class="btn btn-outline-secondary" th:value="${Info.id}" onclick="novelDetailWrite(this.value)">회차 작성</button>
+                </div>
 
             </div>
         </div>

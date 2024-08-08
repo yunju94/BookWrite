@@ -10,9 +10,9 @@
 
 	</parent>
 	<groupId>com.book</groupId>
-	<artifactId>write</artifactId>
+	<artifactId>writeDetail</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>write</name>
+	<name>writeDetail</name>
 	<description>bookwrite club is amazing club</description>
 	<url/>
 	<licenses>

@@ -2,20 +2,19 @@ package com.book.write.controller;
 
 import com.book.write.dto.WriteDetailDto;
 import com.book.write.entity.*;
+import com.book.write.repository.WriteDetailRepository;
+import com.book.write.repository.WriteInfoRepository;
 import com.book.write.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Controller
@@ -28,7 +27,8 @@ public class WriteDetailController {
     private  final CoinService coinService;
     private  final MemberService memberService;
     private  final  PointService pointService;
-
+    private  final WriteDetailRepository writeDetailRepository;
+    private  final WriteInfoRepository writeInfoRepository;
 
     @GetMapping(value = "/detail/new/{id}")
     public String WriteDetailNew(@PathVariable Long id, Model model){
@@ -44,13 +44,10 @@ public class WriteDetailController {
     @PostMapping(value = "/novel/new/add/{id}")
     public  String WriteDetailNewAdd(@Valid WriteDetailDto writeDetailDto ,
                                      @PathVariable Long id){
-        System.out.println(writeDetailDto);
-        System.out.println("111111111111111111111111111111111111");
-        writeDetailService.saveWrite(writeDetailDto);
-        System.out.println("222222222222222222222222222222222222222222");
+
+        WriteDetail writeDetail= writeDetailService.saveWrite(writeDetailDto);
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
-        System.out.println("33333333333333333333333333333333333");
-        writeInfo.setUpdateTime(LocalDateTime.now());
+        writeInfoRepository.save(WriteInfo.updateWriteDetail(writeInfo, writeDetail));
 
 
         return "redirect:/";
@@ -58,26 +55,38 @@ public class WriteDetailController {
 
     @GetMapping(value = "/detail/novel/{id}")
     public  String WriteReadNovel(@PathVariable Long id, Model model){
-        Write write = writeDetailService.searchDetailId(id);
 
-        WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(write.getWriteInfo().getId());
+        WriteDetail writeDetail = writeDetailService.searchDetailId(id);
+
+
+        WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(writeDetail.getWriteInfo().getId());
 
         model.addAttribute("writeInfo", writeInfo);
-        model.addAttribute("write", write);
+        model.addAttribute("writeDetail", writeDetail);
 
         return "writeDetail/novelRead";
     }
 
     @PostMapping(value="/Novel/detail/{id}")
-    public  @ResponseBody ResponseEntity SearchNovelOrder (@PathVariable Long id){
-        Write write = writeDetailService.searchDetailId(id);
-        if (writeDetailService.searchPur(write)){
-            return  new ResponseEntity( write.getId(), HttpStatus.OK );
+    public  @ResponseBody ResponseEntity SearchNovelOrder (@PathVariable Long id, Principal principal){
+
+        WriteDetail writeDetail = writeDetailService.searchDetailId(id);
+        Member member = memberService.memberLoginId(principal.getName());
+        if (member.getId() == writeDetail.getWriteInfo().getMember().getId()){
+            return  new ResponseEntity( writeDetail.getId(), HttpStatus.OK );
+        }
+        if (writeDetailService.searchPur(writeDetail)){
+            return  new ResponseEntity( writeDetail.getId(), HttpStatus.OK );
         }else {
-            return  new ResponseEntity( write.getId(), HttpStatus.BAD_REQUEST );
+            return  new ResponseEntity( "구매 정보가 없습니다.", HttpStatus.BAD_REQUEST );
         }
 
 
+    }
+
+    @GetMapping(value = "/popup/pur")
+    public String popupCoinUse(){
+        return "writeDetail/popup";
     }
 
 
@@ -89,7 +98,7 @@ public class WriteDetailController {
 
         //문자열로 받은 id를 long으로 변경
         Long writeId= Long.valueOf(id);
-        Write write = writeDetailService.searchDetailId(writeId);
+        WriteDetail writeDetail = writeDetailService.searchDetailId(writeId);
 
         //기본 변수 설정
         double KDR_coin=0;
@@ -106,10 +115,10 @@ public class WriteDetailController {
         Member member = memberService.memberLoginId(principal.getName());
 
         coinService.minusCoin(member, KDR_coin, YES_coin);
-        rentalService.save(write);
+        rentalService.save(writeDetail);
 
         //책 회차값 반환
-        return new ResponseEntity(write.getId(), HttpStatus.OK);
+        return new ResponseEntity(writeDetail.getId(), HttpStatus.OK);
 
     }
 
@@ -120,7 +129,7 @@ public class WriteDetailController {
 
     //문자열로 받은 id를 long으로 변경
         Long writeId= Long.valueOf(id);
-        Write write = writeDetailService.searchDetailId(writeId);
+        WriteDetail writeDetail = writeDetailService.searchDetailId(writeId);
 
        //기본 변수 설정
         double KDR_coin=0;
@@ -137,9 +146,25 @@ public class WriteDetailController {
         Member member = memberService.memberLoginId(principal.getName());
 
         coinService.minusCoin(member, KDR_coin, YES_coin);
-
+        purchanseService.savePur(writeDetail);
     //책 회차값 반환
-        return new ResponseEntity(write.getId(), HttpStatus.OK);
+        return new ResponseEntity(writeDetail.getId(), HttpStatus.OK);
+
+    }
+
+    @PostMapping(value = "/Novel/{count}/{id}")
+    public  @ResponseBody ResponseEntity viewplus (@PathVariable Long id,
+                                                   @PathVariable String count){
+
+        WriteDetail writeDetail = writeDetailService.searchDetailId(id);
+        if (count.equals("viewCount")){
+            writeDetailRepository.save(WriteDetail.updateViewCount(writeDetail));
+        }
+        if(count.equals("Heart")){
+            writeDetail.setHeart(+1);
+        }
+
+        return  new ResponseEntity(writeDetail.getId(), HttpStatus.OK);
 
     }
 

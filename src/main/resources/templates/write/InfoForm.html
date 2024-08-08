@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>작품 정보 입력</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -95,15 +96,30 @@
         }
     </style>
 
-    <script>
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var output = document.getElementById('preview');
-                output.src = reader.result;
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        }
+    <script th:inline="javascript">
+
+        $(document).ready(function() {
+           // Thymeleaf 표현식을 통해 서버 측에서 전달된 errorMessage를 JavaScript 변수로 삽입합니다.
+           var errorMessage = [[${errorMessage}]];
+
+           var message = "이미지 입력은 필수 입니다."
+           console.log(errorMessage);
+
+           // 문자열이 null이 아니고 빈 문자열도 아닌 경우에만 alert을 띄웁니다.
+           if (errorMessage  != null) {
+               alert(message);
+           }
+       });
+
+
+       function previewImage(event) {
+           var reader = new FileReader();
+           reader.onload = function() {
+               var output = document.getElementById('preview');
+               output.src = reader.result;
+           }
+           reader.readAsDataURL(event.target.files[0]);
+       }
 
 
     </script>
@@ -115,10 +131,19 @@
     <form  role="form" method="post" enctype="multipart/form-data" th:object="${writeInfoDto}">
         <div class="form-group">
             <label for="ImgFile">대표 이미지</label>
-            <input type="file" id="ImgFile" name="ImgFile" onchange="previewImage(event)">
-            <div class="preview">
-                <img th:src="@{/css/image/basic.jpg}" id="preview" alt="이미지 미리 보기">
+            <div th:if="${writeInfoDto.writeImg  == null or #strings.isEmpty(writeInfoDto.writeImg.imgUrl)}">
+                <input type="file" id="ImgFile" name="ImgFile" onchange="previewImage(event)">
+                <div class="preview">
+                    <img th:src="@{/css/image/basic.jpg}" id="preview" alt="이미지 미리 보기">
+                </div>
             </div>
+            <div th:if="${writeInfoDto.writeImg != null and writeInfoDto.writeImg.imgUrl != null and not #strings.isEmpty(writeInfoDto.writeImg.imgUrl)}">
+                <input type="file" id="ImgFile" name="ImgFile"  onchange="previewImage(event)">
+                <div class="preview">
+                    <img th:src="${writeInfoDto.writeImg.imgUrl}" id="preview" alt="이미지 미리 보기">
+                </div>
+            </div>
+
         </div>
         <div class="form-group">
             <ul style=" list-style: none;">
@@ -145,12 +170,12 @@
                 </li>
             </ul>
         </div>
-        <div th:if="${#strings.isEmpty(writeInfoDto.title)}">
+        <div th:if="${#strings.isEmpty(writeInfoDto.writeImg)}">
             <div class="form-group">
                 <button  th:formaction=@{/write/InfoForm} type="submit">입력</button>
             </div>
         </div>
-        <div th:unless="${#strings.isEmpty(writeInfoDto.title)}">
+        <div th:unless="${#strings.isEmpty(writeInfoDto.writeImg)}">
             <div class="form-group">
                 <button th:formaction=@{/write/InfoForm/update/complete} type="submit" >수정</button>
             </div>

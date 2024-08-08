@@ -19,15 +19,15 @@ public class Rental {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id")
-    private Write write;
+    private WriteDetail writeDetail;
 
     private LocalDateTime endTime;//마감시간
 
-    public  static  Rental  create(Write write){
+    public  static  Rental  create(WriteDetail writeDetail){
         Rental rental = new Rental();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endTime = now.plusDays(3);
-        rental.setWrite(write);
+        rental.setWriteDetail(writeDetail);
         rental.setEndTime(endTime);
 
         return  rental;

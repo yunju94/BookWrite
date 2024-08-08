@@ -1,6 +1,5 @@
 package com.book.write.entity;
 
-import com.book.write.constant.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +26,10 @@ public class Coin {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "write_id")
+    private WriteDetail writeDetail;
+
 
 
 
@@ -39,10 +42,11 @@ public class Coin {
 
     }
 
-    public  static  Coin createCoin(Member member, double KDR_coin, double YES_coin ){
+    public  static  Coin createCoin(Member member, double KDR_coin, double YES_coin , Point point){
         Coin coins = new Coin();
         coins.setYES_coin(-YES_coin);
         coins.setKDR_coin(-KDR_coin);
+        coins.setPoint(point);
         coins.setMember(member);
         return coins;
     }

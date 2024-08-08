@@ -45,10 +45,7 @@
             <div th:each="book : ${items}" >
                 <a th:href="'/writeNovel/' + ${book.id}">
                 <div class="bookTable" >
-                    <div th:if="${#strings.isEmpty(book.writeImg.imgUrl)}">
-                        <img th:src="@{/css/image/basic.jpg}" width="150px" height="155px">
-                    </div>
-                    <div th:unless="${#strings.isEmpty(book.writeImg.imgUrl)}">
+                    <div th:unless="${book.writeImg.imgUrl == null or #strings.isEmpty(book.writeImg.imgUrl)}">
                         <img th:src="${book.writeImg.imgUrl}"  width="150px" height="155px">
                     </div>
 

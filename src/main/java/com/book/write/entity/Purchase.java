@@ -17,6 +17,6 @@ public class Purchase {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id")
-    private Write write;
+    private WriteDetail writeDetail;
 
 }

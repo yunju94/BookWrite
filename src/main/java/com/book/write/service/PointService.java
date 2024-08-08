@@ -54,8 +54,8 @@ public class PointService {
         pointRepository.save(Point.coinChange(member, coinMoney));
     }
 
-    public void saveCoin(Member member, Coin coin){
-        Point point = Point.saveCoin(member, coin);
+    public Point saveCoin(Member member){
+        return Point.saveCoin(member);
     }
 
 

@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -17,7 +16,7 @@ import java.util.List;
 @Setter
 public class WriteInfo extends BaseEntity{
     @Id
-    @Column(name = "writeInfo_id")
+    @Column(name = "write_info_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -39,7 +38,7 @@ public class WriteInfo extends BaseEntity{
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id")
-    private List<Write> write;
+    private List<WriteDetail> writeDetail;
 
 
 
@@ -62,8 +61,10 @@ public class WriteInfo extends BaseEntity{
         return writeInfo;
     }
 
-    public  void updateWriteDetail(){
-        this.setUpdateTime(LocalDateTime.now());
+    public static WriteInfo updateWriteDetail(WriteInfo writeInfo, WriteDetail writeDetail){
+        writeInfo.setUpdateTime(LocalDateTime.now());
+        writeInfo.setUpdateDate(LocalDate.now());
+        return writeInfo;
     }
 
 

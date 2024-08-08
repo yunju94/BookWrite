@@ -2,19 +2,16 @@ package com.book.write.dto;
 
 import com.book.write.constant.Category;
 import com.book.write.entity.Member;
-import com.book.write.entity.Write;
+import com.book.write.entity.WriteDetail;
 import com.book.write.entity.WriteImg;
 import com.book.write.entity.WriteInfo;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -37,8 +34,7 @@ public class WriteInfoDto {
 
     private WriteImg writeImg;//이미지
 
-
-    private Write write;//작성글
+    private WriteDetail writeDetail;//작성글
 
 
     private Long Heart;//관심수

@@ -26,11 +26,11 @@ public class Point {
     private  String content; //내용
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade =CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade =CascadeType.ALL)
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
@@ -55,7 +55,7 @@ public class Point {
         //주문서 리턴
     }
 
-    public  static  Point saveCoin(Member member, Coin coin){
+    public  static  Point saveCoin(Member member){
         Point order = new Point();
         order.setOrderUid(UUID.randomUUID().toString());
         order.setContent("코인 사용");

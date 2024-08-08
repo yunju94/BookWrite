@@ -40,7 +40,7 @@
                    cache: false,
                    success: function (result) {
                        alert("결제완료! 보실 수 있습니다.");
-                       location.href='/writeNovel/'+ result
+                       location.href='/writeNovel/'+ result;
 
                    },
                    error: function (jqXHR) {
@@ -127,7 +127,41 @@
                            alert('로그인 후 이용해주세요');
                            location.href = '/members/login';
                        } else {
+                            //alert(jqXHR.responseText);
                            alert("구매부터 진행하셔야합니다.")
+                            // 코인 구매 버튼 고르기 위해 자식창 만들기
+                           window.open("/popup/pur", 'pop', "width=650px, height=550px, scrollbar=no")
+                                  // 자식창에서 구매할 코인에 대한 정보 받아오기
+                             const checkPopupLoaded = setInterval(() => {
+                             const value = document.getElementById("buttonId").value;
+                             console.log(value);
+                                if (value === 'kdr' || value === 'yes') {
+
+                                    // 인터벌 해제
+                                    clearInterval(checkPopupLoaded);
+                                     if(value === 'kdr'){
+
+                                      //고른 코인으로 구매하기
+                                        document.getElementById("buttonId").value = '';
+                                        pur_KDR(Id) // 위에 function  정보 있으므로 불러오기
+
+                                    }
+
+                                    if(value === 'yes'){
+                                          document.getElementById("buttonId").value = '';
+                                          pur_YES(Id)
+
+                                    }
+
+
+                                }
+                            }, 100);
+
+
+
+
+
+
                        }
                    }
                });
@@ -223,6 +257,7 @@
 <body>
 <div layout:fragment="content">
     <h3 th:text="${writeInfo.title}"></h3>
+    <input type="hidden" id="buttonId">
     <div>
         <div>
             <div class="contents">
@@ -242,7 +277,7 @@
                     </p>
 
                 </div>
-                <div class="btn" >
+                <div class="btn"  th:if="${member.id == writeInfo.member.id}">
                     <button type="button"  class="btn btn-outline-secondary" th:value="${writeInfo.id}" onclick="newWrite(this.value)">회차쓰기</button>
                 </div>
 
@@ -331,15 +366,15 @@
 
                     </tr>
                     </thead>
-                    <tbody th:each="write: ${writeList}">
+                    <tbody th:each="writeDetail: ${writeDetailList}">
                         <tr>
-                            <td th:text="${write.miniTitle}"></td>
-                            <td th:text="${write.regDate}"></td>
-                            <td th:text="${write.commentCount}"></td>
-                            <td th:text="${write.viewCount}"></td>
-                            <td th:text="${write.heart}"></td>
+                            <td th:text="${writeDetail.miniTitle}"></td>
+                            <td th:text="${writeDetail.regDate}"></td>
+                            <td th:text="${writeDetail.commentCount}"></td>
+                            <td th:text="${writeDetail.viewCount}"></td>
+                            <td th:text="${writeDetail.heart}"></td>
                             <td>
-                                <button type="button" th:value="${write.id}" th:onclick=clickRead(this.value) >보기</button>
+                                <button type="button" th:value="${writeDetail.id}" th:onclick=clickRead(this.value) >보기</button>
                             </td>
 
 

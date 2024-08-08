@@ -1,6 +1,7 @@
 package com.book.write.service;
 
 import com.book.write.entity.WriteImg;
+import com.book.write.entity.WriteInfo;
 import com.book.write.repository.WriteImgRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,17 @@ public class WriteImgService {
         return writeImg;
 
     }
+    public  void  updateImg(MultipartFile imgFile, WriteInfo writeInfo) throws Exception {
+        WriteImg writeImg = writeImgRepository.findById(writeInfo.getWriteImg().getId()).orElseThrow();
+        if (!StringUtils.isEmpty(writeImg.getImgName())){
+            fileService.deleteFile(ImgLocation+"/"+writeImg.getImgName());
+        }
 
+        String oriImgName = imgFile.getOriginalFilename();
+        String imgName = fileService.uploadFile(ImgLocation,oriImgName,
+                imgFile.getBytes());
+        String imgUrl = "/images/item/"+imgName;
+        writeImg.uploadImg(oriImgName, imgName, imgUrl);
+
+    }
 }

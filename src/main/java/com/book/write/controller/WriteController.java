@@ -5,7 +5,7 @@ import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
 import com.book.write.entity.Member;
-import com.book.write.entity.Write;
+import com.book.write.entity.WriteDetail;
 import com.book.write.entity.WriteInfo;
 import com.book.write.service.MemberService;
 import com.book.write.service.PurchanseService;
@@ -45,15 +45,18 @@ public class WriteController {
             return "member/login";
         }
 
+
         String Id = principal.getName();
         Member member = memberService.SearchIdtoName(Id);
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5);
         Page<WriteInfo> writeInfo = writeInfoService.getMyWritePage(writeInfoSerchDto, member.getId(), pageable);
 
+        model.addAttribute("member", member);
         model.addAttribute("writeInfo", writeInfo);
         model.addAttribute("writeInfoSerchDto", writeInfoSerchDto);
         model.addAttribute("maxPage", 5);
+
 
 
 
@@ -84,19 +87,35 @@ public class WriteController {
     }
 
     @PostMapping(value = "/write/InfoForm/update/complete")
-    public  String updateComplete(@Valid WriteInfoDto writeInfoDto){
+    public  String updateComplete(@Valid WriteInfoDto writeInfoDto,
+                                  @RequestParam("ImgFile") MultipartFile imgFile) throws Exception {
+
+        if (!imgFile.isEmpty()){
+
+            writeInfoService.updateWriteInfoFromDto(writeInfoDto,imgFile);
+            return "redirect:/";
+
+        }else {
+            writeInfoService.updaInfoFromDto(writeInfoDto);
+
+            return "redirect:/";
+        }
 
 
-            writeInfoService.updateWriteInfoFromDto(writeInfoDto);
-
-        return "redirect:/";
     }
 
 
 
     @PostMapping(value = "/write/InfoForm")
     public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto,
-                                    @RequestParam("ImgFile") MultipartFile imgFile) throws Exception {
+                                    @RequestParam("ImgFile") MultipartFile imgFile,
+                                    Model model) throws Exception {
+
+        if (imgFile.isEmpty()){
+            model.addAttribute("errorMessage","에러");
+            return "write/InfoForm";
+
+        }
 
         writeInfoService.save(writeInfoDto, imgFile);
 
@@ -130,17 +149,17 @@ public class WriteController {
 
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
 
-        List<Write> writeList = writeDetailService.searchListDetail(writeInfo.getId());
+        List<WriteDetail> writeDetailList = writeDetailService.searchListDetail(writeInfo.getId());
         List<Integer> count = new ArrayList<>();
         int counter = 1;
-        for (int i = 0 ; i<writeList.size(); i++){
+        for (int i = 0; i< writeDetailList.size(); i++){
             count.add(counter);
             counter++;
         }
 
         model.addAttribute("member", member);
         model.addAttribute("writeInfo", writeInfo);
-        model.addAttribute("writeList", writeList);
+        model.addAttribute("writeDetailList", writeDetailList);
         model.addAttribute("count", count);
 
         return "writeDetail/detailNovel";
