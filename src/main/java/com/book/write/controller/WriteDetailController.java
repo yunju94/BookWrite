@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -125,7 +126,7 @@ public class WriteDetailController {
     @PostMapping(value = "/Novel/{coin}/Pur/{id}")
     public @ResponseBody ResponseEntity PurchanNovel(@PathVariable String id,
                                                      @PathVariable String coin,
-                                                     Principal principal, Model model){
+                                                     Principal principal){
 
     //문자열로 받은 id를 long으로 변경
         Long writeId= Long.valueOf(id);
@@ -134,16 +135,35 @@ public class WriteDetailController {
        //기본 변수 설정
         double KDR_coin=0;
         double YES_coin = 0;
+        // 멤버값을 불러 구매이력에 저장 및 확인
+        Member member = memberService.memberLoginId(principal.getName());
+        //멤버의 코인 값들을 전부 불러옴.
+        List<Coin> coins = coinService.SearchIdtocoin(member.getId());
+        //코인 값을 더해서 가격에 비해 낮으면 coin 구매소로 반환
+
+        double totalCoin = 0;
         //키다리와 예스24일때 결과 값 저장
         if (coin.equals("KDR")){
             KDR_coin= 0.7;
+            for (Coin coinList: coins){
+                totalCoin += coinList.getKDR_coin();
+            }
+            if (totalCoin<KDR_coin){
+                return new ResponseEntity<>("금액이 부족합니다.", HttpStatus.BAD_REQUEST);
+            }
+
         }
         if (coin.equals("YES")){
             YES_coin= 0.5;
+            for (Coin coinList: coins){
+                totalCoin += coinList.getYES_coin();
+            }
+            if (totalCoin<YES_coin){
+                return new ResponseEntity<>("금액이 부족합니다.", HttpStatus.BAD_REQUEST);
+            }
         }
 
-        // 멤버값을 불러 구매이력에 저장
-        Member member = memberService.memberLoginId(principal.getName());
+
 
         coinService.minusCoin(member, KDR_coin, YES_coin);
         purchanseService.savePur(writeDetail);
@@ -160,12 +180,37 @@ public class WriteDetailController {
         if (count.equals("viewCount")){
             writeDetailRepository.save(WriteDetail.updateViewCount(writeDetail));
         }
-        if(count.equals("Heart")){
-            writeDetail.setHeart(+1);
-        }
+
+        WriteInfo writeInfo = writeInfoService.searchDetailId(writeDetail.getWriteInfo().getId());
+
+        writeInfo.setTotalView(writeInfo.getTotalView()+1);
+        writeInfoRepository.save(writeInfo);
 
         return  new ResponseEntity(writeDetail.getId(), HttpStatus.OK);
 
+    }
+
+
+    @PostMapping(value =  "/novel/heartCount/{str}/{id}")
+    public @ResponseBody ResponseEntity heartCount (@PathVariable String str,
+                                                    @PathVariable Long id){
+
+        WriteDetail writeDetail = writeDetailService.searchDetailId(id);
+         WriteInfo writeInfo = writeInfoService.searchDetailId(writeDetail.getWriteInfo().getId());
+
+        if (str.equals("plus")){
+            writeDetail.setHeart(writeDetail.getHeart()+1);
+            writeInfo.setTotalHeart(writeInfo.getTotalHeart()+1);
+        }
+
+        if (str.equals("minus")){
+            writeDetail.setHeart(writeDetail.getHeart()-1);
+            writeInfo.setTotalHeart(writeInfo.getTotalHeart()-1);
+        }
+        writeDetailRepository.save(writeDetail);
+        writeInfoRepository.save(writeInfo);
+
+        return  new ResponseEntity(writeDetail.getHeart(), HttpStatus.OK);
     }
 
 }

@@ -10,60 +10,222 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <script th:inline="javascript">
         $(document).ready(function() {
+     view();
+     $('#non_heart').show();
+     $('#heart').hide();
 
-           view();
+     var id = $('#id').val();
+     var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
+     var header = $("meta[name='_csrf_header']").attr("content");  // CSRF 헤더 이름을 가져옵니다.
 
-   });
+     var Heart = [[ ${writeDetail.heart} ]];  // 이 부분은 서버 측에서 올바르게 렌더링되었는지 확인해야 합니다.
+     console.log(Heart);
 
-   function view() {
-       var id = $('#id').val();  // 'id' 값을 가져옵니다.
+     //-------------- 빈 하트 누를 경우 +1 -------------//
+     $('#non_heart').click(function() {
+         console.log(Heart);
+         var url = '/novel/heartCount/plus/' + id;  // URL에 '/'를 추가하여 올바른 형식으로 만듭니다.
 
-       var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
-       var header = $("meta[name='_csrf_header']").attr("content");  // CSRF 헤더 이름을 가져옵니다.
+         $.ajax({
+             url: url,
+             type: "POST",
+             contentType: "application/json",
+             beforeSend: function(xhr) {
+                 xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
+             },
+             dataType: "json",
+             cache: false,
+             success: function(result) {
+                 console.log("result:" + result);
+                 $('#heart').show();
+                 $('#non_heart').hide();
+                 $('#detailHeart').text(result)
+             },
+             error: function(jqXHR) {
+                 if (jqXHR.status == 401) {
+                     alert('로그인 후 이용해주세요');
+                     location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
+                 } else {
+                     alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+                 }
+             }
+         });
+     });
 
-       var url = '/Novel/viewCount/' + id;  // 요청할 URL을 구성합니다.
+     //-------------- 하트 누를 경우 -1 -------------//
+     $('#heart').click(function() {
+         console.log(Heart);
+         var url = '/novel/heartCount/minus/' + id;  // URL에 '/'를 추가하여 올바른 형식으로 만듭니다.
 
+         $.ajax({
+             url: url,
+             type: "POST",
+             contentType: "application/json",
+             beforeSend: function(xhr) {
+                 xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
+             },
+             dataType: "json",
+             cache: false,
+             success: function(result) {
+                 console.log("result:" + result);
+                 $('#heart').hide();
+                 $('#non_heart').show();
+                  $('#detailNonHeart').text(result)
 
-       $.ajax({
-           url: url,
-           type: "POST",
-           contentType: "application/json",
-           beforeSend: function(xhr) {
-               xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
-           },
-           dataType: "json",
-           cache: false,
-           success: function(result) {
+             },
+             error: function(jqXHR) {
+                 if (jqXHR.status == 401) {
+                     alert('로그인 후 이용해주세요');
+                     location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
+                 } else {
+                     alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+                 }
+             }
+         });
+     });
 
+     function view() {
+         var id = $('#id').val();  // 'id' 값을 가져옵니다.
 
-           },
-           error: function(jqXHR) {
-               if (jqXHR.status == 401) {
-                   alert('로그인 후 이용해주세요');
-                   location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
-               } else {
-                   alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
-               }
-           }
-       });
-   }
+         var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
+         var header = $("meta[name='_csrf_header']").attr("content");  // CSRF 헤더 이름을 가져옵니다.
+
+         var url = '/Novel/viewCount/' + id;  // 요청할 URL을 구성합니다.
+
+         $.ajax({
+             url: url,
+             type: "POST",
+             contentType: "application/json",
+             beforeSend: function(xhr) {
+                 xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
+             },
+             dataType: "json",
+             cache: false,
+             success: function(result) {
+                 // 성공 시 처리할 내용
+             },
+             error: function(jqXHR) {
+                 if (jqXHR.status == 401) {
+                     alert('로그인 후 이용해주세요');
+                     location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
+                 } else {
+                     alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+                 }
+             }
+         });
+     }
+ });
     </script>
 
     <style>
+        /* 기본 스타일 초기화 */
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
 
+          /* 전체 컨테이너 스타일 */
+          .container {
+              max-width: 800px;
+             margin-left: 15%;
+              padding: 20px;
+              border: 1px solid #ccc;
+          }
+
+          /* 헤더 스타일 */
+          .header {
+              text-align: center;
+              margin-bottom: 20px;
+          }
+
+          .title {
+              font-size: 2rem;
+              color: #333;
+              font-weight: bold;
+          }
+
+          /* 본문 콘텐츠 스타일 */
+          .content {
+              font-family: Arial, sans-serif;
+              max-width: 800px; /* 컨테이너와 동일한 최대 너비 설정 */
+              margin: 0 auto; /* 컨테이너 중앙 정렬 */
+              padding: 50px 50px; /* 패딩 추가 (선택사항) */
+          }
+
+          /* 상세 정보 섹션 스타일 */
+          .details {
+              margin-top: 20px;
+              /* max-width와 margin: 0 auto는 이미 컨테이너에서 설정되어 있으므로 필요하지 않음 */
+          }
+
+          /* 미니 제목 스타일 */
+          .mini-title a {
+              display: block;
+              font-size: 1.5rem;
+              color: #007BFF;
+              text-decoration: none;
+              margin-bottom: 10px;
+              border-bottom: 1px solid #ccc;
+          }
+
+          /* 미니 내용 스타일 */
+          .mini-write {
+              margin-top: 10px;
+               white-space: pre-wrap; /* 공백과 줄 바꿈을 유지합니다 */
+          }
+
+          .text-content {
+              font-size: 1rem;
+              color: #555;
+          }
+
+          /* 링크 호버 스타일 */
+          .mini-title a:hover {
+              text-decoration: underline;
+          }
+        .H{
+            width:65px;
+        }
     </style>
 
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h3 th:text="${writeInfo.title}" class="title"></h3>
-    <input type="hidden" th:value="${writeDetail.viewCount}" id="viewCount">
-    <input type="hidden" th:value="${writeDetail.id}" id="id">
-    <a th:text="${writeDetail.miniTitle}"></a>
-    <a th:text="${writeDetail.miniWrite}" readonly></a>
+    <div class="container">
+        <header class="header">
+            <h1 th:text="${writeInfo.title}" class="title"></h1>
+        </header>
+        <main class="content">
+            <section class="details">
+                <input type="hidden" th:value="${writeDetail.viewCount}" id="viewCount">
+                <input type="hidden" th:value="${writeDetail.id}" id="id">
+                <div class="mini-title">
+                    <a th:text="${writeDetail.miniTitle}"></a>
+                </div>
+                <div class="mini-write">
+                    <pre th:text="${writeDetail.miniWrite}" readonly></pre>
+                </div>
+            </section>
 
+        </main>
+        <div class="H">
+            <div  id="non_heart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                </svg>
+                <a th:text="${writeDetail.heart}" id="detailNonHeart"></a>
+            </div>
+            <div  id="heart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-arrow-through-heart-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.854 15.854A.5.5 0 0 1 2 15.5V14H.5a.5.5 0 0 1-.354-.854l1.5-1.5A.5.5 0 0 1 2 11.5h1.793l3.103-3.104a.5.5 0 1 1 .708.708L4.5 12.207V14a.5.5 0 0 1-.146.354zM16 3.5a.5.5 0 0 1-.854.354L14 2.707l-1.006 1.006c.236.248.44.531.6.845.562 1.096.585 2.517-.213 4.092-.793 1.563-2.395 3.288-5.105 5.08L8 13.912l-.276-.182A24 24 0 0 1 5.8 12.323L8.31 9.81a1.5 1.5 0 0 0-2.122-2.122L3.657 10.22a9 9 0 0 1-1.039-1.57c-.798-1.576-.775-2.997-.213-4.093C3.426 2.565 6.18 1.809 8 3.233c1.25-.98 2.944-.928 4.212-.152L13.292 2 12.147.854A.5.5 0 0 1 12.5 0h3a.5.5 0 0 1 .5.5z"/>
+                </svg>
+                <a th:text="${writeDetail.heart}" id="detailHeart"></a>
+            </div>
 
+        </div>
+    </div>
 
 
 </div>

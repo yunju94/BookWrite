@@ -14,4 +14,6 @@ public interface WriteInfoRepositoryCustom {
    Page<WriteInfo>getMyWritePage(WriteInfoSerchDto writeInfoSerchDto, Long memberId, Pageable pageable);
 
    Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable);
+   Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable);
+
 }

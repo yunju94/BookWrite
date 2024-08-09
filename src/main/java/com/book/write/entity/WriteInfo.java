@@ -28,6 +28,10 @@ public class WriteInfo extends BaseEntity{
     @Column(columnDefinition = "TEXT")
     private String detail;//설명
 
+    private  int totalView;//전체 조회수
+
+    private  int totalHeart;//전체 추천수
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;//글쓴이
@@ -40,11 +44,6 @@ public class WriteInfo extends BaseEntity{
     @JoinColumn(name = "write_id")
     private List<WriteDetail> writeDetail;
 
-
-
-
-
-
     public static WriteInfo createDto(WriteInfoDto writeInfoDto){
 
         WriteInfo writeInfo = new WriteInfo();
@@ -53,6 +52,8 @@ public class WriteInfo extends BaseEntity{
         writeInfo.setDetail(writeInfoDto.getDetail());
         writeInfo.setTitle(writeInfoDto.getTitle());
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
+        writeInfo.setTotalHeart(0);
+        writeInfo.setTotalView(0);
         writeInfo.setRegDate(LocalDate.now());
         writeInfo.setUpdateDate(LocalDate.now());
         writeInfo.setRegTime(LocalDateTime.now());
@@ -66,6 +67,5 @@ public class WriteInfo extends BaseEntity{
         writeInfo.setUpdateDate(LocalDate.now());
         return writeInfo;
     }
-
 
 }

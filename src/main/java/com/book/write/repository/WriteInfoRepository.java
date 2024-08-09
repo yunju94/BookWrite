@@ -12,4 +12,6 @@ public interface WriteInfoRepository extends JpaRepository<WriteInfo, Long> ,
 
     List<WriteInfo> findByMemberId(Long memberId);
 
+
+
 }

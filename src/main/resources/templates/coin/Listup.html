@@ -12,6 +12,10 @@
 
     <title>Title</title>
 
+    <!--그래프 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
     <!-- Bootstrap CSS 포함 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
@@ -24,7 +28,7 @@
 
         $(document).ready(function () {
 
-           var List = [[${pointList}]]; // Thymeleaf 템플릿에서 pointList를 배열로 변환하여 전달합니다.
+           var List = [[${coinList}]]; // Thymeleaf 템플릿에서 pointList를 배열로 변환하여 전달합니다.
             var KDRcoin = 0.0;
             var YEScoin = 0.0;
 
@@ -46,14 +50,17 @@
 
                   // 모든 카드 숨기기
                   $('.card').hide();
+                  $('#myChartKDR').hide();
+                   $('#myChartYES').hide();
 
                   // 선택된 값에 따라 카드 표시
                   if (selectValue === "KDR") {
                       $('#KDR').show();
-
+                      $('#myChartKDR').show();
                       KDR();
                   } else if (selectValue === "YES") {
                       $('#YES').show();
+                      $('#myChartYES').show();
                       YES();
                   }
               });
@@ -366,7 +373,7 @@
          }
 
          /* card */
-         .card {
+         .card,  .gragh{
              width: 100%;
              max-width: 600px; /* 최대 너비 설정 */
              min-width: 300px; /* 최소 너비 설정 */
@@ -464,6 +471,7 @@
         </svg>
         <span id="YESCoin"></span>
     </div>
+
     <div class="container">
     <div class="h4 pb-2 mb-4 text-danger border-bottom border-info"></div>
         <div class="card" id="KDR">
@@ -501,6 +509,54 @@
 
         </div>
     </div>
+    <div class="gragh">
+        <canvas id="myChartKDR" style="width:100%;max-width:700px"></canvas>
+        <script>
+            // 그래프 설정
+          var now = new Date();
+
+          // 7일 전 날짜 계산
+          var minusWeek = new Date(now);
+          minusWeek.setDate(now.getDate() -6);
+          //6일 전(일주일)으로 변경
+          // 날짜 배열 초기화
+          var xValues = [];
+          // 7일 간의 날짜 배열 생성
+          for (var date = new Date(minusWeek); date <= now; date.setDate(date.getDate() + 1)) {
+              var formattedDate = date.toISOString().slice(0,10); // "YYYY-MM-DD" 형식
+              xValues.push(formattedDate); //배열에 추가
+          }
+
+
+          // 서버에서 데이터를 받아오는 반복문
+            var yValues1_1=  [ [[${KDR}]] ];
+            console.log(yValues1_1)
+            var yValues1=yValues1_1.pop(0);
+            console.log(yValues1)
+
+          new Chart(document.getElementById("myChartKDR"), {
+              type: "line",
+              data: {
+                  labels: xValues,
+                  datasets: [{
+                      data: yValues1,
+                      borderColor: "red",
+                      fill: false
+                  }]
+              },
+              options: {
+                  legend: { display: false }
+              }
+          });
+
+        </script>
+    </div>
+
+
+
+
+
+
 
         <div class="card" id="YES">
             <div class="card-header">
@@ -535,7 +591,50 @@
             </div>
 
         </div>
-    <div>
+    <div class="gragh">
+        <div>
+            <canvas id="myChartYES" style="width:100%;max-width:700px"></canvas>
+            <script>
+                // 그래프 설정
+              var now = new Date();
+
+              // 7일 전 날짜 계산
+              var minusWeek = new Date(now);
+              minusWeek.setDate(now.getDate() -6);
+              //6일 전(일주일)으로 변경
+              // 날짜 배열 초기화
+              var xValues = [];
+              // 7일 간의 날짜 배열 생성
+              for (var date = new Date(minusWeek); date <= now; date.setDate(date.getDate() + 1)) {
+                  var formattedDate = date.toISOString().slice(0,10); // "YYYY-MM-DD" 형식
+                  xValues.push(formattedDate); //배열에 추가
+              }
+
+
+              // 서버에서 데이터를 받아오는 반복문
+                var yValues1_1=  [ [[${YES}]] ];
+                console.log(yValues1_1)
+                var yValues1=yValues1_1.pop(0);
+                console.log(yValues1)
+
+              new Chart(document.getElementById("myChartYES"), {
+                  type: "line",
+                  data: {
+                      labels: xValues,
+                      datasets: [{
+                          data: yValues1,
+                          borderColor: "red",
+                          fill: false
+                      }]
+                  },
+                  options: {
+                      legend: { display: false }
+                  }
+              });
+
+            </script>
+        </div>
+
         <div onclick="sliding()">
             <span>결제 내역</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
@@ -546,17 +645,17 @@
             <table>
                 <thead>
                 <tr>
-                    <th style="width:100px;">내용</th>
-                    <th style="width:100px;">포인트</th>
-                    <th>키다리 코인</th>
-                    <th>예스 코인</th>
+                    <th style="width:180px;">내용</th>
+                    <th style="width:180px;">포인트</th>
+                    <th style="width:100px;">키다리 코인</th>
+                    <th style="width:100px;">예스 코인</th>
 
                 </tr>
                 </thead>
-                <tbody th:each="ch : ${pointList}">
+                <tbody th:each="ch : ${coinList}">
                 <tr>
-                    <td th:text="${ch.content}" ></td>
-                    <td th:text="${ch.point}" ></td>
+                    <td th:text="${ch.point.content}" ></td>
+                    <td th:text="${ch.point.point}" ></td>
                     <td th:text="${ch.KDR_coin}"></td>
                     <td th:text="${ch.YES_coin}"></td>
                 </tr>

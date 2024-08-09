@@ -1,6 +1,7 @@
 package com.book.write.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Table(name = "coin")
 @Getter
 @Setter
+@AllArgsConstructor
 public class Coin {
 
     @Id
@@ -29,6 +31,9 @@ public class Coin {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id")
     private WriteDetail writeDetail;
+
+    public Coin(){
+    }
 
 
 

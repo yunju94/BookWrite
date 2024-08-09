@@ -40,7 +40,7 @@
                    cache: false,
                    success: function (result) {
                        alert("결제완료! 보실 수 있습니다.");
-                       location.href='/writeNovel/'+ result;
+                       location.href='/detail/novel/'+result;
 
                    },
                    error: function (jqXHR) {
@@ -49,6 +49,7 @@
                            location.href = '/members/login';
                        } else {
                            alert(jqXHR.responseText);
+                           location.href = "/coinList";
                        }
                    }
                });
@@ -80,7 +81,7 @@
                    cache: false,
                    success: function (result) {
                        alert("결제완료! 보실 수 있습니다.");
-                       location.href='/writeNovel/'+ result
+                       location.href='/detail/novel/'+result;
 
                    },
                    error: function (jqXHR) {
@@ -89,6 +90,7 @@
                            location.href = '/members/login';
                        } else {
                            alert(jqXHR.responseText);
+                           location.href = "/coinList";
                        }
                    }
                });
@@ -248,6 +250,20 @@
         .rental div, .purchase div {
             margin-top: 10px;
         }
+        .info-container {
+    display: flex;
+    gap: 10px; /* 아이콘과 텍스트 간의 간격 조정 */
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+}
+
+.info-item p {
+    margin: 0 0 0 5px; /* 텍스트와 아이콘 간의 간격 조정 */
+}
 
 
     </style>
@@ -269,12 +285,23 @@
                 <div class="Info_list">
                     <p th:text="${writeInfo.member.nickname}"></p>
                     <p th:text="${writeInfo.category}"></p>
+                    <div class="info-container">
+                        <div class="info-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
+                            </svg>
+                            <p th:text="${writeInfo.totalHeart}"></p>
+                        </div>
+                        <div class="info-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-smile" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5"/>
+                            </svg>
+                            <p th:text="${writeInfo.totalView}"></p>
+                        </div>
+                    </div>
+
                     <p th:text="${writeInfo.detail}"></p>
-                    <p id="totalHeart">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
-                        </svg>
-                    </p>
 
                 </div>
                 <div class="btn"  th:if="${member.id == writeInfo.member.id}">

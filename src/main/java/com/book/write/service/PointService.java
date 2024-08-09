@@ -55,7 +55,9 @@ public class PointService {
     }
 
     public Point saveCoin(Member member){
-        return Point.saveCoin(member);
+        Point point= Point.saveCoin(member);
+        pointRepository.save(point);
+        return point;
     }
 
 

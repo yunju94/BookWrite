@@ -57,9 +57,6 @@ public class WriteController {
         model.addAttribute("writeInfoSerchDto", writeInfoSerchDto);
         model.addAttribute("maxPage", 5);
 
-
-
-
         return "write/list";
     }
 
@@ -104,8 +101,6 @@ public class WriteController {
 
     }
 
-
-
     @PostMapping(value = "/write/InfoForm")
     public String writeInfoFormPost(@Valid WriteInfoDto writeInfoDto,
                                     @RequestParam("ImgFile") MultipartFile imgFile,
@@ -127,6 +122,7 @@ public class WriteController {
     @GetMapping(value = "/novel/{category}")
     public String NovelPage(@PathVariable Category category,
                             Optional<Integer> page, Model model){
+
         WriteInfoDto writeInfoDto = new WriteInfoDto();
         writeInfoDto.setCategory(category);
 
@@ -140,12 +136,27 @@ public class WriteController {
         return "write/Novel";
     }
 
+    @GetMapping(value = "/novel/best")
+    public String NovelPage(Optional<Integer> page, Model model){
+
+        WriteInfoDto writeInfoDto = new WriteInfoDto();
+
+        Pageable pageable = PageRequest.of(page.orElse(0), 20);
+        Page<NovelListDto> items = writeInfoService.getBestPage(writeInfoDto, pageable);
+
+        model.addAttribute("items", items);
+        model.addAttribute("writeInfoDto", writeInfoDto);
+        model.addAttribute("pageable", pageable);
+        model.addAttribute("maxPage", 20);
+        return "write/Best";
+    }
+
+
 
     @GetMapping(value = "/writeNovel/{id}")
     public  String WriteInfoDetail(@PathVariable Long id, Model model, Principal principal){
 
         Member member = memberService.memberLoginId(principal.getName());
-
 
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
 

@@ -5,7 +5,8 @@ public enum Category {
     RomanceFantasy,
 
     Romance,
-    etc
+    etc,
+    best
 
 
 }

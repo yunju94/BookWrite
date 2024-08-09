@@ -15,6 +15,7 @@ import com.book.write.entity.Coin;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
 import com.book.write.service.CoinService;
+import com.book.write.service.KisService;
 import com.book.write.service.MemberService;
 import com.book.write.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,9 @@ public class KisController {
     @Autowired
     private CoinService coinService;
 
+    @Autowired
+    private KisService kisService;
+
     public KisController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(KisConfig.REST_BASE_URL).build();
     }
@@ -69,16 +73,25 @@ public class KisController {
             return "member/login";
         }
         List<Point> pointList = pointService.SearchIdtopoint(member.getId());
+        List<Coin> coinList = coinService.SearchIdtocoin(member.getId());
         int total = 0;
-        if (pointList.size() != 0){
-            for (int i = 0 ; i < pointList.size() ; i++){
-                    total += pointList.get(i).getPoint();
+        if (coinList.size() != 0){
+            for (int i = 0 ; i < coinList.size() ; i++){
+                    total += coinList.get(i).getPoint().getPoint();
 
             }
         }
         String totalPoint = total+"";
+
+
+        List<Integer> KDR =  kisService.getKDR();
+        List<Integer> YES =  kisService.getYES();
+
+        model.addAttribute("KDR", KDR);
+        model.addAttribute("YES", YES);
         model.addAttribute("total", totalPoint);
-        model.addAttribute("pointList", pointList);
+        model.addAttribute("coinList", coinList);
+
 
         return "coin/Listup";
     }
@@ -182,7 +195,7 @@ public class KisController {
 
     }
 
-    @PostMapping("/equities/020120")
+    @PostMapping("/equities/020120")//키다리 주식
     public Mono<ResponseEntity<Map<String, Object>>> currentPriceKDR() {
         String url = KisConfig.REST_BASE_URL + "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=020120";
 
@@ -200,6 +213,14 @@ public class KisController {
                     Map<String, Object> map= new HashMap<>();
                     map.put("equity",body.getOutput() );
                     Object ob = map.get("equity");
+
+                    Map<String, Object> equityMap = (Map<String, Object>) ob;
+
+                    // 'stck_prpr' 값을 가져와 출력
+                    Object stckPrpr = equityMap.get("stck_prpr");
+                    LocalDate now = LocalDate.now();
+
+                    kisService.saveKDR(stckPrpr, now);
 
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 });
@@ -225,6 +246,14 @@ public class KisController {
                     Map<String, Object> map= new HashMap<>();
                     map.put("equity",body.getOutput() );
                     Object ob = map.get("equity");
+
+                    Map<String, Object> equityMap = (Map<String, Object>) ob;
+
+                    // 'stck_prpr' 값을 가져와 출력
+                    Object stckPrpr = equityMap.get("stck_prpr");
+                    LocalDate now = LocalDate.now();
+
+                    kisService.saveYES(stckPrpr, now);
 
                     return new ResponseEntity<>(map, HttpStatus.OK);
                 });
