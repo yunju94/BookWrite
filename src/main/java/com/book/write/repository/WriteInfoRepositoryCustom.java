@@ -1,5 +1,6 @@
 package com.book.write.repository;
 
+import com.book.write.constant.Category;
 import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
@@ -15,5 +16,6 @@ public interface WriteInfoRepositoryCustom {
 
    Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable);
    Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable);
+   Page<NovelListDto> getSearchWriteInfoPage(Category category, String search, Pageable pageable);
 
 }

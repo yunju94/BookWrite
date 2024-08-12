@@ -1,7 +1,6 @@
 package com.book.write.service;
 
-import com.book.write.entity.Purchase;
-import com.book.write.entity.WriteDetail;
+import com.book.write.entity.*;
 import com.book.write.repository.PurchanseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PurchanseService {
     private  final PurchanseRepository purchanseRepository;
-
     public  void savePur(WriteDetail writeDetail){
         Purchase purchase = new Purchase();
         purchase.setWriteDetail(writeDetail);
         purchanseRepository.save(purchase);
+
+
+
     }
 
     public List<Purchase> seachwriteList (List<WriteDetail> writeDetailList){

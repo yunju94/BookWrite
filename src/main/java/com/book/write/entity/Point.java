@@ -37,10 +37,11 @@ public class Point {
     @Enumerated(EnumType.STRING)
     private Order orderstatus;
 
-    public  static Point createOrder(Member member, Payment payment, int price){
+    public  static Point createOrder(Member member, Payment payment, int price, int point){
         Point order = new Point();
         order.setOrderUid(UUID.randomUUID().toString());
         order.setContent("포인트 구매");
+        order.setPoint(point);
         order.setMember(member);
         order.setPayment(payment);
         order.setMoney(price);
@@ -71,10 +72,22 @@ public class Point {
         order.setOrderUid(UUID.randomUUID().toString());
         order.setContent("코인 환전");
         order.setMember(member);
-        order.setMoney(-coinMoney);
+        order.setMoney(0);
+        order.setPoint(-coinMoney);
         order.setOrderstatus(Order.OK);
 
         return order;
+    }
+
+    public  static  Point saveCoinAuthor(Member Author){
+        Point order = new Point();
+        order.setOrderUid(UUID.randomUUID().toString());
+        order.setContent("코인 적립");
+        order.setMember(Author);
+        order.setMoney(0);
+        order.setOrderstatus(Order.OK);
+
+        return  order;
     }
 
 

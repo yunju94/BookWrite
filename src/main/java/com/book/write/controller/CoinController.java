@@ -35,7 +35,7 @@ public class CoinController {
         if (coincategory.equals("KDR")){
             KDR_coin = coin;
         }
-        if (coincategory.equals("KDR")){
+        if (coincategory.equals("YES")){
             YES_coin = coin;
         }
         Member member = memberService.memberLoginId(principal.getName());

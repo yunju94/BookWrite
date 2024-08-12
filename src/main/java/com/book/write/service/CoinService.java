@@ -17,11 +17,19 @@ import java.util.List;
 public class CoinService {
    private  final CoinRepository coinRepository;
    private  final PointService pointService;
-   public  void  minusCoin(Member member, double KDR_coin, double YES_coin){
+   public  void  minusCoin(Member member, double KDR_coin, double YES_coin, Member Author){
        Point point = pointService.saveCoin(member);
         Coin coin = Coin.createCoin(member, KDR_coin, YES_coin, point);
+       coinRepository.save(coin);
 
-        coinRepository.save(coin);
+
+        Point AutoPoint = pointService.saveCoinAuthor(Author);
+
+       Coin coinAuthor = Coin.createAuthorCoin(Author, KDR_coin, YES_coin, AutoPoint);
+
+
+
+        coinRepository.save(coinAuthor);
 
 
     }

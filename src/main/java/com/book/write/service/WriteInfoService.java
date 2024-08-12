@@ -1,5 +1,6 @@
 package com.book.write.service;
 
+import com.book.write.constant.Category;
 import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
@@ -88,11 +89,15 @@ public class WriteInfoService {
     public  Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable){
       return   writeInfoRepository.getCategoryPage(writeInfoDto,pageable );
     }
-    public  WriteInfo searchDetailId(Long InfoId){
-        return  writeInfoRepository.findById(InfoId).orElseThrow();
+    public  WriteInfo searchDetailId(Long Detail_InfoId){
+        return  writeInfoRepository.findByWriteInfoId(Detail_InfoId);
     }
     public  Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable){
         return   writeInfoRepository.getBestPage(writeInfoDto,pageable );
+    }
+
+    public  Page<NovelListDto> getSearchWriteInfoPage(Category category, String search,  Pageable pageable){
+        return  writeInfoRepository.getSearchWriteInfoPage(category, search, pageable);
     }
 
 }

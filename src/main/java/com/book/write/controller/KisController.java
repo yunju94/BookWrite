@@ -73,17 +73,21 @@ public class KisController {
             return "member/login";
         }
         List<Point> pointList = pointService.SearchIdtopoint(member.getId());
-        List<Coin> coinList = coinService.SearchIdtocoin(member.getId());
+
         int total = 0;
-        if (coinList.size() != 0){
-            for (int i = 0 ; i < coinList.size() ; i++){
-                    total += coinList.get(i).getPoint().getPoint();
+        if (!pointList.isEmpty()){
+            for (Point point : pointList) {
+                total += point.getPoint();
 
             }
         }
         String totalPoint = total+"";
 
+        System.out.println("totalPoint: "+ totalPoint);
 
+        List<Coin> coinList = coinService.SearchIdtocoin(member.getId());
+
+        //그래프 정보
         List<Integer> KDR =  kisService.getKDR();
         List<Integer> YES =  kisService.getYES();
 

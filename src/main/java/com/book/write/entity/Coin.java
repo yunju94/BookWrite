@@ -38,11 +38,12 @@ public class Coin {
 
 
 
-    public  static  Coin PointcreateCoin(Member member, double KDR_coin, double YES_coin){
+    public  static  Coin PointcreateCoin(Member member, double KDR_coin, double YES_coin, Point point){
         Coin coins = new Coin();
         coins.setKDR_coin(KDR_coin);
         coins.setYES_coin(YES_coin);
         coins.setMember(member);
+        coins.setPoint(point);
         return coins;
 
     }
@@ -51,6 +52,15 @@ public class Coin {
         Coin coins = new Coin();
         coins.setYES_coin(-YES_coin);
         coins.setKDR_coin(-KDR_coin);
+        coins.setPoint(point);
+        coins.setMember(member);
+        return coins;
+    }
+
+    public  static  Coin createAuthorCoin(Member member, double KDR_coin, double YES_coin , Point point){
+        Coin coins = new Coin();
+        coins.setYES_coin(YES_coin);
+        coins.setKDR_coin(KDR_coin);
         coins.setPoint(point);
         coins.setMember(member);
         return coins;

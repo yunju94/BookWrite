@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -119,12 +120,15 @@ public class WriteController {
 
 
 
-    @GetMapping(value = "/novel/{category}")
-    public String NovelPage(@PathVariable Category category,
-                            Optional<Integer> page, Model model){
+    @GetMapping(value = {"/novel/{category}", "/novel/{category}/{search}", "/novel/{category}/{search}/{page}"})
+    public String NovelPage( @PathVariable("category") Category category,
+                             @PathVariable("search") Optional<String> search,
+                             @PathVariable("page") Optional<Integer> page, Model model){
 
         WriteInfoDto writeInfoDto = new WriteInfoDto();
         writeInfoDto.setCategory(category);
+        search.ifPresent(writeInfoDto::setSearch);//search가 비어있지 않으면 dto에 값을 넣는다.
+
 
         Pageable pageable = PageRequest.of(page.orElse(0), 20);
         Page<NovelListDto> items = writeInfoService.getCategoryPage(writeInfoDto, pageable);
@@ -175,7 +179,6 @@ public class WriteController {
 
         return "writeDetail/detailNovel";
     }
-
 
 
 

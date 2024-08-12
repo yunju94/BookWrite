@@ -29,7 +29,7 @@ public class PointService {
 
         Payment payment = new Payment(price, PaymentStatus.READY);
 
-        Point pointOrder= createOrder(member, payment, price);
+        Point pointOrder= createOrder(member, payment, price, point);
 
         payment.setPaymentUid(pointOrder.getOrderUid());
         pointRepository.save(pointOrder);
@@ -50,12 +50,20 @@ public class PointService {
 
 
     public  void  coinChanger(Member member,double KDR_coin, double YES_coin, int coinMoney){
-        coinRepository.save(Coin.PointcreateCoin(member, KDR_coin, YES_coin));
-        pointRepository.save(Point.coinChange(member, coinMoney));
+       Point point = Point.coinChange(member, coinMoney);
+        Coin coin=  Coin.PointcreateCoin(member, KDR_coin, YES_coin, point);
+        coinRepository.save(coin);
+        pointRepository.save(point);
     }
 
     public Point saveCoin(Member member){
         Point point= Point.saveCoin(member);
+        pointRepository.save(point);
+        return point;
+    }
+
+    public Point saveCoinAuthor(Member member){
+        Point point= Point.saveCoinAuthor(member);
         pointRepository.save(point);
         return point;
     }
