@@ -27,10 +27,14 @@
                    box-sizing: border-box;
                    font: inherit;
                }
+               .login{
+               margin: 0 auto;
+               }
 
 
                .inputName>li {
                    border-bottom: 1px solid #CCC;
+                   margin: 0 auto;
                    margin-top: 30px;
                    margin-bottom: 50px;
                    width: 300px;
@@ -50,14 +54,33 @@
                    cursor: text;
                }
 
-                button {
+                .input {
+                   margin: 0 auto;
                    width: 100px;
                    height: 40px;
                    background-color: #7FCEFF;
                    border: none;
                    border-radius: 15px;
                    cursor: pointer;
+
                }
+
+
+                 .wrapper {
+                    text-align: center;
+                    margin: 25px
+
+                }
+
+                .button {
+                    display: inline-block; /* 이미지가 인라인 블록으로 배치되게 함 */
+
+                    margin: 5px; /* 좌우 간격을 10px로 설정 */
+                }
+
+                .button img {
+                    vertical-align: middle; /* 이미지가 텍스트와 정렬되게 함 */
+                }
 
     </style>
 
@@ -65,7 +88,7 @@
 
 <body>
 <div layout:fragment="content">
-    <h3>로그인</h3>
+    <h3 class="login">로그인</h3>
     <form action="/member/login" role="form" method="post">
     <div>
         <ul class="inputName">
@@ -79,10 +102,26 @@
                 <input type="password" name="loginPassword" id="loginPassword" placeholder="비밀번호를 입력해주세요">
             </li>
         </ul>
-        <button type="submit" onclick="nameSearch()" >입력</button>
+        <button class="input" type="submit" onclick="nameSearch()" >입력</button>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     </div>
     </form>
+
+
+    <div class="wrapper" style="text-align: center;">
+        <a href="/oauth2/authorization/google" class="button">
+            <img th:src="@{/css/image/google.jpg}" height="50">
+
+        </a>
+        <a href="/oauth2/authorization/kakao" class="button">
+            <img th:src="@{/css/image/kakao.jpg}" height="47">
+
+        </a>
+        <a href="/oauth2/authorization/naver" class="button">
+            <img th:src="@{/css/image/naver.jpg}" height="50">
+
+        </a>
+    </div>
 </div>
 </body>
 

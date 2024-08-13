@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom{
 
@@ -41,7 +42,22 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
     }
 
 
+    private OrderSpecifier<?> OrderBySearch( Optional<String> orderByFront, Optional<String> orderByBack){
+        String orderByFrontValue = orderByFront.orElse("update");
+        String orderByBackValue = orderByBack.orElse("desc");
 
+        // 정렬 기준 선택
+        if ("update".equals(orderByFrontValue)) {
+            return "asc".equals(orderByBackValue) ? QWriteInfo.writeInfo.updateTime.asc() : QWriteInfo.writeInfo.updateTime.desc();
+        } else if ("view".equals(orderByFrontValue)) {
+            return "asc".equals(orderByBackValue) ? QWriteInfo.writeInfo.totalView.asc() : QWriteInfo.writeInfo.totalView.desc();
+        } else if ("heart".equals(orderByFrontValue)) {
+            return "asc".equals(orderByBackValue) ? QWriteInfo.writeInfo.totalHeart.asc() : QWriteInfo.writeInfo.totalHeart.desc();
+        } else {
+            // 기본 정렬 (updateTime.desc()) 설정
+            return QWriteInfo.writeInfo.updateTime.desc();
+        }
+    }
 
 
     @Override
@@ -59,7 +75,8 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
     }
 
     @Override
-    public Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable) {
+    public Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable,
+                                              Optional<String> orderByFront, Optional<String> orderByBack) {
         QWriteInfo writeInfo = QWriteInfo.writeInfo;
         QWriteImg writeImg = QWriteImg.writeImg;
 
@@ -76,8 +93,7 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
                 .join(writeInfo.writeImg)  // 조인 조건 추가
                 .where(writeInfo.category.eq(writeInfoDto.getCategory()))
                 .where(searchByLike(writeInfoDto.getSearch()))
-                .where(searchByLikewritor(writeInfoDto.getSearch()))
-                .orderBy(writeInfo.updateTime.desc())
+                .orderBy(OrderBySearch(orderByFront, orderByBack))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults(); // `fetch` 메서드를 사용하여 리스트를 가져옵니다.
@@ -88,7 +104,7 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
         return new PageImpl<>(content, pageable, total);
     }
 
-    @Override
+    @Override//베스트 모음 쿼리문
     public Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable) {
         QWriteInfo writeInfo = QWriteInfo.writeInfo;
         QWriteImg writeImg = QWriteImg.writeImg;
@@ -115,41 +131,7 @@ public class WriteInfoRepositoryCustomImpl implements  WriteInfoRepositoryCustom
         return new PageImpl<>(content, pageable, total);
     }
 
-    @Override
-    public Page<NovelListDto> getSearchWriteInfoPage(Category category, String search, Pageable pageable) {
-        QWriteInfo writeInfo = QWriteInfo.writeInfo;
-        QWriteImg writeImg = QWriteImg.writeImg;
 
-        QueryResults<NovelListDto> results = queryFactory.select(new QNovelListDto(
-                        writeInfo.member,
-                        writeInfo.id,
-                        writeInfo.title,
-                        writeInfo.category,
-                        writeInfo.totalHeart,
-                        writeInfo.totalView,
-                        writeInfo.writeImg
-                ))
-                .from(writeInfo)  // 주 테이블
-                .join(writeInfo.writeImg)  // 조인 조건 추가
-                .where(writeInfo.category.eq(category))
-
-                .orderBy(writeInfo.totalView.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults(); // `fetch` 메서드를 사용하여 리스트를 가져옵니다.
-        List<NovelListDto> content = results.getResults();
-        // 전체 레코드 수를 가져옵니다.
-        if (content == null) {
-            content = Collections.emptyList(); // 결과가 null인 경우 빈 리스트로 초기화
-        }
-
-        long total = results.getTotal();
-        if (total < 0) {
-            total = 0; // 전체 레코드 수가 음수인 경우 0으로 설정
-        }
-
-        return new PageImpl<>(content, pageable, total);
-    }
 
 
 }

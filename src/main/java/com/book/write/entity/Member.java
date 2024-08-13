@@ -31,6 +31,13 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public  Member (String name, String email){
+        this.name = name;
+        this.email = email;
+    }
+
+    public  Member(){}
+
     public static Member createForm(MemberFormDto memberFormDto,  PasswordEncoder passwordEncoder){
         Member member = new Member();
         member.setName(memberFormDto.getName());
@@ -42,6 +49,14 @@ public class Member {
         member.setEmail(memberFormDto.getEmail());
         member.setRole(Role.ADMIN);
         return member;
+    }
+
+    public  Member update(String name, String email, String picture){
+        this.name = name;
+        this.email = email;
+        this.role=Role.USER;
+
+        return this;
     }
 
 }

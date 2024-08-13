@@ -9,13 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface WriteInfoRepositoryCustom {
 
 
    Page<WriteInfo>getMyWritePage(WriteInfoSerchDto writeInfoSerchDto, Long memberId, Pageable pageable);
 
-   Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable);
+   Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable, Optional<String> orderByFront, Optional<String> orderByBack);
    Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable);
-   Page<NovelListDto> getSearchWriteInfoPage(Category category, String search, Pageable pageable);
+
 
 }

@@ -16,13 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -120,10 +119,20 @@ public class WriteController {
 
 
 
-    @GetMapping(value = {"/novel/{category}", "/novel/{category}/{search}", "/novel/{category}/{search}/{page}"})
+    @GetMapping(value = {"/novel/{category}", "/novel/{category}/{search}",
+            "/novel/{category}/{orderByFront}/{orderByBack}",
+            "/novel/{category}/{search}/{page}"})
     public String NovelPage( @PathVariable("category") Category category,
                              @PathVariable("search") Optional<String> search,
+                             @PathVariable("orderByFront") Optional<String> orderByFront,
+                             @PathVariable("orderByBack") Optional<String> orderByBack,
                              @PathVariable("page") Optional<Integer> page, Model model){
+
+        System.out.println("category"+ category);
+        System.out.println("search"+ search);
+        System.out.println("orderByFront"+ orderByFront);
+        System.out.println("orderByBack"+ orderByBack);
+        System.out.println("page"+ page);
 
         WriteInfoDto writeInfoDto = new WriteInfoDto();
         writeInfoDto.setCategory(category);
@@ -131,7 +140,7 @@ public class WriteController {
 
 
         Pageable pageable = PageRequest.of(page.orElse(0), 20);
-        Page<NovelListDto> items = writeInfoService.getCategoryPage(writeInfoDto, pageable);
+        Page<NovelListDto> items = writeInfoService.getCategoryPage(writeInfoDto, pageable, orderByFront, orderByBack);
 
         model.addAttribute("items", items);
         model.addAttribute("writeInfoDto", writeInfoDto);
@@ -139,7 +148,6 @@ public class WriteController {
         model.addAttribute("maxPage", 20);
         return "write/Novel";
     }
-
     @GetMapping(value = "/novel/best")
     public String NovelPage(Optional<Integer> page, Model model){
 

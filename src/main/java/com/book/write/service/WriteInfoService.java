@@ -1,15 +1,13 @@
 package com.book.write.service;
 
-import com.book.write.constant.Category;
 import com.book.write.dto.NovelListDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
-import com.book.write.entity.WriteDetail;
 import com.book.write.entity.WriteImg;
 import com.book.write.entity.WriteInfo;
 import com.book.write.repository.WriteImgRepository;
 import com.book.write.repository.WriteInfoRepository;
-import com.book.write.repository.WriteInfoRepositoryCustom;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -86,18 +83,14 @@ public class WriteInfoService {
         return writeInfoDto;
     }
 
-    public  Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable){
-      return   writeInfoRepository.getCategoryPage(writeInfoDto,pageable );
+    public  Page<NovelListDto> getCategoryPage(WriteInfoDto writeInfoDto, Pageable pageable, Optional<String> orderByFront, Optional<String> orderByBack){
+      return   writeInfoRepository.getCategoryPage(writeInfoDto,pageable, orderByFront,orderByBack);
     }
     public  WriteInfo searchDetailId(Long Detail_InfoId){
         return  writeInfoRepository.findByWriteInfoId(Detail_InfoId);
     }
     public  Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable){
         return   writeInfoRepository.getBestPage(writeInfoDto,pageable );
-    }
-
-    public  Page<NovelListDto> getSearchWriteInfoPage(Category category, String search,  Pageable pageable){
-        return  writeInfoRepository.getSearchWriteInfoPage(category, search, pageable);
     }
 
 }

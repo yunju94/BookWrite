@@ -16,12 +16,36 @@
             function searchBtn(){
                 var search=$('#search').val();
                 var category=$('#category').val();
-                 console.log(search)
-                 console.log(category)
+                if (search === "") { // search가 빈 문자열인지 확인
+                    location.href = "/novel/" + category;
+                }else{
+                  location.href= "/novel/"+category+"/"+search;
+                 }
 
-                 location.href= "/novel/"+category+"/"+search;
             }
 
+       $(document).ready(function(){
+             $('#orderByFront').change(function(){
+                var orderByFront= $('#orderByFront').val();
+                var orderByBack= $('#orderByBack').val();
+                var category=$('#category').val();
+
+                location.href="/novel/"+category+"/"+orderByFront+"/"+orderByBack;
+
+            })
+
+             $('#orderByBack').change(function(){
+                var orderByFront= $('#orderByFront').val();
+                var orderByBack= $('#orderByBack').val();
+                var category=$('#category').val();
+
+                 location.href="/novel/"+category+"/"+orderByFront+"/"+orderByBack;
+
+            })
+
+
+
+       })
 
 
 
@@ -39,6 +63,36 @@
            border: 1px solid #ccc;
            text-align: center;
        }
+
+          .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* 좌우 간격 조정 */
+            flex-wrap: wrap; /* 화면 크기에 따라 줄바꿈 가능 */
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search, select {
+            margin: 0; /* 기본 마진 제거 */
+        }
+
+        button {
+            margin-left: 5px; /* 버튼과 입력 필드 사이의 간격 */
+        }
+
+        .select-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 드롭다운 메뉴 사이의 간격 */
+        }
+
+        .right-aligned {
+            margin-left: auto; /* 오른쪽으로 정렬 */
+        }
     </style>
 
 </head>
@@ -52,9 +106,22 @@
         <h3  th:if="${writeInfoDto.category == T(com.book.write.constant.Category).etc}">자유</h3>
         <input type="hidden" id="category" th:value="${writeInfoDto.category}" />
     </div>
-    <div>
-        <input type="text" id="search" th:field=*{writeInfoDto.search} placeholder="검색" class="search">
-        <button type="button" onclick="searchBtn()">검색</button>
+    <div class="container">
+        <div>
+            <input type="text" id="search" placeholder="검색할 제목을 써주세요" class="search">
+            <button type="button" onclick="searchBtn()" style="background-color: white; border: 0px;"> <img th:src="@{/css/image/search.png}" height="35"></button>
+        </div>
+        <div class="select-container right-aligned">
+            <select id="orderByBack">
+                <option value="desc">내림차순</option>
+                <option value="asc">오름차순</option>
+            </select>
+            <select id="orderByFront">
+                <option value="update">업데이트순</option>
+                <option value="view">조회순</option>
+                <option value="heart">추천순</option>
+            </select>
+        </div>
     </div>
     <div>
         <div class="books">

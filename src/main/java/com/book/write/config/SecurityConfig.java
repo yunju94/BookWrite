@@ -22,12 +22,15 @@ public class SecurityConfig {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    private  CustomOAuth2UserService customOAuth2UserService;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         //로그인에 관여
         http.authorizeRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/error").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/img/**", "/item/", "/favicon.ico", "/error").permitAll()
 
                 .requestMatchers("/", "/member/**", "/write/**","/point/", "/novel/**", "/coin/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -42,12 +45,14 @@ public class SecurityConfig {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                 .logoutSuccessUrl("/")
 
+        ).oauth2Login(oauthLogin -> oauthLogin
+                .defaultSuccessUrl("/member/oauth/new")
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                        .userService(customOAuth2UserService))
         );
 
-        http
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                );
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(new CustomAuthenticationEntrypoint()));
 
         return http.build();
     }

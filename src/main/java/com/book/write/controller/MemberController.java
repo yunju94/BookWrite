@@ -2,6 +2,7 @@ package com.book.write.controller;
 
 import com.book.write.dto.MemberFormDto;
 import com.book.write.entity.Member;
+import com.book.write.service.MailService;
 import com.book.write.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
 
+    private final MailService mailService;
+    String confirm = "";
+    boolean confirmCheck = false;
     @GetMapping(value = "/member/login")
     public String login(){
         return "member/login";
@@ -76,6 +80,31 @@ public class MemberController {
 
     }
 
+    @PostMapping(value = "/members/{email}/emailConfirm")
+    public @ResponseBody ResponseEntity emailConfrim(@PathVariable("email") String email)
+            throws Exception{
 
+        System.out.println("email"+ email);
 
+        confirm = mailService.sendSimpleMessage(email);
+        System.out.println("인증코드 : "+ confirm);
+        return new ResponseEntity<String>("인증 메일을 보냈습니다.", HttpStatus.OK);
+    }
+    @PostMapping(value = "/members/{code}/codeCheck")
+    public @ResponseBody ResponseEntity codeConfirm(@PathVariable("code")String code)
+            throws Exception {
+        if (confirm.equals(code)) {
+            confirmCheck = true;
+            return new ResponseEntity<String>("인증 성공하였습니다.", HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("인증 코드를 올바르게 입력해주세요.", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/member/oauth/new")
+    public String oauthMemberForm (){
+        return "member/oauthForm";
+    }
 }
+
+
+
