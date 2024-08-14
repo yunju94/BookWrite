@@ -11,6 +11,7 @@ import com.book.write.KisModel.IndexData;
 import com.book.write.config.AccessTokenManager;
 import com.book.write.config.KisConfig;
 import com.book.write.constant.Order;
+import com.book.write.dto.SessionUser;
 import com.book.write.entity.Coin;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
@@ -18,6 +19,7 @@ import com.book.write.service.CoinService;
 import com.book.write.service.KisService;
 import com.book.write.service.MemberService;
 import com.book.write.service.PointService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,17 +60,28 @@ public class KisController {
 
     @Autowired
     private KisService kisService;
+    @Autowired
+    private HttpSession httpSession;
+
+    private String getEmailFromPrincipalOrSession(Principal principal) {
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (user != null) {
+            return user.getEmail();
+        }
+        return principal.getName();
+    }
 
     public KisController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(KisConfig.REST_BASE_URL).build();
     }
     @GetMapping("/coinList")
     public String coinList(Model model, Principal principal) {
-        if (principal == null){
+        String getName=getEmailFromPrincipalOrSession(principal);
+        if (getName == null){
             return "member/login";
 
         }
-        Member member = memberService.memberLoginId(principal.getName());
+        Member member = memberService.memberLoginId(getName);
         if (member == null){
             return "member/login";
         }

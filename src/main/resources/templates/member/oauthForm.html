@@ -220,30 +220,9 @@
 <body>
 <div layout:fragment="content">
     <h3>회원가입</h3>
-    <form action="/member/new" role="form" method="post" th:object="${memberFormDto}">
+    <form action="/member/oauth" role="form" method="post" th:object="${memberFormDto}">
         <ul class="inputName">
-            <li>
-                <input type="text" th:field="*{loginId}" id="loginId" placeholder="아이디">
-                <button class="IdCheck" type="button" onclick="IdCheck()">아이디 확인</button>
 
-            </li>
-            <li>
-                <input type="password" th:field="*{loginPassword}" placeholder="비밀번호">
-
-            </li>
-            <li>
-                <input type="text" th:field="*{name}" placeholder="이름">
-
-            </li>
-            <li>
-                <input type="text" th:field="*{email}" id="sendmail" placeholder="이메일">
-                <button class="MailCheck" id="e_2" onclick="mailSend()" type="button">메일 보내기</button>
-            </li>
-            <li>
-                <input  id="codecheck" placeholder="인증 코드 입력" type="text">
-                <button class="CheckMail" id="c_2" onclick="codeCheck()" type="button">인증 확인</button>
-
-            </li>
             <li>
                 <input type="text" th:field="*{nickname}" id="NickName" placeholder="별명">
                 <button class="NickCheck" type="button" onclick="NickCheck()">별명 확인</button>

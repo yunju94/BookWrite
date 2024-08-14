@@ -1,16 +1,23 @@
 package com.book.write.controller;
 
+
 import com.book.write.dto.MemberFormDto;
+import com.book.write.dto.SessionUser;
 import com.book.write.entity.Member;
 import com.book.write.service.MailService;
 import com.book.write.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,6 +25,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final MailService mailService;
+
+    private final HttpSession httpSession;
     String confirm = "";
     boolean confirmCheck = false;
     @GetMapping(value = "/member/login")
@@ -90,6 +99,8 @@ public class MemberController {
         System.out.println("인증코드 : "+ confirm);
         return new ResponseEntity<String>("인증 메일을 보냈습니다.", HttpStatus.OK);
     }
+
+
     @PostMapping(value = "/members/{code}/codeCheck")
     public @ResponseBody ResponseEntity codeConfirm(@PathVariable("code")String code)
             throws Exception {
@@ -101,9 +112,38 @@ public class MemberController {
     }
 
     @GetMapping(value = "/member/oauth/new")
-    public String oauthMemberForm (){
-        return "member/oauthForm";
+    public String oauthMemberForm (Model model, Principal principal, OAuth2AuthenticationToken authenticationToken){
+
+        String email=getEmailFromPrincipalOrSession(principal);
+        Member member = memberService.searchEmail(email);
+        if (member.getNickname().isEmpty()||member.getNickname().equals(null) ){
+            MemberFormDto memberFormDto = new MemberFormDto();
+            model.addAttribute("memberFormDto", memberFormDto);
+            return "member/oauthForm";
+        }
+        return "redirect:/";
     }
+
+    @PostMapping(value = "/member/oauth")
+    public  String oauthMemberFormSend(@Valid MemberFormDto memberFormDto, Principal principal){
+
+        String email=getEmailFromPrincipalOrSession(principal);
+        Member member = memberService.searchEmail(email);
+        System.out.println("member"+member);
+        memberService.updateMemberForm(memberFormDto, member);
+        return "redirect:/";
+    }
+
+    private String getEmailFromPrincipalOrSession(Principal principal) {
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (user != null) {
+            return user.getEmail();
+        }
+        return principal.getName();
+    }
+
+
+
 }
 
 

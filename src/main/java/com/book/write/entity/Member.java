@@ -47,16 +47,25 @@ public class Member {
         String password = passwordEncoder.encode(memberFormDto.getLoginPassword());
         member.setLoginPassword(password);
         member.setEmail(memberFormDto.getEmail());
-        member.setRole(Role.ADMIN);
+        member.setRole(Role.USER);
         return member;
     }
 
     public  Member update(String name, String email, String picture){
-        this.name = name;
-        this.email = email;
-        this.role=Role.USER;
+        Member member = new Member();
+        member.name = name;
+        member.email = email;
+        member.role=Role.USER;
+        member.loginId =email;
 
-        return this;
+        return member;
+    }
+
+    public  Member updateForm(MemberFormDto memberFormDto, Member member,  PasswordEncoder passwordEncoder){
+        member.setTel(memberFormDto.getTel());
+        member.setLoginId(member.getEmail());
+        member.setNickname(memberFormDto.getNickname());
+        return member;
     }
 
 }

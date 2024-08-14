@@ -8,7 +8,7 @@
     <title>회원가입</title>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <th:block layout:fragment="script">
         <script th:inline="javascript">
             function IdCheck(){
@@ -93,9 +93,11 @@
             function mailSend(){
                     var token = $("meta[name='_csrf']").attr("content");
                     var header = $("meta[name='_csrf_header']").attr("content");
-                    var mail = $("#sendmail").val();
-                    var url = "/members/" + mail +"/emailConfirm";
-                    var paramData = { email: mail };
+                    var email = $("#sendmail").val();
+
+                    var url = "/members/" + email +"/emailConfirm";
+
+                    var paramData = { email: email };
                     var param = JSON.stringify(paramData);
 
                     $.ajax({
@@ -103,12 +105,13 @@
                         type     : "POST",
                         contentType : "application/json",
                         data     : param,
-                        dataType : "json",
-                        cache   : false,
+
                         beforeSend : function(xhr){
                             console.log("2")
                             xhr.setRequestHeader(header, token);
                         },
+                        dataType : "json",
+                        cache   : false,
                         success  : function(result, status){
                             console.log("3")
                             alert(result);
@@ -116,7 +119,7 @@
                         error : function(jqXHR, status, error){
                             if(jqXHR.status == '401'){
                                 console.log("4")
-                                location.href='/members/login';
+                              //  location.href='/members/login';
                             } else{
                                 console.log("5")
                                 alert(jqXHR.responseText);

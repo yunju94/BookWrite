@@ -1,9 +1,11 @@
 package com.book.write.controller;
 
+import com.book.write.dto.SessionUser;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
 import com.book.write.service.MemberService;
 import com.book.write.service.PointService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,23 @@ public class CoinController {
     private  final MemberService memberService;
 
 
+    private final HttpSession httpSession;
 
+    private String getEmailFromPrincipalOrSession(Principal principal) {
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (user != null) {
+            return user.getEmail();
+        }
+        return principal.getName();
+    }
     @PostMapping(value = "/coin/add/{coincategory}/{coin}/{coinMoney}")
     public @ResponseBody ResponseEntity coinadd(@PathVariable String coincategory,
                                                 @PathVariable double coin,
                                                 @PathVariable int coinMoney,
                                                 Principal principal){
+
+        String getName=getEmailFromPrincipalOrSession(principal);
+
         double KDR_coin = 0;
         double YES_coin = 0;
 
@@ -38,7 +51,7 @@ public class CoinController {
         if (coincategory.equals("YES")){
             YES_coin = coin;
         }
-        Member member = memberService.memberLoginId(principal.getName());
+        Member member = memberService.memberLoginId(getName);
 
 
         pointService.coinChanger(member, KDR_coin, YES_coin, coinMoney);

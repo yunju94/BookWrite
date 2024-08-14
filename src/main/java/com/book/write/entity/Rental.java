@@ -20,7 +20,7 @@ public class Rental {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id")
     private WriteDetail writeDetail;
-
+    private LocalDateTime startTime;
     private LocalDateTime endTime;//마감시간
 
     public  static  Rental  create(WriteDetail writeDetail){
@@ -28,6 +28,7 @@ public class Rental {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endTime = now.plusDays(3);
         rental.setWriteDetail(writeDetail);
+        rental.setEndTime(now);
         rental.setEndTime(endTime);
 
         return  rental;

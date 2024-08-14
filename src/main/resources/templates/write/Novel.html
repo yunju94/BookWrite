@@ -6,69 +6,142 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:inline="javascript">
+        let search = "";
+        let orderByFront = "";
+        let orderByBack = "";
+        let category = "";
+        let page =1;
+        let loadingData = false;
 
-        function Novel(id){
-            location.href="/writeNovel/"+id
+        function Novel(id) {
+            location.href = "/writeNovel/" + id;
         }
 
+        function searchBtn() {
+            search = $('#search').val();
+            category = $('#category').val();
+            if (search === "") {
+                location.href = "/novel/" + category;
+            } else {
+                location.href = "/novel/" + category + "/" + search;
+            }
+        }
 
-            function searchBtn(){
-                var search=$('#search').val();
-                var category=$('#category').val();
-                if (search === "") { // search가 빈 문자열인지 확인
-                    location.href = "/novel/" + category;
-                }else{
-                  location.href= "/novel/"+category+"/"+search;
-                 }
+        function loadItems(page) {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
 
+
+           search = $('#search').val();
+            orderByFront = $('#orderByFront').val();
+            orderByBack = $('#orderByBack').val();
+            category = $('#category').val();
+
+            if (loadingData) {
+                return;
             }
 
-       $(document).ready(function(){
-             $('#orderByFront').change(function(){
-                var orderByFront= $('#orderByFront').val();
-                var orderByBack= $('#orderByBack').val();
-                var category=$('#category').val();
+            loadingData = true;
 
-                location.href="/novel/"+category+"/"+orderByFront+"/"+orderByBack;
+            $.ajax({
+                type: "POST",
+                url: "/novel/scrolling",
+                data: {
+                    "page": page,
+                    "search": search,
+                    "orderByFront": orderByFront,
+                    "orderByBack": orderByBack,
+                    "category": category
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (response) {
+                    var newItems = response.content;
+                    var container = $('#itemContainer');
 
-            })
+                    newItems.forEach(function (item) {
+                        var newItemHtml = `
 
-             $('#orderByBack').change(function(){
-                var orderByFront= $('#orderByFront').val();
-                var orderByBack= $('#orderByBack').val();
-                var category=$('#category').val();
+                            <a href="/writeNovel/ + ${item.id}">
+                                <div class="bookTable">
+                                        <img src="${item.writeImg.imgUrl}" width="150px" height="155px">
 
-                 location.href="/novel/"+category+"/"+orderByFront+"/"+orderByBack;
+                                    <p>${item.title}</p>
+                                    <p>${item.member.nickname}</p>
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
+                                        </svg>
+                                        <a >${item.totalHeart}</a>
+                                    </div>
+                                </div>
+                            </a>
 
-            })
+                        `;
+                        container.append(newItemHtml);
+                    });
+                    loadingData = false;
+                },
+                error: function (xhr, status, error) {
+                    console.error("에러: ", xhr.responseText);
+                    loadingData = false;
+                }
+            });
+        }
+
+        $(document).ready(function () {
 
 
+            loadItems(page);
 
-       })
+            $('#orderByFront').change(function () {
+                orderByFront = $('#orderByFront').val();
+                orderByBack = $('#orderByBack').val();
+                location.href = "/novel/" + category + "/" + orderByFront + "/" + orderByBack;
+            });
 
+            $('#orderByBack').change(function () {
+                orderByFront = $('#orderByFront').val();
+                orderByBack = $('#orderByBack').val();
+                location.href = "/novel/" + category + "/" + orderByFront + "/" + orderByBack;
+            });
 
+            $(window).scroll(function () {
 
+                   console.log("scroll")
+                var currentScroll = $(this).scrollTop();
+                var windowHeight = $(window).height();
+                var documentHeight = $(document).height();
 
+                if (currentScroll + windowHeight >= documentHeight - 10 && !loadingData) {
+                    loadItems(++page);
+                }
+            });
+        });
     </script>
 
     <style>
-        .books{
-            max-width:1800px;
+        .books {
+            max-width: 1800px;
         }
 
-       .bookTable{
-             margin:10px;
+        .bookTable {
+            margin: 10px;
             float: left;
-           border: 1px solid #ccc;
-           text-align: center;
-       }
+            border: 1px solid #ccc;
+            text-align: center;
+        }
 
-          .container {
+        .container {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* 좌우 간격 조정 */
-            flex-wrap: wrap; /* 화면 크기에 따라 줄바꿈 가능 */
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
 
         .search-container {
@@ -77,39 +150,57 @@
         }
 
         .search, select {
-            margin: 0; /* 기본 마진 제거 */
+            margin: 0;
         }
 
         button {
-            margin-left: 5px; /* 버튼과 입력 필드 사이의 간격 */
+            margin-left: 5px;
         }
 
         .select-container {
             display: flex;
             align-items: center;
-            gap: 10px; /* 드롭다운 메뉴 사이의 간격 */
+            gap: 10px;
         }
 
         .right-aligned {
-            margin-left: auto; /* 오른쪽으로 정렬 */
+            margin-left: auto;
         }
-    </style>
 
+
+          #scrollToTopBtn {
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 99;
+                font-size: 18px;
+                border: none;
+                outline: none;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                padding: 15px;
+                border-radius: 50%;
+              }
+    </style>
 </head>
 
 <body>
 <div layout:fragment="content">
     <div>
-        <h3  th:if="${writeInfoDto.category == T(com.book.write.constant.Category).Fantasy}">판타지</h3>
-        <h3  th:if="${writeInfoDto.category == T(com.book.write.constant.Category).RomanceFantasy}">로맨스판타지</h3>
-        <h3  th:if="${writeInfoDto.category == T(com.book.write.constant.Category).Romance}">로맨스</h3>
-        <h3  th:if="${writeInfoDto.category == T(com.book.write.constant.Category).etc}">자유</h3>
-        <input type="hidden" id="category" th:value="${writeInfoDto.category}" />
+        <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).Fantasy}">판타지</h3>
+        <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).RomanceFantasy}">로맨스판타지</h3>
+        <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).Romance}">로맨스</h3>
+        <h3 th:if="${writeInfoDto.category == T(com.book.write.constant.Category).etc}">자유</h3>
+        <input type="hidden" id="category" th:value="${writeInfoDto.category}"/>
     </div>
     <div class="container">
         <div>
             <input type="text" id="search" placeholder="검색할 제목을 써주세요" class="search">
-            <button type="button" onclick="searchBtn()" style="background-color: white; border: 0px;"> <img th:src="@{/css/image/search.png}" height="35"></button>
+            <button type="button" onclick="searchBtn()" style="background-color: white; border: 0px;">
+                <img th:src="@{/css/image/search.png}" height="35">
+            </button>
         </div>
         <div class="select-container right-aligned">
             <select id="orderByBack">
@@ -124,34 +215,52 @@
         </div>
     </div>
     <div>
-        <div class="books">
-            <div th:each="book : ${items}" >
+        <div class="books" id="itemContainer">
+            <!-- Thymeleaf template to render initial items -->
+            <div th:each="book : ${items}">
                 <a th:href="'/writeNovel/' + ${book.id}">
-                <div class="bookTable" >
-                    <div th:unless="${book.writeImg.imgUrl == null or #strings.isEmpty(book.writeImg.imgUrl)}">
-                        <img th:src="${book.writeImg.imgUrl}"  width="150px" height="155px">
+                    <div class="bookTable">
+                        <div th:unless="${book.writeImg.imgUrl == null or #strings.isEmpty(book.writeImg.imgUrl)}">
+                            <img th:src="${book.writeImg.imgUrl}" width="150px" height="155px">
+                        </div>
+                        <p th:text="${book.title}"></p>
+                        <p th:text="${book.member.Nickname}"></p>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
+                            </svg>
+                            <a th:text="${book.totalHeart}"></a>
+                        </div>
                     </div>
-
-                    <p th:text="${book.title}"></p>
-                    <p th:text="${book.member.Nickname}"></p>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-balloon-heart-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2 2 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386"/>
-                        </svg>
-                        <a th:text="${book.totalHeart}"></a>
-                    </div>
-
-
-                </div>
                 </a>
             </div>
         </div>
     </div>
 
+    <button onclick="scrollToTop()" id="scrollToTopBtn" title="Go to top">Top</button>
 
+    <script>
+        // Get the button
+        var scrollToTopButton = document.getElementById("scrollToTopBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollToTopButton.style.display = "block";
+          } else {
+            scrollToTopButton.style.display = "none";
+          }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function scrollToTop() {
+          document.body.scrollTop = 0; // For Safari
+          document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+    </script>
 
 </div>
 </body>
-
-
 </html>

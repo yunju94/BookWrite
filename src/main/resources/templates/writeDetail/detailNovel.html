@@ -132,7 +132,12 @@
                             //alert(jqXHR.responseText);
                            alert("구매부터 진행하셔야합니다.")
                             // 코인 구매 버튼 고르기 위해 자식창 만들기
-                           window.open("/popup/pur", 'pop', "width=650px, height=550px, scrollbar=no")
+                            if ($('#purchase-section').hasClass('active')) {
+                                window.open("/popup/pur", 'pop', "width=650px, height=550px, scrollbar=no");
+                            } else if ($('#rental-section').hasClass('active')) {
+                                window.open("/popup/ren", 'pop', "width=650px, height=550px, scrollbar=no");
+                            }
+
                                   // 자식창에서 구매할 코인에 대한 정보 받아오기
                              const checkPopupLoaded = setInterval(() => {
                              const value = document.getElementById("buttonId").value;
@@ -173,6 +178,29 @@
 
         }
 
+
+
+          $(document).ready(function() {
+            // Function to set active state
+            function setActiveSection(section) {
+                $('.price-info dl').removeClass('active').addClass('inactive');
+                $(section).removeClass('inactive').addClass('active');
+            }
+
+            // Initialize by activating the first section or any default section
+            setActiveSection('#purchase-section'); // Example of default section
+
+            // Handle section click
+            $('#rental-section').click(function() {
+                setActiveSection(this);
+                // Handle the rental section click event
+            });
+
+            $('#purchase-section').click(function() {
+                setActiveSection(this);
+                // Handle the purchase section click event
+            });
+        });
 
     </script>
 
@@ -251,20 +279,47 @@
             margin-top: 10px;
         }
         .info-container {
-    display: flex;
-    gap: 10px; /* 아이콘과 텍스트 간의 간격 조정 */
-    align-items: center; /* 수직 중앙 정렬 */
-}
+            display: flex;
+            gap: 10px; /* 아이콘과 텍스트 간의 간격 조정 */
+            align-items: center; /* 수직 중앙 정렬 */
+        }
 
-.info-item {
-    display: flex;
-    align-items: center;
-}
+        .info-item {
+            display: flex;
+            align-items: center;
+        }
 
-.info-item p {
-    margin: 0 0 0 5px; /* 텍스트와 아이콘 간의 간격 조정 */
-}
+        .info-item p {
+            margin: 0 0 0 5px; /* 텍스트와 아이콘 간의 간격 조정 */
+        }
 
+
+
+        .price-info {
+            display: flex;
+        }
+
+        dl {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex: 1;
+            transition: background-color 0.3s ease; /* Smooth transition for background color */
+        }
+
+        .active {
+            background-color: #f0f0f0; /* Active state color */
+        }
+
+        .inactive {
+            background-color: #ffffff; /* Inactive state color */
+        }
+
+        dl:hover {
+            background-color: #e0e0e0; /* Hover effect */
+        }
 
     </style>
 
@@ -312,7 +367,7 @@
             </div>
             <div class="price-info">
 
-                <dl class="rental">
+                <dl class="rental"  id="rental-section">
                     <dt>
                         <strong>대여</strong>
                     </dt>
@@ -342,7 +397,7 @@
 
 
 
-                <dl class="purchase">
+                <dl class="purchase" id="purchase-section">
                     <dt>
                         <strong>소장</strong>
                     </dt>

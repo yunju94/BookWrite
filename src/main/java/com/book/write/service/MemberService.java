@@ -66,4 +66,11 @@ public class MemberService implements UserDetailsService {
         return  memberRepository.findByLoginId(LoginId);
     }
 
+    public  Member searchEmail(String email){
+        return  memberRepository.findByEmail(email);
+    }
+
+    public  void  updateMemberForm(MemberFormDto memberFormDto, Member member){
+        member.updateForm(memberFormDto, member, passwordEncoder);
+    }
 }

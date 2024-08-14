@@ -3,6 +3,7 @@ package com.book.write.controller;
 import com.book.write.constant.Order;
 import com.book.write.dto.PaymentCallbackRequest;
 import com.book.write.dto.RequestPayDto;
+import com.book.write.dto.SessionUser;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
 import com.book.write.service.MemberService;
@@ -11,6 +12,7 @@ import com.book.write.service.PaymentServiceImpl;
 import com.book.write.service.PointService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,11 +32,25 @@ public class PointController {
     private  final PointService pointService;
     private  final PaymentService paymentService;
 
+
+    private final HttpSession httpSession;
+
+    private String getEmailFromPrincipalOrSession(Principal principal) {
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (user != null) {
+            return user.getEmail();
+        }
+        return principal.getName();
+    }
+
+
     @GetMapping(value = "/charge")
     public String pointMainCharge(Principal principal, Model model){
-        if (principal.getName() == null){
+        String getName=getEmailFromPrincipalOrSession(principal);
+        if (getName == null){
             return "member/login";
         }
+
         return  "point/Charge";
     }
 
@@ -43,7 +59,8 @@ public class PointController {
     public @ResponseBody ResponseEntity pointPayment(@PathVariable int point,
                                                      @PathVariable int price,
                                                      Principal principal){
-       String id = principal.getName();
+        String id=getEmailFromPrincipalOrSession(principal);
+
         Member member = memberService.SearchIdtoName(id);
 
         Point p = pointService.paymentPoint(member, price, point);

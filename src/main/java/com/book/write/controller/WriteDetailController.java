@@ -1,10 +1,12 @@
 package com.book.write.controller;
 
+import com.book.write.dto.SessionUser;
 import com.book.write.dto.WriteDetailDto;
 import com.book.write.entity.*;
 import com.book.write.repository.WriteDetailRepository;
 import com.book.write.repository.WriteInfoRepository;
 import com.book.write.service.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,19 @@ public class WriteDetailController {
     private  final  PointService pointService;
     private  final WriteDetailRepository writeDetailRepository;
     private  final WriteInfoRepository writeInfoRepository;
+
+
+    private final HttpSession httpSession;
+
+    private String getEmailFromPrincipalOrSession(Principal principal) {
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (user != null) {
+            return user.getEmail();
+        }
+        return principal.getName();
+    }
+
+
 
     @GetMapping(value = "/detail/new/{id}")
     public String WriteDetailNew(@PathVariable Long id, Model model){
@@ -71,8 +86,9 @@ public class WriteDetailController {
     @PostMapping(value="/Novel/detail/{id}")
     public  @ResponseBody ResponseEntity SearchNovelOrder (@PathVariable Long id, Principal principal){
 
+        String getName=getEmailFromPrincipalOrSession(principal);
         WriteDetail writeDetail = writeDetailService.searchDetailId(id);
-        Member member = memberService.memberLoginId(principal.getName());
+        Member member = memberService.memberLoginId(getName);
         if (member.getId() == writeDetail.getWriteInfo().getMember().getId()){
             return  new ResponseEntity( writeDetail.getId(), HttpStatus.OK );
         }
@@ -96,7 +112,7 @@ public class WriteDetailController {
     public @ResponseBody ResponseEntity RentalNovel(@PathVariable String id,
                                                      @PathVariable String coin,
                                                      Principal principal, Model model){
-
+        String getName=getEmailFromPrincipalOrSession(principal);
         //문자열로 받은 id를 long으로 변경
         Long writeId= Long.valueOf(id);
         WriteDetail writeDetail = writeDetailService.searchDetailId(writeId);
@@ -113,7 +129,7 @@ public class WriteDetailController {
         }
 
         // 멤버값을 불러 구매이력에 저장
-        Member member = memberService.memberLoginId(principal.getName());
+        Member member = memberService.memberLoginId(getName);
 
        // coinService.minusCoin(member, KDR_coin, YES_coin, );
        // rentalService.save(writeDetail);
@@ -128,9 +144,7 @@ public class WriteDetailController {
                                                      @PathVariable String coin,
                                                      Principal principal){
 
-        System.out.println("detailId: "+ id + "========>jfkjfdalkjmafd.;1231231");
-
-
+        String getName=getEmailFromPrincipalOrSession(principal);
         WriteDetail writeDetail = writeDetailService.searchDetailId(id);
 
         //작가 찾기
@@ -144,7 +158,7 @@ public class WriteDetailController {
         double KDR_coin=0;
         double YES_coin = 0;
         // 멤버값을 불러 구매이력에 저장 및 확인
-        Member member = memberService.memberLoginId(principal.getName());
+        Member member = memberService.memberLoginId(getName);
         //멤버의 코인 값들을 전부 불러옴.
         List<Coin> coins = coinService.SearchIdtocoin(member.getId());
         //코인 값을 더해서 가격에 비해 낮으면 coin 구매소로 반환
