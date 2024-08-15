@@ -28,7 +28,7 @@ public class Rental {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endTime = now.plusDays(3);
         rental.setWriteDetail(writeDetail);
-        rental.setEndTime(now);
+        rental.setStartTime(now);
         rental.setEndTime(endTime);
 
         return  rental;

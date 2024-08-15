@@ -56,6 +56,48 @@
 
 
        }
+        function ren_KDR(KDR_id){
+             var token = $("meta[name='_csrf']").attr("content");
+             var header = $("meta[name='_csrf_header']").attr("content");
+
+
+             var id = KDR_id
+             console.log(id);
+               var url = '/Novel/KDR/Ren/'+id
+               var data = {
+                   id: id,
+
+               };
+               var param = JSON.stringify(data);
+
+               $.ajax({
+                   url: url,
+                   type: "POST",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("결제완료! 보실 수 있습니다.");
+                       location.href='/detail/novel/'+result;
+
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+                           location.href = "/coinList";
+                       }
+                   }
+               });
+
+
+       }
 
         function pur_YES(YES_id){
              var token = $("meta[name='_csrf']").attr("content");
@@ -96,6 +138,47 @@
                });
 
        }
+
+        function ren_YES(YES_id){
+             var token = $("meta[name='_csrf']").attr("content");
+             var header = $("meta[name='_csrf_header']").attr("content");
+
+             var id = YES_id
+               var url = '/Novel/YES/Ren/'+id
+               var data = {
+                   id: id,
+
+               };
+               var param = JSON.stringify(data);
+
+               $.ajax({
+                   url: url,
+                   type: "POST",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("결제완료! 보실 수 있습니다.");
+                       location.href='/detail/novel/'+result;
+
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+                           location.href = "/coinList";
+                       }
+                   }
+               });
+
+       }
+
 
         function clickRead(writeId){
              var token = $("meta[name='_csrf']").attr("content");
@@ -141,25 +224,33 @@
                                   // 자식창에서 구매할 코인에 대한 정보 받아오기
                              const checkPopupLoaded = setInterval(() => {
                              const value = document.getElementById("buttonId").value;
+                             const str = document.getElementById("buttonStr").value;
                              console.log(value);
+                             console.log(str);
                                 if (value === 'kdr' || value === 'yes') {
-
                                     // 인터벌 해제
                                     clearInterval(checkPopupLoaded);
                                      if(value === 'kdr'){
-
                                       //고른 코인으로 구매하기
-                                        document.getElementById("buttonId").value = '';
-                                        pur_KDR(Id) // 위에 function  정보 있으므로 불러오기
+                                        if(str === 'Pur'){
+                                            pur_KDR(Id) // 위에 function  정보 있으므로 불러오기
+                                        }
+                                        if(str === 'Ren'){
+                                            ren_KDR(Id) // 위에 function  정보 있으므로 불러오기
+                                        }
 
                                     }
-
                                     if(value === 'yes'){
-                                          document.getElementById("buttonId").value = '';
-                                          pur_YES(Id)
+                                           if(str === 'Pur'){
+                                            pur_YES(Id)// 위에 function  정보 있으므로 불러오기
+                                        }
+                                        if(str === 'Ren'){
+                                            ren_YES(Id) // 위에 function  정보 있으므로 불러오기
+                                        }
 
                                     }
-
+                                    document.getElementById("buttonId").value = '';
+                                    document.getElementById("buttonStr").value = '';
 
                                 }
                             }, 100);
@@ -329,6 +420,7 @@
 <div layout:fragment="content">
     <h3 th:text="${writeInfo.title}"></h3>
     <input type="hidden" id="buttonId">
+    <input type="hidden" id="buttonStr">
     <div>
         <div>
             <div class="contents">

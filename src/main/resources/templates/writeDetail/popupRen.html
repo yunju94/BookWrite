@@ -24,13 +24,15 @@
 
 <script>
     function ButtonClick(button) {
-        var value = button.value;
+       var value = button.value;
+       var str = "Ren";
 
-         window.opener.document.getElementById("buttonId").value = value;
-         console.log(value)
+        window.opener.document.getElementById("buttonId").value = value;
+        window.opener.document.getElementById("buttonStr").value = str;
+        console.log(value)
 
-       window.close(); // 현재 창을 닫습니다.
-    }
+      window.close(); // 현재 창을 닫습니다.
+   }
 </script>
 
 </body>

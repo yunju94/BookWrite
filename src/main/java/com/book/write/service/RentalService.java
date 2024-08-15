@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RentalService {
     private final RentalRepository rentalRepository;
-    public  void  save (WriteDetail writeDetail){
+    public  void  saveRen (WriteDetail writeDetail){
         rentalRepository.save(Rental.create(writeDetail));
     }
 }

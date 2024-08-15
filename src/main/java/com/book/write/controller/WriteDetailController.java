@@ -93,6 +93,9 @@ public class WriteDetailController {
             return  new ResponseEntity( writeDetail.getId(), HttpStatus.OK );
         }
         if (writeDetailService.searchPur(writeDetail)){
+
+            return  new ResponseEntity( writeDetail.getId(), HttpStatus.OK );
+        }else if (writeDetailService.searchRen(writeDetail)){
             return  new ResponseEntity( writeDetail.getId(), HttpStatus.OK );
         }else {
             return  new ResponseEntity( "구매 정보가 없습니다.", HttpStatus.BAD_REQUEST );
@@ -101,47 +104,23 @@ public class WriteDetailController {
 
     }
 
-    @GetMapping(value = "/popup/pur")
-    public String popupCoinUse(){
-        return "writeDetail/popup";
+    @GetMapping(value = "/popup/{str}")
+    public String popupCoinUse(@PathVariable String str){
+        if (str.equals("pur")){
+            return "writeDetail/popupPur";
+        }
+        else{
+            return "writeDetail/popupRen";
+        }
+
+
     }
 
 
-
-    @PostMapping(value = "/Novel/{coin}/Ren/{id}")
-    public @ResponseBody ResponseEntity RentalNovel(@PathVariable String id,
-                                                     @PathVariable String coin,
-                                                     Principal principal, Model model){
-        String getName=getEmailFromPrincipalOrSession(principal);
-        //문자열로 받은 id를 long으로 변경
-        Long writeId= Long.valueOf(id);
-        WriteDetail writeDetail = writeDetailService.searchDetailId(writeId);
-
-        //기본 변수 설정
-        double KDR_coin=0;
-        double YES_coin = 0;
-        //키다리와 예스24일때 결과 값 저장
-        if (coin.equals("KDR")){
-            KDR_coin= 0.3;
-        }
-        if (coin.equals("YES")){
-            YES_coin= 0.1;
-        }
-
-        // 멤버값을 불러 구매이력에 저장
-        Member member = memberService.memberLoginId(getName);
-
-       // coinService.minusCoin(member, KDR_coin, YES_coin, );
-       // rentalService.save(writeDetail);
-
-        //책 회차값 반환
-        return new ResponseEntity(writeDetail.getId(), HttpStatus.OK);
-
-    }
-
-    @PostMapping(value = "/Novel/{coin}/Pur/{id}")//코인으로 구매
+    @PostMapping(value = "/Novel/{coin}/{str}/{id}")//코인으로 구매
     public @ResponseBody ResponseEntity PurchanNovel(@PathVariable Long id,
                                                      @PathVariable String coin,
+                                                     @PathVariable String str,
                                                      Principal principal){
 
         String getName=getEmailFromPrincipalOrSession(principal);
@@ -149,7 +128,6 @@ public class WriteDetailController {
 
         //작가 찾기
         WriteInfo writeInfo = writeInfoService.searchDetailId(writeDetail.getWriteInfo().getId());
-        System.out.println("writeInfo: "+writeInfo);
 
         Member Author = memberService.SearchNickName(writeInfo.getMember().getNickname());
 
@@ -166,7 +144,13 @@ public class WriteDetailController {
         double totalCoin = 0;
         //키다리와 예스24일때 전체 결과 값 저장
         if (coin.equals("KDR")){
-            KDR_coin= 0.7;
+            if (str.equals("Pur")){
+                KDR_coin= 0.7;
+            }
+            if (str.equals("Ren")){
+                KDR_coin= 0.3;
+            }
+
             for (Coin coinList: coins){
                 totalCoin += coinList.getKDR_coin();//전체 값 더함
             }
@@ -176,7 +160,14 @@ public class WriteDetailController {
 
         }
         if (coin.equals("YES")){
-            YES_coin= 0.5;
+
+            if (str.equals("Pur")){
+                YES_coin= 0.5;
+            }
+            if (str.equals("Ren")){
+                YES_coin= 0.1;
+            }
+
             for (Coin coinList: coins){
                 totalCoin += coinList.getYES_coin();
             }
@@ -187,7 +178,13 @@ public class WriteDetailController {
 //금액이 사려는 코인보다 많을 경우 코인 내고 구매
         coinService.minusCoin(member, KDR_coin, YES_coin, Author);
       // 구매 이력에 저장
-        purchanseService.savePur(writeDetail);
+        if (str.equals("Pur")){
+            purchanseService.savePur(writeDetail);
+        }
+        if (str.equals("Ren")){
+            rentalService.saveRen(writeDetail);
+        }
+
     //책 회차값 반환
         return new ResponseEntity(writeDetail.getId(), HttpStatus.OK);
 

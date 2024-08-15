@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -72,5 +74,9 @@ public class MemberService implements UserDetailsService {
 
     public  void  updateMemberForm(MemberFormDto memberFormDto, Member member){
         member.updateForm(memberFormDto, member, passwordEncoder);
+    }
+
+    public List<Member> AllMember(){
+       return memberRepository.findAll();
     }
 }
