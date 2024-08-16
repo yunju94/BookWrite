@@ -1,10 +1,13 @@
 package com.book.write.service;
 
 import com.book.write.dto.NovelListDto;
+import com.book.write.dto.WriteDetailDto;
 import com.book.write.dto.WriteInfoDto;
 import com.book.write.dto.WriteInfoSerchDto;
+import com.book.write.entity.WriteDetail;
 import com.book.write.entity.WriteImg;
 import com.book.write.entity.WriteInfo;
+import com.book.write.repository.WriteDetailRepository;
 import com.book.write.repository.WriteImgRepository;
 import com.book.write.repository.WriteInfoRepository;
 
@@ -26,6 +29,7 @@ public class WriteInfoService {
     private  final WriteInfoRepository writeInfoRepository;
     private  final WriteImgService writeImgService;
     private  final  WriteImgRepository writeImgRepository;
+    private  final WriteDetailRepository writeDetailRepository;
 
 
 
@@ -91,6 +95,14 @@ public class WriteInfoService {
     }
     public  Page<NovelListDto> getBestPage(WriteInfoDto writeInfoDto, Pageable pageable){
         return   writeInfoRepository.getBestPage(writeInfoDto,pageable );
+    }
+
+    public void deleteWriteDetail(Long id){
+       List<WriteDetail> writeDetailList =  writeDetailRepository.findByWriteInfoId(id);
+       for (WriteDetail writeDetail : writeDetailList){
+           writeDetailRepository.delete(writeDetail);
+       }
+       writeInfoRepository.deleteById(id);
     }
 
 }

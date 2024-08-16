@@ -204,13 +204,15 @@
         </div>
         <div class="select-container right-aligned">
             <select id="orderByBack">
-                <option value="desc">내림차순</option>
-                <option value="asc">오름차순</option>
+                <!-- Dto가 비어있거나 값이 'desc'일 경우 '내림차순'이 선택됨 -->
+                <option value="desc" th:selected="${writeInfoDto.orderByBack == null or writeInfoDto.orderByBack == 'desc'}">내림차순</option>
+                <option value="asc" th:selected="${writeInfoDto.orderByBack == 'asc'}">오름차순</option>
             </select>
             <select id="orderByFront">
-                <option value="update">업데이트순</option>
-                <option value="view">조회순</option>
-                <option value="heart">추천순</option>
+                <!-- Dto가 비어있거나 값이 'update'일 경우 '업데이트순'이 선택됨 -->
+                <option value="update" th:selected="${writeInfoDto.orderByFront == null or writeInfoDto.orderByFront == 'update'}">업데이트순</option>
+                <option value="view" th:selected="${writeInfoDto.orderByFront == 'view'}">조회순</option>
+                <option value="heart" th:selected="${writeInfoDto.orderByFront == 'heart'}">추천순</option>
             </select>
         </div>
     </div>

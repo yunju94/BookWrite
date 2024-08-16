@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.book.write.constant.Role.BLACK;
+
 @Controller
 @RequiredArgsConstructor
 public class WriteController {
@@ -79,6 +81,9 @@ public class WriteController {
     public String writeInfoForm(Model model, Principal principal){
         String getName=getEmailFromPrincipalOrSession(principal);
         Member member = memberService.SearchIdtoName(getName);
+        if (member.getRole()==BLACK){
+            return "write/error";
+        }
         WriteInfoDto writeInfoDto = new WriteInfoDto();
         writeInfoDto.setMember(member);
 
@@ -133,6 +138,17 @@ public class WriteController {
     }
 
 
+    @DeleteMapping(value = "/write/InfoForm/Delete/{id}")
+    public ResponseEntity<String> deleteInfo(@PathVariable Long id) {
+        try {
+            writeInfoService.deleteWriteDetail(id);
+            return new ResponseEntity<>("삭제되었습니다.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("삭제 실패: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
     @GetMapping(value = {"/novel/{category}", "/novel/{category}/{search}",
             "/novel/{category}/{orderByFront}/{orderByBack}",
@@ -147,7 +163,8 @@ public class WriteController {
         WriteInfoDto writeInfoDto = new WriteInfoDto();
         writeInfoDto.setCategory(category);
         search.ifPresent(writeInfoDto::setSearch);//search가 비어있지 않으면 dto에 값을 넣는다.
-
+        orderByFront.ifPresent(writeInfoDto::setOrderByFront);
+        orderByBack.ifPresent(writeInfoDto::setOrderByBack);
 
         Pageable pageable = PageRequest.of(page.orElse(0), 20);
         Page<NovelListDto> items = writeInfoService.getCategoryPage(writeInfoDto, pageable, orderByFront, orderByBack);

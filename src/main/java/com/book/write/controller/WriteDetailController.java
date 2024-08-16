@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.book.write.constant.Role.BLACK;
+
 @Controller
 @RequiredArgsConstructor
 public class WriteDetailController {
@@ -51,6 +53,10 @@ public class WriteDetailController {
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
         WriteDetailDto writeDetailDto = new WriteDetailDto();
         writeDetailDto.setWriteInfo(writeInfo);
+        Member member = memberService.searchMemberId(writeInfo.getMember().getId());
+        if (member.getRole()==BLACK){
+            return "write/error";
+        }
 
         model.addAttribute("writeInfo", writeInfo);
         model.addAttribute("WriteDetailDto", writeDetailDto);
@@ -69,6 +75,39 @@ public class WriteDetailController {
         return "redirect:/";
     }
 
+
+
+    @GetMapping(value = "/detail/update/{id}")//수정하기 클릭시
+    public  String detailUpdate (@PathVariable Long id, Model model){
+
+        WriteDetailDto writeDetailDto = writeDetailService.searchDetailDto(id);
+        WriteInfo writeInfo = writeInfoService.searchDetailId(writeDetailDto.getWriteInfo().getId());
+        writeDetailDto.setWriteInfo(writeInfo);
+
+        model.addAttribute("WriteDetailDto", writeDetailDto);
+        model.addAttribute("writeInfo", writeInfo);
+
+        return "writeDetail/new";
+    }
+    @PostMapping(value = "/detail/novel/update/{id}")//수정하기 수정
+    public String updateDetail(@PathVariable Long id,
+            @ModelAttribute("WriteDetailDto") WriteDetailDto writeDetailDto){
+        System.out.println(writeDetailDto.getMiniWrite());
+        System.out.println("title===>"+writeDetailDto.getMiniTitle());
+         writeDetailService.updateWriteDetail(writeDetailDto);
+
+        return "redirect:/";
+    }
+
+    @DeleteMapping("/novel/delete/{id}")
+    public ResponseEntity<String> deleteDetail(@PathVariable Long id) {
+        try {
+            writeDetailService.deleteWriteDetail(id);
+            return new ResponseEntity<>("삭제되었습니다.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("삭제 실패: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping(value = "/detail/novel/{id}")
     public  String WriteReadNovel(@PathVariable Long id, Model model){
 
@@ -82,6 +121,9 @@ public class WriteDetailController {
 
         return "writeDetail/novelRead";
     }
+
+
+
 
     @PostMapping(value="/Novel/detail/{id}")
     public  @ResponseBody ResponseEntity SearchNovelOrder (@PathVariable Long id, Principal principal){

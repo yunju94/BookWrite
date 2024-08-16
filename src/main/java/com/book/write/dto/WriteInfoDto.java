@@ -24,6 +24,9 @@ public class WriteInfoDto {
 
 
     private Category category;//종류
+    private  String orderByBack;//오름/내림차순
+    private  String orderByFront;// 순서
+
 
     @NotEmpty(message = "설명은 필수 입력 값입니다.")
     @Length(min = 1, max = 3000, message = "3000자 이하로 입력해주세요.")

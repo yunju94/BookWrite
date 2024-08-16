@@ -8,9 +8,12 @@
     <title>Title</title>
     <script th:inline="javascript">
 
-       $(document).ready(function() {
+        function updateForm(id) {
+               var form = document.getElementById('updateForm');
+               form.action = "/detail/novel/update/" + id;
+               form.submit();
+           }
 
-        });
 
     </script>
 
@@ -26,7 +29,7 @@
 <body>
 <div layout:fragment="content">
     <h3 th:text="${writeInfo.title}" class="title"></h3>
-    <form action="/novel/new/add" th:action="@{/novel/new/add/{id}(id=${writeInfo.id})}" role="form" method="post" th:object="${WriteDetailDto}">
+    <form id="updateForm" th:action="@{/novel/new/add/{id}(id=${writeInfo.id})}" role="form" method="post" th:object="${WriteDetailDto}">
         <input type="hidden" th:field="*{id}">
         <input type="hidden" th:field="*{writeInfo.id}" >
         <div>
@@ -38,11 +41,11 @@
             <textarea id="input" cols="100" rows="30" th:field="*{miniWrite}"></textarea>
         </div>
         <div>
-            <div th:if="${#strings.isEmpty(WriteDetailDto.miniTitle)}">
+            <div th:if="${#strings.isEmpty(WriteDetailDto.id)}">
                 <button id="save" type="submit">저장</button>
             </div>
-            <div th:unless="${#strings.isEmpty(WriteDetailDto.miniTitle)}">
-                <button type="button" th:value="${WriteDetailDto.id}" onclick="update(this.value)">수정</button>
+            <div th:unless="${#strings.isEmpty(WriteDetailDto.id)}">
+                <button type="button" th:value="${WriteDetailDto.id}" onclick="updateForm(this.value)">수정</button>
             </div>
         </div>
 

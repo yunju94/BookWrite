@@ -79,4 +79,7 @@ public class MemberService implements UserDetailsService {
     public List<Member> AllMember(){
        return memberRepository.findAll();
     }
+    public  Member searchMemberId(Long id){
+        return memberRepository.findById(id).orElseThrow();
+    }
 }

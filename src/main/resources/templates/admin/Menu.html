@@ -6,12 +6,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:inline="javascript">
 
+        $(document).ready(function() {
+
+             $('select[name="RoleSelected"]').change(function() {
+                 var selectedRole = $(this).val();
+                 var selectId = $(this).attr('id');
+
+                 var token = $("meta[name='_csrf']").attr("content");
+                 var header = $("meta[name='_csrf_header']").attr("content");
+
+
+               var url = '/admin/change/'+selectedRole+"/"+selectId;
+               var data = {
+                   selectedRole: selectedRole,
+
+               };
+               var param = JSON.stringify(data);
+
+               $.ajax({
+                   url: url,
+                   type: "POST",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("변경완료");
+                       location.href='/admin/menu';
+
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+
+                       }
+                   }
+               });
+
+
+             });
+         });
+
+
+
     </script>
+
 
     <style>
 
@@ -20,9 +70,42 @@
 
 <body>
 <div layout:fragment="content">
-    <div>
-      <a>관리자 메뉴입니다.</a>
-    </div>
+    <table>
+        <thead>
+        <tr>
+
+            <td>회원번호</td>
+            <td>이름</td>
+            <td>별명</td>
+            <td>아이디</td>
+            <td>이메일</td>
+            <td>전화번호</td>
+            <td>유형</td>
+
+        </tr>
+
+        </thead>
+        <tbody th:each="member: ${member}">
+        <tr>
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.name}"></td>
+            <td th:text="${member.nickname}"></td>
+            <td th:text="${member.loginId}"></td>
+            <td th:text="${member.email}"></td>
+            <td th:text="${member.tel}"></td>
+            <td>
+                <select th:id="${member.id}" name="RoleSelected">
+                    <option value="USER" th:selected="${member.role == T(com.book.write.constant.Role).USER}">USER</option>
+                    <option value="BLACK" th:selected="${member.role == T(com.book.write.constant.Role).BLACK}">BLACK</option>
+                    <option value="ADMIN" th:selected="${member.role == T(com.book.write.constant.Role).ADMIN}">ADMIN</option>
+
+                </select>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
 
 </div>
 </body>

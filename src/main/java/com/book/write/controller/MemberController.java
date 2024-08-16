@@ -112,11 +112,11 @@ public class MemberController {
     }
 
     @GetMapping(value = "/member/oauth/new")
-    public String oauthMemberForm (Model model, Principal principal, OAuth2AuthenticationToken authenticationToken){
+    public String oauthMemberForm (Model model, Principal principal){
 
         String email=getEmailFromPrincipalOrSession(principal);
         Member member = memberService.searchEmail(email);
-        if (member.getNickname().isEmpty()||member.getNickname().equals(null) ){
+        if (member.getNickname() == null || member.getNickname().isEmpty()){
             MemberFormDto memberFormDto = new MemberFormDto();
             model.addAttribute("memberFormDto", memberFormDto);
             return "member/oauthForm";

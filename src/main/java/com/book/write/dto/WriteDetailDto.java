@@ -1,9 +1,11 @@
 package com.book.write.dto;
 
+import com.book.write.entity.WriteDetail;
 import com.book.write.entity.WriteInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -26,6 +28,17 @@ public class WriteDetailDto {
 
 
     private int heart;//추천
+
+    //---------------------------------------------//
+
+    private static ModelMapper modelMapper = new ModelMapper();
+
+    public  static  WriteDetailDto of(WriteDetail writeDetail){
+        return  modelMapper.map(writeDetail, WriteDetailDto.class);
+    }
+
+    //------------------------------------------------------//
+
 
 
 }

@@ -4,13 +4,16 @@ import com.book.write.dto.WriteDetailDto;
 import com.book.write.entity.Purchase;
 import com.book.write.entity.Rental;
 import com.book.write.entity.WriteDetail;
+import com.book.write.entity.WriteInfo;
 import com.book.write.repository.PurchanseRepository;
 import com.book.write.repository.RentalRepository;
 import com.book.write.repository.WriteDetailRepository;
+import lombok.Lombok;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,5 +62,24 @@ public class WriteDetailService {
         } else {
             return true;
         }
+    }
+
+    public  WriteDetailDto searchDetailDto(Long id){
+        WriteDetail writeDetail = writeDetailRepository.findById(id).orElseThrow();
+        return WriteDetailDto.of(writeDetail);
+    }
+
+    public  void updateWriteDetail(WriteDetailDto writeDetailDto){
+        WriteDetail writeDetail = writeDetailRepository.findById(writeDetailDto.getId()).orElseThrow();
+        writeDetail.setMiniWrite(writeDetailDto.getMiniWrite());
+        writeDetail.setMiniTitle(writeDetailDto.getMiniTitle());
+        writeDetail.setUpdateTime(LocalDateTime.now());
+        writeDetail.setUpdateDate(LocalDate.now());
+
+
+    }
+
+    public  void  deleteWriteDetail(Long detailId){
+        writeDetailRepository.deleteById(detailId);
     }
 }

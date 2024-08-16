@@ -34,6 +34,10 @@ public class WriteDetail extends BaseEntity{
     @JoinColumn(name = "write_info_id", referencedColumnName = "write_info_id")
     private WriteInfo writeInfo;
 
+
+
+
+
     public static WriteDetail createWrite(WriteDetailDto writeDetailDto){
         WriteDetail writeDetail = new WriteDetail();
         writeDetail.setMiniTitle(writeDetailDto.getMiniTitle());
@@ -52,6 +56,14 @@ public class WriteDetail extends BaseEntity{
     public  static  WriteDetail updateViewCount(WriteDetail writeDetail){
         writeDetail.setViewCount(writeDetail.getViewCount()+1);
         return writeDetail;
+    }
+    public  void  updateSave(WriteDetail writeDetail, WriteDetailDto writeDetailDto, WriteInfo writeInfo){
+        writeDetail.setMiniTitle(writeDetailDto.getMiniTitle());
+        writeDetail.setMiniWrite(writeDetailDto.getMiniWrite());
+        writeDetail.setUpdateTime(LocalDateTime.now());
+        writeDetail.setUpdateDate(LocalDate.now());
+        writeInfo.setUpdateTime(LocalDateTime.now());
+        writeInfo.setUpdateDate(LocalDate.now());
     }
 
 
