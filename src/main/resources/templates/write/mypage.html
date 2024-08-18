@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <script th:inline="javascript">
+
+
+
+    </script>
+
+
+    <style>
+
+
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3>개인정보</h3>
+
+
+</div>
+</body>
+
+
+</html>

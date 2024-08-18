@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <script th:inline="javascript">
+
+
+
+    </script>
+
+
+    <style>
+
+
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3>관리자 문의 요청</h3>
+    <div th:each="boardList: ${boardList}">
+        <p th:text="${boardList.member.nickname}"></p>
+        <p th:text="${boardList.content}"></p>
+        <br>
+    </div>
+
+
+</div>
+</body>
+
+
+</html>

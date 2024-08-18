@@ -1,20 +1,16 @@
 package com.book.write.controller;
 
 import com.book.write.constant.Category;
-import com.book.write.dto.NovelListDto;
-import com.book.write.dto.SessionUser;
-import com.book.write.dto.WriteInfoDto;
-import com.book.write.dto.WriteInfoSerchDto;
+import com.book.write.dto.*;
+import com.book.write.entity.Board;
 import com.book.write.entity.Member;
 import com.book.write.entity.WriteDetail;
 import com.book.write.entity.WriteInfo;
-import com.book.write.service.MemberService;
-import com.book.write.service.PurchanseService;
-import com.book.write.service.WriteDetailService;
-import com.book.write.service.WriteInfoService;
+import com.book.write.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.MultipartStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.book.write.constant.Role.ADMIN;
 import static com.book.write.constant.Role.BLACK;
 
 @Controller
@@ -42,6 +39,7 @@ public class WriteController {
     private  final WriteInfoService writeInfoService;
     private final WriteDetailService writeDetailService;
     private  final PurchanseService purchanseService;
+    private  final BoardService boardService;
 
     private final HttpSession httpSession;
 
@@ -231,6 +229,41 @@ public class WriteController {
         model.addAttribute("count", count);
 
         return "writeDetail/detailNovel";
+    }
+
+    @GetMapping(value = "/write/mypage")
+    public  String myPage (Principal principal, Model model){
+        String Id =  getEmailFromPrincipalOrSession(principal);
+        Member member = memberService.SearchIdtoName(Id);
+
+        model.addAttribute("member", member);
+
+
+        return "write/mypage";
+    }
+
+    @GetMapping (value = "/write/board/{str}")
+    public  String board(@PathVariable String str, Principal principal, Model model){
+        String Id =  getEmailFromPrincipalOrSession(principal);
+        Member member = memberService.SearchIdtoName(Id);
+        if (str.equals("admin")){
+            List<Board> boardList = boardService.findByAll();
+            model.addAttribute("boardList", boardList);
+
+            return "write/Board_Admin";
+        }
+       BoardDto boardDto = new BoardDto();
+        boardDto.setMember(member);
+        model.addAttribute("boardDto",boardDto);
+
+        return  "write/boardPop";
+
+    }
+
+    @PostMapping(value = "/write/boardPop")
+    public  String boardPopSave(@Valid BoardDto boardDto){
+        boardService.saveBoardDto(boardDto);
+        return "redirect:/";
     }
 
 
