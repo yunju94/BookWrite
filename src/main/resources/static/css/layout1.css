@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
 
 
@@ -13,17 +14,20 @@ html{
 
 
 .footer {
- font-family: "Noto Sans KR", sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    padding: 15px 0;
-    text-align: center;
+  position: fixed; /* Footer를 페이지 하단에 고정시킵니다 */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 15px 0;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0); /* 배경 색상을 흰색과 50% 투명도로 설정합니다 */
+  border-top: 1px solid rgba(255, 255, 255, 0); /* 상단 경계선도 동일한 투명도로 설정합니다 */
+  z-index: 1000; /* 다른 콘텐츠 위에 표시되도록 설정합니다 */
 }
 .content{
  font-family: "Noto Sans KR", sans-serif;

@@ -21,11 +21,18 @@ public class MemberService implements UserDetailsService {
     private  final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     public Member saveMemberForm(MemberFormDto memberFormDto){
+
         Member member = Member.createForm(memberFormDto,passwordEncoder);
+
         validateDuplicateMember(member);
+
         memberRepository.save(member);
         return member;
 
+    }
+
+    public  MemberFormDto of(Member member){
+        return MemberFormDto.of(member);
     }
     private void validateDuplicateMember(Member member) {
         Member findMember = memberRepository.findByLoginId(member.getLoginId());
@@ -73,7 +80,11 @@ public class MemberService implements UserDetailsService {
     }
 
     public  void  updateMemberForm(MemberFormDto memberFormDto, Member member){
-        member.updateForm(memberFormDto, member, passwordEncoder);
+        member.updateForm(memberFormDto, member);
+    }
+
+    public  void  myPageUpdate(MemberFormDto memberFormDto, Member member){
+        member.myPageUpdate(memberFormDto, member);
     }
 
     public List<Member> AllMember(){

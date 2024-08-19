@@ -105,4 +105,8 @@ public class WriteInfoService {
        writeInfoRepository.deleteById(id);
     }
 
+    public  List<WriteInfo> findAll(){
+       return writeInfoRepository.findAllByOrderByUpdateTimeDesc();
+    }
+
 }

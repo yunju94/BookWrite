@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,6 +30,8 @@ public class MemberController {
     private final HttpSession httpSession;
     String confirm = "";
     boolean confirmCheck = false;
+    boolean IdCheck = false;
+    boolean nickCheck = false;
     @GetMapping(value = "/member/login")
     public String login(){
         return "member/login";
@@ -57,8 +60,34 @@ public class MemberController {
         return "member/new";
     }
     @PostMapping(value = "/member/new")
-    public String membersave(@Valid MemberFormDto memberFormDto){
-        memberService.saveMemberForm(memberFormDto);
+    public String membersave(@Valid MemberFormDto memberFormDto, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()) {
+            return "member/new";//다시 회원가입으로 돌려보닙니다.
+        }
+
+        if (!IdCheck){
+            model.addAttribute("errorMessage", "아이디 인증하세요");
+            return "member/new";
+        }
+
+        if (!nickCheck){
+            model.addAttribute("errorMessage", "별명 인증하세요");
+            return "member/new";
+        }
+        if (!confirmCheck){
+            model.addAttribute("errorMessage", "이메일 인증하세요");
+            return "member/new";
+        }
+        try {
+            //Member 객체 생성
+            memberService.saveMemberForm(memberFormDto);
+
+
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/new";
+        }
+
         return "redirect:/";
     }
 
@@ -69,9 +98,11 @@ public class MemberController {
         if (member == null) {
 
             String jsonResponse = "{ \"message\": \"사용 가능한 아이디입니다.\" }";
+            IdCheck = true;
             return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         }
         String jsonResponse = "{ \"message\": \"중복된 아이디입니다.\" }";
+        IdCheck = false;
         return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST);
 
     }
@@ -81,16 +112,18 @@ public class MemberController {
         Member member = memberService.SearchNickName(NickName) ;
         if (member == null) {
             String jsonResponse = "{ \"message\": \"사용 가능한 별명입니다.\" }";
+            nickCheck = true;
             return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         }
 
         String jsonResponse = "{ \"message\": \"중복된 별명입니다.\" }";
+        nickCheck = false;
         return new ResponseEntity<>(jsonResponse, HttpStatus.BAD_REQUEST);
 
     }
 
-    @PostMapping(value = "/members/{email}/emailConfirm")
-    public @ResponseBody ResponseEntity emailConfrim(@PathVariable("email") String email)
+    @PostMapping(value = "/member/{email}/emailConfirm")
+    public @ResponseBody ResponseEntity emailConfrim(@PathVariable String email)
             throws Exception{
 
         System.out.println("email"+ email);
@@ -101,8 +134,8 @@ public class MemberController {
     }
 
 
-    @PostMapping(value = "/members/{code}/codeCheck")
-    public @ResponseBody ResponseEntity codeConfirm(@PathVariable("code")String code)
+    @PostMapping(value = "/member/{code}/codeCheck")
+    public @ResponseBody ResponseEntity codeConfirm(@PathVariable("code") String code)
             throws Exception {
         if (confirm.equals(code)) {
             confirmCheck = true;
@@ -142,6 +175,22 @@ public class MemberController {
         return principal.getName();
     }
 
+
+    @PostMapping(value =  "/member/mypage")
+    public  String updateMemberInfo(@ModelAttribute  MemberFormDto memberFormDto
+                                , BindingResult bindingResult
+                                ,Model model, Principal principal){
+        if (bindingResult.hasErrors()) {
+            System.out.println("bindingResult"+bindingResult);
+            System.out.println(bindingResult.hasErrors());
+            model.addAttribute("errorMessage", "오류가 발생했습니다.");
+        }
+        String email=getEmailFromPrincipalOrSession(principal);
+        Member member = memberService.searchEmail(email);
+       
+        memberService.myPageUpdate(memberFormDto, member);
+        return "redirect:/";
+    }
 
 
 }

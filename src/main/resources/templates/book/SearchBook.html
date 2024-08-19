@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <script th:inline="javascript">
+        function searchBtn(){
+             var token = $("meta[name='_csrf']").attr("content");
+             var header = $("meta[name='_csrf_header']").attr("content");
+            var search = $('#search').val();
+
+            url = "/book/SearchBook/"+ encodeURIComponent(search)
+
+            var data = {
+                "search": search,
+             };
+               var param = JSON.stringify(data);
+
+                $.ajax({
+                   url: url,
+                   type: "POST",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("확인!");
+                    var books = result;
+                    console.log(books)
+                    var container = $('#itemContainer');
+
+                    var container = $('#itemContainer');
+                    container.empty(); // 이 줄이 추가됨
+
+                    books.forEach(function (book) {
+                        var newItemHtml = `
+
+                            <div class=borderLine>
+                                <p>제목: ${book.title}</p>
+                                <p>저자: ${book.authors}</p>
+                                <p>출판사: ${book.publisher}</p>
+                                <p>
+                                <img th:if="${book.thumbnail}" src="${book.thumbnail}" alt="Book Thumbnail" />
+
+                            </div>
+                        `;
+                        container.append(newItemHtml);
+                    });
+
+
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+                           alert("실패!");
+
+                       }
+                   }
+               });
+
+
+
+        }
+
+
+    </script>
+
+
+    <style>
+        .borderLine {
+           border: 1px solid #ccc;
+           padding: 10px;
+           margin: 10px;
+           display: flex;
+           flex-direction: column;
+           align-items: center; /* Center align horizontally */
+           text-align: center; /* Center align text */
+       }
+
+       .borderLine img {
+           max-width: 100%; /* Ensure image does not overflow */
+           height: auto; /* Maintain aspect ratio */
+       }
+
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h3>도서 검색(카카오)</h3>
+    <div>
+        <input type="text" id="search" placeholder="검색할 제목을 써주세요" class="search">
+        <button type="button" onclick="searchBtn()" style="background-color: white; border: 0px;">
+            <img th:src="@{/css/image/search.png}" height="35">
+        </button>
+    </div>
+    <div id="itemContainer">
+
+    </div>
+
+
+</div>
+</body>
+
+
+</html>

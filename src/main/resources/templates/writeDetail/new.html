@@ -6,54 +6,90 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script th:inline="javascript">
-
         function updateForm(id) {
-               var form = document.getElementById('updateForm');
-               form.action = "/detail/novel/update/" + id;
-               form.submit();
-           }
+            var form = document.getElementById('updateForm');
+            form.action = "/detail/novel/update/" + id;
+            form.submit();
+        }
 
 
+         $(document).ready(function() {
+        const maxLength = 8000;  // 최대 글자 수
+
+        $('#input').on('input', function() {
+            var textLength = $(this).val().length;
+            var remaining = maxLength - textLength;
+            $('#charCount').text(`글자 수: ${textLength}/${maxLength}`);
+            if (remaining < 0) {
+                $('#charCount').css('color', 'red');
+            } else {
+                $('#charCount').css('color', '#6c757d');
+            }
+        });
+    });
     </script>
 
     <style>
-        .title{
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
+        .title {
+          margin-top: 30px;
+          margin-bottom: 30px;
+          font-size: 2rem;
+          font-weight: bold;
+      }
+      .form-container {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          background-color: #f8f9fa;
+      }
+      .form-container textarea {
+          resize: vertical;
+      }
+      .btn-custom {
+          margin-top: 10px;
+      }
+      .char-count {
+          font-size: 0.875rem;
+          color: #6c757d;
+      }
     </style>
 
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h3 th:text="${writeInfo.title}" class="title"></h3>
-    <form id="updateForm" th:action="@{/novel/new/add/{id}(id=${writeInfo.id})}" role="form" method="post" th:object="${WriteDetailDto}">
-        <input type="hidden" th:field="*{id}">
-        <input type="hidden" th:field="*{writeInfo.id}" >
-        <div>
-            <span>제목</span>
-            <input type="text"  th:field="*{miniTitle}">
-        </div>
-        <div>
-            <span>내용</span>
-            <textarea id="input" cols="100" rows="30" th:field="*{miniWrite}"></textarea>
-        </div>
-        <div>
-            <div th:if="${#strings.isEmpty(WriteDetailDto.id)}">
-                <button id="save" type="submit">저장</button>
+    <div class="form-container">
+        <h3 th:text="${writeInfo.title}" class="title"></h3>
+        <form id="updateForm" th:action="@{/novel/new/add/{id}(id=${writeInfo.id})}" role="form" method="post" th:object="${WriteDetailDto}">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{writeInfo.id}">
+            <div class="form-group">
+                <label for="miniTitle">제목</label>
+                <input type="text" id="miniTitle" class="form-control" th:field="*{miniTitle}">
             </div>
-            <div th:unless="${#strings.isEmpty(WriteDetailDto.id)}">
-                <button type="button" th:value="${WriteDetailDto.id}" onclick="updateForm(this.value)">수정</button>
+            <div class="form-group">
+                <label for="input">내용</label>
+                <textarea id="input" class="form-control" cols="100" rows="30" th:field="*{miniWrite}"></textarea>
+                <div id="charCount" class="char-count">글자 수: 0/8,000</div>
             </div>
-        </div>
-
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-    </form>
-
-
-
+            <div class="form-group">
+                <div th:if="${#strings.isEmpty(WriteDetailDto.id)}">
+                    <button id="save" type="submit" class="btn btn-primary btn-custom">저장</button>
+                </div>
+                <div th:unless="${#strings.isEmpty(WriteDetailDto.id)}">
+                    <button type="button" th:value="${WriteDetailDto.id}" onclick="updateForm(this.value)" class="btn btn-warning btn-custom">수정</button>
+                </div>
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        </form>
+    </div>
 </div>
 </body>
 

@@ -64,7 +64,7 @@
                        buyer_postcode: '123-456'
                    }, function (rsp) {
                        if (rsp.success) {
-                           alert('결제 성공: ' + JSON.stringify(rsp));
+                         //  alert('결제 성공: ' + JSON.stringify(rsp));
                            $.ajax({
                                url: "/payment",
                                method: "POST",
@@ -81,7 +81,8 @@
                                window.location.href = "/success-payment/" + orderUid;
                            });
                        } else {
-                           alert("결제 실패: " + JSON.stringify(rsp));
+                           //alert("결제 실패: " + JSON.stringify(rsp));
+                           alert("결제 실패");
                            window.location.href = "/fail-payment/" + orderUid;
                        }
                    });

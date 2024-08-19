@@ -61,11 +61,20 @@ public class Member {
         return member;
     }
 
-    public  Member updateForm(MemberFormDto memberFormDto, Member member,  PasswordEncoder passwordEncoder){
+    public  Member updateForm(MemberFormDto memberFormDto, Member member){
         member.setTel(memberFormDto.getTel());
         member.setLoginId(member.getEmail());
         member.setNickname(memberFormDto.getNickname());
         return member;
+    }
+
+    public  Member myPageUpdate(MemberFormDto memberFormDto, Member member){
+        member.setName(memberFormDto.getName());
+        member.setNickname(memberFormDto.getNickname());
+        member.setLoginId(memberFormDto.getLoginId());
+        member.setTel(memberFormDto.getTel());
+        member.setEmail(memberFormDto.getEmail());
+        return  member;
     }
 
 }

@@ -14,9 +14,10 @@ public interface WriteInfoRepository extends JpaRepository<WriteInfo, Long> ,
 
     List<WriteInfo> findByMemberId(Long memberId);
 
+
     @Query(value = "SELECT * FROM bookw.write_info WHERE write_info_id = :DetailId", nativeQuery = true)
     WriteInfo findByWriteInfoId(@Param("DetailId") Long DetailId);
 
-
+    List<WriteInfo> findAllByOrderByUpdateTimeDesc();
 
 }

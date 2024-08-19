@@ -6,21 +6,262 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
     <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+    let limit = 0; // 'let'으로 선언하여 값 변경 가능
+
+    const buttons = document.querySelectorAll('.flicking-button');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const container = document.querySelector(targetId);
+
+            if (!container) {
+                console.error(`Container with id ${targetId} not found.`);
+                return;
+            }
+
+            const scrollAmount = 300; // 버튼 클릭 시 이동할 거리
+
+            // 현재 transform 값을 가져와서 숫자만 추출
+            let currentTransform = container.style.transform || 'translateX(0px)';
+            let currentOffset = parseInt(currentTransform.replace('translateX(', '').replace('px)', ''), 10) || 0;
+
+            if (this.classList.contains('next')) {
+                if (limit >= 1200) { // limit이 1200 이상일 때 scrollAmount를 0으로 설정
+                    console.log("Cannot move further right");
+                    return; // 제한을 초과하지 않도록 함수 종료
+                }
+
+                limit += scrollAmount;
+                console.log("L");
+                container.style.transform = `translateX(${currentOffset - scrollAmount}px)`;
+            } else if (this.classList.contains('prev')) {
+                if (limit <= 0) { // limit이 0 이하일 때 scrollAmount를 0으로 설정
+                    console.log("Cannot move further left");
+                    return; // 제한을 초과하지 않도록 함수 종료
+                }
+
+                limit -= scrollAmount;
+                console.log("R");
+                container.style.transform = `translateX(${currentOffset + scrollAmount}px)`;
+            }
+
+            console.log(limit);
+        });
+    });
+});
+
+
     </script>
 
     <style>
+        #container {
+    white-space: nowrap; /* 가로로 나열된 아이템을 스크롤할 수 있게 합니다 */
+    overflow-x: auto; /* 수평 스크롤을 활성화합니다 */
+}
+        /* Section title */
+ .section-title {
+     clear: both; /* 플로트된 요소를 초기화 */
+     margin-bottom: 20px; /* 섹션 제목과 콘텐츠 간의 간격 */
+ }
+
+ /* Book table wrapper */
+ .book-table-wrapper {
+     display: flex;
+     overflow: hidden; /* 넘치는 부분을 숨깁니다 */
+     position: relative;
+     width: 100%; /* 부모 요소의 전체 너비를 차지합니다 */
+ }
+
+ /* Book table */
+ .book-table {
+     display: flex;
+     flex-wrap: nowrap;
+     transition: transform 0.5s ease; /* 슬라이드 애니메이션 */
+ }
+
+ /* Book item */
+ .book-item {
+     border: 1px solid #ccc;
+     padding: 10px;
+     width: 150px; /* 고정 너비 */
+     text-align: center;
+     border-radius: 8px;
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+     background-color: #fff; /* 배경 색상 추가 */
+     margin-right: 20px; /* 책 항목 간의 간격 */
+     margin-bottom: 20px; /* 줄바꿈을 위한 아래 간격 */
+     flex: 0 0 150px; /* 각 책 항목의 너비 설정 */
+ }
+
+ /* Book item image */
+ .book-item img {
+     max-width: 130px;
+     max-height: 130px;
+     border-radius: 4px;
+ }
+
+ /* Book item text */
+ .book-item p {
+     margin: 5px 0;
+     font-size: 0.9em;
+     color: #666;
+ }
+
+ /* Heart icon container */
+ .book-item .heart {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 0.9em;
+     color: #e74c3c;
+ }
+
+ /* Heart icon */
+ .book-item .heart svg {
+     margin-right: 5px;
+ }
+
+ /* Content wrapper */
+ .div_content {
+     display: block;
+     unicode-bidi: isolate;
+ }
+
+ /* Content list */
+ .content_list {
+     display: flex;
+     flex-direction: column;
+ }
+
+ /* List item */
+ .list_li {
+     margin-right: 10px;
+ }
+
+ /* Flicking button style */
+ .flicking-button {
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%);
+     background: rgba(0, 0, 0, 0.5);
+     color: white;
+     border: none;
+     padding: 10px;
+     cursor: pointer;
+     z-index: 1000;
+ }
+
+
+
+ .flicking-button.prev {
+     left: 0;
+ }
+
+ .flicking-button.next {
+     right: 0;
+ }
+
+        .book-item>a>img{
+
+        width:130px;
+        height:130px;
+        }
     </style>
 
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h3>메인입니다.</h3>
+    <h3 class="section-title">신규 업데이트</h3>
+    <!-- 신규 업데이트 책 목록은 여기에 추가됩니다 -->
 
+    <h3 class="section-title">판타지</h3>
+    <div class="book-table-wrapper">
+        <button type="button" class="flicking-button prev" id="prev" data-target="#fantasy-table">&#8249;</button>
+        <button type="button" class="flicking-button next" id="next" data-target="#fantasy-table">&#8250;</button>
+        <div class="book-table" id="fantasy-table">
+            <div th:each="book, iterStat : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).Fantasy}" class="book-item" >
+                    <a th:href="'/writeNovel/' + ${book.id}">
+                        <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
+                        <p th:text="${book.title}"></p>
+                        <p th:text="${book.member.Nickname}"></p>
+                        <div class="heart">
+                            <!-- SVG 코드 -->
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <h3 class="section-title">로맨스 판타지</h3>
+    <div class="book-table-wrapper">
+        <button type="button" class="flicking-button prev" data-target="#romance-fantasy-table">&#8249;</button>
+        <button type="button" class="flicking-button next" data-target="#romance-fantasy-table">&#8250;</button>
+        <div class="book-table" id="romance-fantasy-table">
+            <div th:each="book, iterStat : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).RomanceFantasy and iterStat.index < 30}" class="book-item">
+                    <a th:href="'/writeNovel/' + ${book.id}">
+                        <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
+                        <p th:text="${book.title}"></p>
+                        <p th:text="${book.member.Nickname}"></p>
+                        <div class="heart">
+                            <!-- SVG 코드 -->
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <h3 class="section-title">로맨스</h3>
+    <div class="book-table-wrapper">
+        <button type="button" class="flicking-button prev" data-target="#romance-table">&#8249;</button>
+        <button type="button" class="flicking-button next" data-target="#romance-table">&#8250;</button>
+        <div class="book-table" id="romance-table">
+            <div th:each="book, iterStat : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).Romance and iterStat.index < 30}" class="book-item">
+                    <a th:href="'/writeNovel/' + ${book.id}">
+                        <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
+                        <p th:text="${book.title}"></p>
+                        <p th:text="${book.member.Nickname}"></p>
+                        <div class="heart">
+                            <!-- SVG 코드 -->
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-title">기타</h3>
+    <div class="book-table-wrapper">
+        <button type="button" class="flicking-button prev" data-target="#etc-table">&#8249;</button>
+        <button type="button" class="flicking-button next" data-target="#etc-table">&#8250;</button>
+        <div class="book-table" id="etc-table">
+            <div th:each="book, iterStat : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).etc and iterStat.index < 30}" class="book-item">
+                    <a th:href="'/writeNovel/' + ${book.id}">
+                        <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
+                        <p th:text="${book.title}"></p>
+                        <p th:text="${book.member.Nickname}"></p>
+                        <div class="heart">
+                            <!-- SVG 코드 -->
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 </body>
 
 

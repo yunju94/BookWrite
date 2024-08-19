@@ -75,6 +75,8 @@ public class WriteController {
         return "write/list";
     }
 
+
+
     @GetMapping(value = "/write/InfoForm")
     public String writeInfoForm(Model model, Principal principal){
         String getName=getEmailFromPrincipalOrSession(principal);
@@ -211,7 +213,12 @@ public class WriteController {
     @GetMapping(value = "/writeNovel/{id}")
     public  String WriteInfoDetail(@PathVariable Long id, Model model, Principal principal){
 
-        Member member = memberService.memberLoginId(principal.getName());
+        if (principal==null){
+            return "member/login";
+        }
+        String email = getEmailFromPrincipalOrSession(principal);
+
+        Member member = memberService.memberLoginId(email);
 
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(id);
 
@@ -233,14 +240,20 @@ public class WriteController {
 
     @GetMapping(value = "/write/mypage")
     public  String myPage (Principal principal, Model model){
+        if (principal == null){
+            return "member/login";
+        }
         String Id =  getEmailFromPrincipalOrSession(principal);
         Member member = memberService.SearchIdtoName(Id);
+        MemberFormDto memberFormDto = memberService.of(member);
 
         model.addAttribute("member", member);
+        model.addAttribute("memberFormDto", memberFormDto);
 
 
         return "write/mypage";
     }
+
 
     @GetMapping (value = "/write/board/{str}")
     public  String board(@PathVariable String str, Principal principal, Model model){
