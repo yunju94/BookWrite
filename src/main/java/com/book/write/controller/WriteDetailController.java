@@ -1,5 +1,6 @@
 package com.book.write.controller;
 
+import com.book.write.dto.CommentDto;
 import com.book.write.dto.SessionUser;
 import com.book.write.dto.WriteDetailDto;
 import com.book.write.entity.*;
@@ -34,6 +35,7 @@ public class WriteDetailController {
     private  final  PointService pointService;
     private  final WriteDetailRepository writeDetailRepository;
     private  final WriteInfoRepository writeInfoRepository;
+    private  final  CommentService commentService;
 
 
     private final HttpSession httpSession;
@@ -109,15 +111,24 @@ public class WriteDetailController {
         }
     }
     @GetMapping(value = "/detail/novel/{id}")
-    public  String WriteReadNovel(@PathVariable Long id, Model model){
+    public  String WriteReadNovel(@PathVariable Long id, Model model, Principal principal){
 
         WriteDetail writeDetail = writeDetailService.searchDetailId(id);
-
-
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(writeDetail.getWriteInfo().getId());
 
+        String loginId = getEmailFromPrincipalOrSession(principal);
+        Member member = memberService.memberLoginId(loginId);
+        CommentDto commentDto = CommentDto.of(new Comment());
+        commentDto.setMember(member);
+        commentDto.setWriteDetail(writeDetail);
+
+        List<Comment> commentList = commentService.searchCommentList(writeDetail.getId());
+
+
+        model.addAttribute("commentDto", commentDto);
         model.addAttribute("writeInfo", writeInfo);
         model.addAttribute("writeDetail", writeDetail);
+        model.addAttribute("commentList", commentList);
 
         return "writeDetail/novelRead";
     }
@@ -218,7 +229,7 @@ public class WriteDetailController {
             }
         }
 //금액이 사려는 코인보다 많을 경우 코인 내고 구매
-        coinService.minusCoin(member, KDR_coin, YES_coin, Author);
+        coinService.minusCoin(member, KDR_coin, YES_coin, Author, writeDetail);
       // 구매 이력에 저장
         if (str.equals("Pur")){
             purchanseService.savePur(writeDetail);

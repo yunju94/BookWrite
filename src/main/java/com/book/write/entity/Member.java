@@ -2,6 +2,7 @@ package com.book.write.entity;
 
 import com.book.write.constant.Role;
 import com.book.write.dto.MemberFormDto;
+import com.book.write.dto.MemberPasswordDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -75,6 +76,13 @@ public class Member {
         member.setTel(memberFormDto.getTel());
         member.setEmail(memberFormDto.getEmail());
         return  member;
+    }
+
+    public static Member PasswordUpdate(Member member, MemberPasswordDto memberPasswordDto,
+                                        PasswordEncoder passwordEncoder){
+        String password = passwordEncoder.encode(memberPasswordDto.getLoginPassword());
+        member.setLoginPassword(password);
+        return member;
     }
 
 }

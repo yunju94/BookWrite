@@ -11,7 +11,7 @@ import java.util.UUID;
 @Table(name = "Point")
 @Getter
 @Setter
-public class Point {
+public class Point extends BaseDateEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "point_id")

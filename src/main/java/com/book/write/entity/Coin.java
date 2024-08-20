@@ -9,7 +9,6 @@ import lombok.Setter;
 @Table(name = "coin")
 @Getter
 @Setter
-@AllArgsConstructor
 public class Coin {
 
     @Id
@@ -29,7 +28,7 @@ public class Coin {
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id")
+    @JoinColumn(name = "writeDetail_id")
     private WriteDetail writeDetail;
 
     public Coin(){
@@ -48,12 +47,13 @@ public class Coin {
 
     }
 
-    public  static  Coin createCoin(Member member, double KDR_coin, double YES_coin , Point point){
+    public  static  Coin createCoin(Member member, double KDR_coin, double YES_coin , Point point, WriteDetail writeDetail){
         Coin coins = new Coin();
         coins.setYES_coin(-YES_coin);
         coins.setKDR_coin(-KDR_coin);
         coins.setPoint(point);
         coins.setMember(member);
+        coins.setWriteDetail(writeDetail);
         return coins;
     }
 
@@ -63,6 +63,7 @@ public class Coin {
         coins.setKDR_coin(KDR_coin);
         coins.setPoint(point);
         coins.setMember(member);
+
         return coins;
     }
 

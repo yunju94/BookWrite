@@ -41,7 +41,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         //로그인에 관여
         http.authorizeRequests(auth -> auth
                 .requestMatchers("/resources/**", "/css/**", "/js/**", "/images/**", "/img/**", "/item/**", "/favicon.ico", "/error").permitAll()
-                .requestMatchers("/", "/member/**", "/writeNovel/**","/write/**","/point/**", "/novel/**", "/coin/**").permitAll()
+                .requestMatchers("/", "/member/**", "/writeNovel/**","/write/**","/point/**", "/novel/**", "/coin/**", "/comment/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         ).formLogin(formLogin -> formLogin

@@ -231,6 +231,123 @@
         .H{
             width:65px;
         }
+
+
+ /* 댓글 스타일 */
+        .divComment{
+            max-width: 800px;
+             margin-left: 15%;
+              padding: 20px;
+
+          }
+
+
+          .textarea-container {
+    max-width: 600px; /* 최대 너비 설정 */
+    margin: 20px auto; /* 중앙 정렬 */
+    padding: 10px; /* 여백 설정 */
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 자식 요소 간의 간격 설정 */
+}
+
+.textarea-container strong {
+    font-size: 18px; /* 제목 폰트 사이즈 설정 */
+    margin-bottom: 5px; /* 제목 아래 여백 설정 */
+}
+
+.textarea-container p {
+    margin: 0; /* 패러그래프 마진 제거 */
+    font-size: 14px; /* 패러그래프 폰트 사이즈 설정 */
+    color: #666; /* 패러그래프 텍스트 색상 설정 */
+}
+
+textarea {
+    width: 100%; /* 전체 너비 사용 */
+    min-height: 150px; /* 최소 높이 설정 */
+    padding: 10px; /* 여백 설정 */
+    border: 1px solid #ddd; /* 테두리 설정 */
+    border-radius: 4px; /* 테두리 둥글게 설정 */
+    font-size: 16px; /* 폰트 사이즈 설정 */
+    resize: vertical; /* 수직으로만 크기 조절 가능 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 설정 */
+}
+
+textarea::placeholder {
+    color: #888; /* 플레이스홀더 텍스트 색상 설정 */
+}
+
+button {
+    align-self: flex-start; /* 버튼을 왼쪽으로 정렬 */
+    padding: 10px 20px; /* 버튼 여백 설정 */
+    font-size: 16px; /* 버튼 폰트 사이즈 설정 */
+    color: green; /* 버튼 텍스트 색상 설정 */
+    background-color: #ffff; /* 버튼 배경 색상 설정 */
+    border: none; /* 버튼 테두리 제거 */
+    border-radius: 4px; /* 버튼 테두리 둥글게 설정 */
+    cursor: pointer; /* 커서 모양 변경 */
+    transition: background-color 0.3s ease; /* 배경색 변화 효과 설정 */
+}
+
+button:hover {
+    background-color: #0056b3; /* 버튼 호버 시 배경 색상 변경 */
+}
+
+
+        /* Readonly input 스타일 */
+textarea[readonly],
+input[readonly] {
+       color: #666; /* 텍스트 색상 */
+    border: none; /* 테두리 제거 */
+    box-shadow: none; /* 그림자 제거 */
+    font-size: 16px; /* 폰트 사이즈 설정 */
+    padding: 10px; /* 여백 설정 */
+    border-radius: 4px; /* 테두리 둥글게 설정 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 설정 */
+}
+
+textarea[readonly] {
+    min-height: 150px; /* 최소 높이 설정 */
+    resize: vertical; /* 수직으로만 크기 조절 가능 */
+}
+
+/* 기존 스타일과 충돌하지 않도록 하기 */
+.textarea-container input[readonly] {
+    font-size: 14px; /* 기존 폰트 사이즈와 일치시킴 */
+    width: 100%; /* 전체 너비 사용 */
+}
+ /* 댓글 등록 버튼 스타일 */
+        .btn{
+         align-self: flex-start; /* 버튼을 왼쪽으로 정렬 */
+    padding: 10px 20px; /* 버튼 여백 설정 */
+    font-size: 16px; /* 버튼 폰트 사이즈 설정 */
+    color: green; /* 버튼 텍스트 색상 설정 */
+    background-color: #f9f9f9; /* 버튼 배경 색상 설정 */
+    border: none; /* 버튼 테두리 제거 */
+    border-radius: 4px; /* 버튼 테두리 둥글게 설정 */
+    cursor: pointer; /* 커서 모양 변경 */
+    transition: background-color 0.3s ease; /* 배경색 변화 효과 설정 */
+        }
+        .btn:hover {
+    background-color: #0056b3; /* 버튼 호버 시 배경 색상 변경 */
+}
+
+
+ /* 댓글  스타일 */
+        .div {
+              max-width: 800px;
+             margin-left: 15%;
+              padding: 20px 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+
+
+          }
+
+
+
+
     </style>
 
 </head>
@@ -273,6 +390,49 @@
         </div>
     </div>
 
+    <div class="divComment">
+        <form method="post" action="/comment/write" th:object="${commentDto}">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{writeDetail}">
+            <input type="hidden" th:field="*{member}">
+            <div class="textarea-container">
+                <div>
+                    <strong>의견쓰기</strong>
+                </div>
+                <div>
+                    <input th:field="*{member.nickname}" readonly >
+                </div>
+                 <textarea th:field="*{content}" placeholder="주제와 무관한 댓글이나 악플은 경고 없이 삭제 될 수 있으며 징계의 대상이 될 수 있습니다."
+                           aria-label="댓글 입력"></textarea>
+                <button class="btn" type="submit">등록하기</button>
+
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        </form>
+
+
+    </div>
+
+    <div class="div">
+        <div th:each="comment : ${commentList}">
+            <div class="line">
+
+            </div>
+            <div>
+                <span th:text="${comment.member.nickname}"></span>
+            </div>
+            <div>
+                <span th:text="${comment.content}"></span>
+            </div>
+            <div>
+                <small><span th:text="${comment.regDate}"></span></small>
+            </div>
+
+        </div>
+
+
+
+    </div>
 
 </div>
 </body>

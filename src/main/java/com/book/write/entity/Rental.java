@@ -1,5 +1,6 @@
 package com.book.write.entity;
 
+import com.book.write.constant.PR;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +19,12 @@ public class Rental {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id")
+    @JoinColumn(name = "writeDetail_id")
     private WriteDetail writeDetail;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;//마감시간
+
 
     public  static  Rental  create(WriteDetail writeDetail){
         Rental rental = new Rental();

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>구매 이력</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <!-- Include Bootstrap CSS for better styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* Custom styles */
+        body {
+            padding-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f8f9fa;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .pagination .page-link {
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+        .table-header {
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <h3 class="mb-4">구매 이력</h3>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th class="table-header" style="width:250px">등록일</th>
+                <th class="table-header" style="width:1000px">제목</th>
+                <th class="table-header" style="width:100px">KDR 코인</th>
+                <th class="table-header" style="width:100px">YES 코인</th>
+            </tr>
+            </thead>
+            <tbody th:each="coin : ${coins}">
+            <tr>
+                <td th:text="${coin.pointDate}"></td>
+                <td>
+                    <div th:text="${coin.title}"></div>
+                    <small th:text="${coin.miniTitle}"></small>
+                </td>
+                <td th:text="${coin.kdr}"></td>
+                <td th:text="${coin.yes}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:with="start=${(coins.number/maxPage)*maxPage + 1},
+                    end=(${(coins.totalPages == 0) ?
+                    1 : (start + (maxPage-1) < coins.totalPages ? start + (maxPage -1) : coins.totalPages)})">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${coins.first} ? 'disabled' : ''">
+                    <a th:href="@{'/order/list/' + ${coins.number - 1}}" aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">이전</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+                    th:classappend="${coins.number eq page - 1} ? 'active' : ''">
+                    <a th:href="@{'/order/list/' + ${page - 1}}" th:text="${page}" class="page-link"></a>
+                </li>
+                <li class="page-item" th:classappend="${coins.last} ? 'disabled' : ''">
+                    <a th:href="@{'/order/list/' + ${coins.number + 1}}" aria-label="Next" class="page-link">
+                        <span aria-hidden="true">다음</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

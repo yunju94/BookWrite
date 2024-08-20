@@ -6,8 +6,70 @@
 <head>
     <meta charset="UTF-8">
     <title>개인정보 수정</title>
-    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <th:block layout:fragment="script">
+        <script th:inline="javascript">
+
+
+              function NickCheck(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var NickCheck = $("#NickName").val();
+            var up = $("#id").val();
+
+            var url = "/member/"+NickCheck+ "/" + up;
+            var paramData = {
+                NickCheck: NickCheck
+            };
+            var param = JSON.stringify(paramData);
+
+             $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: param,
+                beforeSend: function (xhr) {
+                    // 데이터 전송하기 전에 헤더에 csrf 값을 설정
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType: "json",
+                cache: false,
+
+                success: function (result, status) {
+                   alert(result.message);
+
+                },
+
+                error: function (jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요');
+                        location.href = '/members/login';
+                    } else {
+                        alert("사용 불가능한 별명입니다.");
+
+                    }
+                }
+            });
+        }
+
+        function password_change (){
+        console.log("pass")
+            location.href="/member/mypage/password"
+        }
+
+
+
+           $(document).ready(function() {
+               var errorMessage = [[${errorMessage}]];
+                  if(errorMessage != null){
+                    alert(errorMessage);
+                }
+
+            });
+        </script>
+    </th:block>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,7 +86,7 @@
         .container {
             width: 100%;
             max-width: 800px;
-            padding: 20px;
+            padding: 80px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -46,7 +108,7 @@
         .form-group {
             width: 100%;
             max-width: 500px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             display: flex;
             align-items: center; /* 입력 필드와 버튼을 수직으로 중앙 정렬 */
         }
@@ -89,6 +151,7 @@
         .password-change {
             border-color: #28a745;
             color: #28a745;
+
         }
 
         .password-change:hover {
@@ -104,6 +167,16 @@
             display: flex;
             gap: 10px; /* 버튼 간의 간격 조정 */
             justify-content: center; /* 버튼 중앙 정렬 */
+
+
+        }
+
+
+
+        .button-group button{
+            border-radius: 4px;
+            height: 32px;
+            background-color: #ffffff;
         }
         .btn{
             width: 160px;
@@ -117,6 +190,7 @@
 <div layout:fragment="content" class="container">
     <h3>개인정보 수정</h3>
     <form action="/member/mypage" role="form" method="post" th:object="${memberFormDto}">
+        <input type="hidden" th:field="*{id}" id="id">
         <div class="form-group">
             <span>이름</span>
             <input type="text" th:field="*{name}">
@@ -124,20 +198,10 @@
 
         <div class="form-group">
             <span>별명</span>
-            <input type="text" th:field="*{nickname}">
-            <button type="button" class="btn">별명 확인</button>
+            <input type="text" th:field="*{nickname}" id="NickName">
+            <button type="button" class="btn" id="nicknameCh" onclick="NickCheck()">별명 확인</button>
         </div>
 
-        <div class="form-group">
-            <span>아이디</span>
-            <input type="text" th:field="*{loginId}">
-            <button type="button" class="btn">아이디 확인</button>
-        </div>
-
-        <div class="form-group">
-            <span>이메일</span>
-            <input type="email" th:field="*{email}">
-        </div>
 
         <div class="form-group">
             <span>전화번호</span>
@@ -148,8 +212,8 @@
             <button type="submit">
                 <span class="button-icon">&#10003;</span> 수정하기
             </button>
-            <button type="button" class="password-change">
-                <span class="button-icon">&#128272;</span> 비밀번호 변경
+            <button type="button" class="password-change" onclick="password_change()">
+                <span class="button-icon" >&#128272;</span> 비밀번호 변경
             </button>
         </div>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CoinRepository extends JpaRepository<Coin, Long> {
+public interface CoinRepository extends JpaRepository<Coin, Long>, CoinRepositoryCustom {
     List<Coin> findByMemberId(Long memberId);
 }

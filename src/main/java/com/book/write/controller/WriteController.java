@@ -251,7 +251,7 @@ public class WriteController {
         model.addAttribute("memberFormDto", memberFormDto);
 
 
-        return "write/mypage";
+        return "member/mypage";
     }
 
 

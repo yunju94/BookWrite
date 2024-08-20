@@ -1,6 +1,7 @@
 package com.book.write.service;
 
 import com.book.write.dto.MemberFormDto;
+import com.book.write.dto.MemberPasswordDto;
 import com.book.write.entity.Member;
 import com.book.write.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -93,4 +95,22 @@ public class MemberService implements UserDetailsService {
     public  Member searchMemberId(Long id){
         return memberRepository.findById(id).orElseThrow();
     }
+
+    public  Member searchMemberIdOp(Optional<Long> id){
+        return memberRepository.findById(id);
+    }
+
+    public void   passwordCheck(Member member, String password){
+        String encodedPassword = member.getLoginPassword(); // 암호화된 비밀번호 가져오기
+        if (!passwordEncoder.matches(password, encodedPassword)) {
+            throw new RuntimeException("비밀번호가 다릅니다");
+        }
+
+    }
+
+    public void  updateMemberPassword(MemberPasswordDto memberPasswordDto){
+        Member member = memberRepository.findById(memberPasswordDto.getId()).orElseThrow();
+        Member.PasswordUpdate(member, memberPasswordDto, passwordEncoder);
+    }
+
 }

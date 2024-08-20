@@ -10,6 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <script th:inline="javascript">
+
+
         document.addEventListener('DOMContentLoaded', function() {
     let limit = 0; // 'let'으로 선언하여 값 변경 가능
 
@@ -206,8 +208,8 @@
         <button type="button" class="flicking-button prev" data-target="#romance-fantasy-table">&#8249;</button>
         <button type="button" class="flicking-button next" data-target="#romance-fantasy-table">&#8250;</button>
         <div class="book-table" id="romance-fantasy-table">
-            <div th:each="book, iterStat : ${writeInfoList}">
-                <div th:if="${book.category == T(com.book.write.constant.Category).RomanceFantasy and iterStat.index < 30}" class="book-item">
+            <div th:each="book : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).RomanceFantasy }" class="book-item">
                     <a th:href="'/writeNovel/' + ${book.id}">
                         <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
                         <p th:text="${book.title}"></p>
@@ -226,8 +228,8 @@
         <button type="button" class="flicking-button prev" data-target="#romance-table">&#8249;</button>
         <button type="button" class="flicking-button next" data-target="#romance-table">&#8250;</button>
         <div class="book-table" id="romance-table">
-            <div th:each="book, iterStat : ${writeInfoList}">
-                <div th:if="${book.category == T(com.book.write.constant.Category).Romance and iterStat.index < 30}" class="book-item">
+            <div th:each="book : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).Romance }" class="book-item">
                     <a th:href="'/writeNovel/' + ${book.id}">
                         <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
                         <p th:text="${book.title}"></p>
@@ -246,8 +248,8 @@
         <button type="button" class="flicking-button prev" data-target="#etc-table">&#8249;</button>
         <button type="button" class="flicking-button next" data-target="#etc-table">&#8250;</button>
         <div class="book-table" id="etc-table">
-            <div th:each="book, iterStat : ${writeInfoList}">
-                <div th:if="${book.category == T(com.book.write.constant.Category).etc and iterStat.index < 30}" class="book-item">
+            <div th:each="book : ${writeInfoList}">
+                <div th:if="${book.category == T(com.book.write.constant.Category).etc }" class="book-item">
                     <a th:href="'/writeNovel/' + ${book.id}">
                         <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
                         <p th:text="${book.title}"></p>

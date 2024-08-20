@@ -1,5 +1,6 @@
 package com.book.write.entity;
 
+import com.book.write.constant.PR;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ public class Purchase {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id")
+    @JoinColumn(name = "writeDetail_id")
     private WriteDetail writeDetail;
 
 }

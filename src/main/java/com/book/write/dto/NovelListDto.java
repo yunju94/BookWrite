@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 public class NovelListDto {
     private  Long id;
 
-
-
     private String title;//제목
     private Member member;//글쓴이
 

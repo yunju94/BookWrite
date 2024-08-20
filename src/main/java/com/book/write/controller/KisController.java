@@ -81,7 +81,7 @@ public class KisController {
             return "member/login";
 
         }
-        Member member = memberService.memberLoginId(getName);
+         Member member = memberService.memberLoginId(getName);
         if (member == null){
             return "member/login";
         }

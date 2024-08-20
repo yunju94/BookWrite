@@ -11,109 +11,152 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
 
     <script th:inline="javascript">
-        function novelManage(id){
-        location.href="/write/InfoForm/update/"+ id
-        }
+        $(document).ready(function() {
+             var errorMessage = [[${errorMessage}]];
+                if(errorMessage != null){
+                  alert(errorMessage);
+              }
 
-        function novelDetailWrite(id){
-        location.href="/detail/new/"+id
-        }
+              })
+      function novelManage(id){
+      location.href="/write/InfoForm/update/"+ id
+      }
 
-        function novelDelete(InfoId){
-        var Id = InfoId;
+      function novelDetailWrite(id){
+      location.href="/detail/new/"+id
+      }
 
-        var token = $("meta[name='_csrf']").attr("content"); // CSRF 토큰을 가져옵니다.
-        var header = $("meta[name='_csrf_header']").attr("content"); // CSRF 헤더 이름을 가져옵니다.
-        url = "/write/InfoForm/Delete/"+ Id
+      function novelDelete(InfoId){
+      var Id = InfoId;
 
-        if (confirm("정말로 삭제하시겠습니까?")) { // 사용자에게 삭제 확인 메시지를 표시합니다.
-        $.ajax({
-        url: url, // DELETE 요청을 보낼 URL입니다.
-        type: "DELETE", // 요청 메서드는 DELETE입니다.
-        contentType: "application/json",
-        beforeSend: function(xhr) {
-        xhr.setRequestHeader(header, token); // CSRF 토큰을 요청 헤더에 추가합니다.
-        },
-        success: function(result) {
-        alert("삭제되었습니다.");
-        location.href = '/'; // 삭제 후 홈 페이지로 리다이렉트합니다.
-        },
-        error: function(jqXHR) {
-        if (jqXHR.status == 401) {
-        alert('로그인 후 이용해주세요');
-        location.href = '/members/login'; // 로그인 페이지로 리다이렉트합니다.
-        } else {
-        alert(jqXHR.responseText); // 에러 메시지를 표시합니다.
-        }
-        }
-        });
-        }
-        }
+      var token = $("meta[name='_csrf']").attr("content"); // CSRF 토큰을 가져옵니다.
+      var header = $("meta[name='_csrf_header']").attr("content"); // CSRF 헤더 이름을 가져옵니다.
+      url = "/write/InfoForm/Delete/"+ Id
+
+      if (confirm("정말로 삭제하시겠습니까?")) { // 사용자에게 삭제 확인 메시지를 표시합니다.
+      $.ajax({
+      url: url, // DELETE 요청을 보낼 URL입니다.
+      type: "DELETE", // 요청 메서드는 DELETE입니다.
+      contentType: "application/json",
+      beforeSend: function(xhr) {
+      xhr.setRequestHeader(header, token); // CSRF 토큰을 요청 헤더에 추가합니다.
+      },
+      success: function(result) {
+      alert("삭제되었습니다.");
+      location.href = '/'; // 삭제 후 홈 페이지로 리다이렉트합니다.
+      },
+      error: function(jqXHR) {
+      if (jqXHR.status == 401) {
+      alert('로그인 후 이용해주세요');
+      location.href = '/members/login'; // 로그인 페이지로 리다이렉트합니다.
+      } else {
+      alert(jqXHR.responseText); // 에러 메시지를 표시합니다.
+      }
+      }
+      });
+      }
+      }
 
 
-        function board() {
+      function board() {
 
-                window.open("write/board/boardPop", 'pop', "width=650,height=550,scrollbars=no");
+              window.open("write/board/boardPop", 'pop', "width=650,height=550,scrollbars=no");
 
-        }
+      }
 
 
     </script>
 
 
     <style>
-        .nofloat {
-             width: 700px;
-             padding: 20px;
-             box-sizing: border-box;
-         }
-
-         .list_info {
-              width: 350px;
-             height: 120px;
+        .container {
              display: flex;
-             flex-direction: column;
-             justify-content: flex-start
-             flex: 1;
-             float: left;
+             gap: 15px; /* 항목 간의 간격을 15px로 설정합니다 */
+             align-items: center; /* 항목을 수직으로 가운데 정렬합니다 */
+             overflow-x: auto; /* 내용이 컨테이너를 넘을 경우 가로 스크롤을 추가합니다 */
          }
 
-         .img_info {
-             width: 100px;
-             height: 100px;
-             margin-right: 18px;
-             border-radius: 4px;
-             overflow: hidden;
-             float: left;
+         .container > div {
+             flex: 0 0 120px; /* 각 항목의 고정 너비를 설정합니다 (120px로 설정) */
+             text-align: center; /* 텍스트를 가운데 정렬합니다 */
+             padding: 10px; /* 각 항목의 패딩을 설정합니다 */
+             box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산을 설정합니다 */
+             border: 1px solid #ddd; /* 각 항목의 테두리를 설정합니다 */
+             border-radius: 5px; /* 각 항목의 모서리를 둥글게 설정합니다 */
+             background-color: #f9f9f9; /* 각 항목의 배경색을 설정합니다 */
          }
 
-         .img_info img {
-             width: 100px;
-             height: 100px;
-             object-fit: cover;
+         .container > div a {
+             text-decoration: none; /* 링크의 기본 밑줄 제거 */
+             color: #333; /* 링크 텍스트 색상 설정 */
+             font-weight: bold; /* 링크 텍스트를 굵게 설정 */
          }
 
-         .item-container {
-
-             display: flex;
-             align-items: center;
-             margin-bottom: 20px;
-             padding: 10px;
-             box-sizing: border-box;
-             border-radius: 4px;
-
+         /* 관리자 역할일 때만 보이는 항목 스타일링 */
+         .boardAdmin, .admin {
+             display: block;
          }
 
-         .item-content {
-             display: flex;
-             flex: 1;
+         /* 관리자 역할이 아닐 때만 보이는 항목 스타일링 */
+         .board {
+             display: block;
          }
 
-         .btn {
-            display: flex; /* Flexbox 레이아웃을 사용하여 정렬 */
-             flex-direction: column; /* 자식 요소들을 세로 방향으로 배치 */
-             gap: 10px; /* 버튼들 사이의 간격 */
-         }
+ /*==========================*/
+
+
+       .nofloat {
+            width: 700px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .list_info {
+             width: 350px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start
+            flex: 1;
+            float: left;
+        }
+
+        .img_info {
+            width: 100px;
+            height: 100px;
+            margin-right: 18px;
+            border-radius: 4px;
+            overflow: hidden;
+            float: left;
+        }
+
+        .img_info img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .item-container {
+
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 4px;
+
+        }
+
+        .item-content {
+            display: flex;
+            flex: 1;
+        }
+
+        .btn {
+           display: flex; /* Flexbox 레이아웃을 사용하여 정렬 */
+            flex-direction: column; /* 자식 요소들을 세로 방향으로 배치 */
+            gap: 10px; /* 버튼들 사이의 간격 */
+        }
 
 
     </style>
@@ -121,24 +164,31 @@
 
 <body>
 <div layout:fragment="content">
-    <h3>나의 글 목록</h3>
-    <div>
-        <div>
+    <h3>마이페이지</h3>
+    <div class="container">
+        <div class="newInfo">
             <a href="/write/InfoForm">새 작품 만들기</a>
         </div>
-        <div>
+        <div class="mypage">
             <a href="/write/mypage">개인정보 수정</a>
         </div>
-        <div th:if="${member.Role == T(com.book.write.constant.Role).ADMIN}">
-            <a href="/write/board/admin" >문의받기</a>
+        <div th:if="${member.Role == T(com.book.write.constant.Role).ADMIN}" class="boardAdmin">
+            <a href="/write/board/admin">문의받기</a>
         </div>
-        <div th:unless="${member.Role == T(com.book.write.constant.Role).ADMIN}">
+        <div th:unless="${member.Role == T(com.book.write.constant.Role).ADMIN}" class="board">
             <a href="#" onclick="board(); return false;">문의하기</a>
         </div>
-    </div>
-        <div th:if="${member.Role == T(com.book.write.constant.Role).ADMIN}">
+        <div class="cart">
+            <a href="#">찜내역</a>
+        </div>
+        <div class="order">
+            <a href="/order/list">구매내역</a>
+        </div>
+        <div th:if="${member.Role == T(com.book.write.constant.Role).ADMIN}" class="admin">
             <a href="/admin/menu">관리자용</a>
         </div>
+    </div>
+
 
         <div class="nofloat">
             <div th:each="Info : ${writeInfo}" class="item-container">
