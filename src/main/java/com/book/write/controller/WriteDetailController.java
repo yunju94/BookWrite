@@ -9,12 +9,14 @@ import com.book.write.repository.WriteInfoRepository;
 import com.book.write.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import javassist.tools.web.BadHttpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -115,6 +117,7 @@ public class WriteDetailController {
 
         WriteDetail writeDetail = writeDetailService.searchDetailId(id);
         WriteInfo writeInfo = writeInfoService.SearchWriteInfoId(writeDetail.getWriteInfo().getId());
+        List<WriteDetail> writeDetailList = writeDetailService.searchListDetail(writeInfo.getId());
 
         String loginId = getEmailFromPrincipalOrSession(principal);
         Member member = memberService.memberLoginId(loginId);
@@ -125,10 +128,12 @@ public class WriteDetailController {
         List<Comment> commentList = commentService.searchCommentList(writeDetail.getId());
 
 
+        model.addAttribute("member", member);
         model.addAttribute("commentDto", commentDto);
         model.addAttribute("writeInfo", writeInfo);
         model.addAttribute("writeDetail", writeDetail);
         model.addAttribute("commentList", commentList);
+        model.addAttribute("writeDetailList", writeDetailList);
 
         return "writeDetail/novelRead";
     }
@@ -161,11 +166,12 @@ public class WriteDetailController {
     public String popupCoinUse(@PathVariable String str){
         if (str.equals("pur")){
             return "writeDetail/popupPur";
-        }
-        else{
+        }else if (str.equals("ren")){
             return "writeDetail/popupRen";
         }
-
+        else{
+            return "writeDetail/popupNovel";
+        }
 
     }
 
@@ -186,8 +192,8 @@ public class WriteDetailController {
 
 
        //기본 변수 설정
-        double KDR_coin=0;
-        double YES_coin = 0;
+        double KDR_coin=0.0;
+        double YES_coin = 0.0;
         // 멤버값을 불러 구매이력에 저장 및 확인
         Member member = memberService.memberLoginId(getName);
         //멤버의 코인 값들을 전부 불러옴.
@@ -283,5 +289,56 @@ public class WriteDetailController {
 
         return  new ResponseEntity(writeDetail.getHeart(), HttpStatus.OK);
     }
+
+
+
+
+    @PostMapping(value = "/detail/novel/search/{str}/{detailId}")
+    public @ResponseBody ResponseEntity nextprevSearch(@PathVariable String str,
+                                                       @PathVariable Long detailId ){
+
+        WriteDetail writeDetail = writeDetailService.searchDetailId(detailId);
+        WriteInfo writeInfo = writeInfoService.searchDetailId(writeDetail.getWriteInfo().getId());
+        List<WriteDetail> writeDetailList = writeDetailService.searchListDetail(writeInfo.getId());
+        WriteDetail writeDetailNext=null;
+        WriteDetail writeDetailPrev=null;
+        System.out.println(writeDetailList.size());
+        for (int i= 0 ; i < writeDetailList.size() ; i++){
+            System.out.println(i);
+            if (writeDetailList.get(i).getId().equals(detailId)){
+                if (i ==( writeDetailList.size()-1) ){//만약 인덱스가 마지막이면 오류창으로 넘김
+                    if (str.equals("prev")){
+
+                        return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+                    }
+                }else {
+
+                    writeDetailPrev = writeDetailService.searchDetailId(writeDetailList.get(i+1).getId());
+                }
+                if (i == 0 ){//첫장에 prev면 오류
+                    if (str.equals("next")){
+
+                        return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+                    }
+                }else {
+
+                    writeDetailNext = writeDetailService.searchDetailId(writeDetailList.get(i-1).getId());
+                }
+            }
+        }
+
+
+        //다음화면 다음화의 내용만, 이전화면 이전화의 내용이 있는 detail entity만 넘긴다.
+        if (str.equals("next")){
+            return new ResponseEntity(writeDetailNext, HttpStatus.OK);
+        }else {
+            return new ResponseEntity(writeDetailPrev, HttpStatus.OK);
+        }
+
+    }
+
+
+
+
 
 }

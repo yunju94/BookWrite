@@ -32,6 +32,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
+
     public  Member (String name, String email){
         this.name = name;
         this.email = email;

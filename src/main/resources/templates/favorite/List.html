@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>구매 이력</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <!-- Include Bootstrap CSS for better styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* Custom styles */
+        body {
+            padding-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f8f9fa;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .pagination .page-link {
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+        .table-header {
+            text-align: center;
+        }
+        a {
+            color: black; /* 링크 색상 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
+
+        /* 링크에 마우스를 올렸을 때 색상 */
+        a:hover {
+            color: black; /* 호버 상태에서도 검은색 유지 */
+        }
+    </style>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <h3 class="mb-4">관심 목록</h3>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th class="table-header" style="width:1000px">제목</th>
+                <th class="table-header" style="width:1000px">글쓴이</th>
+
+            </tr>
+            </thead>
+            <tbody th:each="favorite : ${favoriteList}">
+            <tr>
+                <td>
+                    <a th:href="@{/writeNovel/{id}(id=${favorite.writeInfo.id})}" th:text="${favorite.writeInfo.title}"></a>
+                </td>
+                <td th:text="${favorite.member.nickname}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:with="start=${(favoriteList.number/maxPage)*maxPage + 1},
+                    end=(${(favoriteList.totalPages == 0) ?
+                    1 : (start + (maxPage-1) < favoriteList.totalPages ? start + (maxPage -1) : favoriteList.totalPages)})">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${favoriteList.first} ? 'disabled' : ''">
+                    <a th:href="@{'/favorite/list/' + ${favoriteList.number - 1}}" aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">이전</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="page : ${#numbers.sequence(start, end)}"
+                    th:classappend="${favoriteList.number eq page - 1} ? 'active' : ''">
+                    <a th:href="@{'/favorite/list/' + ${page - 1}}" th:text="${page}" class="page-link"></a>
+                </li>
+                <li class="page-item" th:classappend="${favoriteList.last} ? 'disabled' : ''">
+                    <a th:href="@{'/favorite/list/' + ${favoriteList.number + 1}}" aria-label="Next" class="page-link">
+                        <span aria-hidden="true">다음</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

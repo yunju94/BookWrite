@@ -2,10 +2,7 @@ package com.book.write.controller;
 
 import com.book.write.constant.Category;
 import com.book.write.dto.*;
-import com.book.write.entity.Board;
-import com.book.write.entity.Member;
-import com.book.write.entity.WriteDetail;
-import com.book.write.entity.WriteInfo;
+import com.book.write.entity.*;
 import com.book.write.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -26,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.book.write.constant.Role.ADMIN;
@@ -40,6 +38,7 @@ public class WriteController {
     private final WriteDetailService writeDetailService;
     private  final PurchanseService purchanseService;
     private  final BoardService boardService;
+    private  final  FavoriteService favoriteService;
 
     private final HttpSession httpSession;
 
@@ -229,11 +228,22 @@ public class WriteController {
             count.add(counter);
             counter++;
         }
+        int retry= 0;
+        List<Favorite> favorite = favoriteService.searchfromWrteInfoId(writeInfo.getId());
+        for (Favorite fav : favorite){
+            if (Objects.equals(member.getId(), fav.getMember().getId())){
+                retry=1;
+            }
+        }
+
+
 
         model.addAttribute("member", member);
         model.addAttribute("writeInfo", writeInfo);
         model.addAttribute("writeDetailList", writeDetailList);
         model.addAttribute("count", count);
+        model.addAttribute("retry", retry);
+
 
         return "writeDetail/detailNovel";
     }

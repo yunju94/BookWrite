@@ -124,6 +124,21 @@
                 }
             });
         });
+
+
+         function getRandomColor() {
+            var colors = ['#f3feb0', '#eceff7', '#e8fbf0']; // 빨강, 파랑, 노랑
+            var randomIndex = Math.floor(Math.random() * colors.length);
+            return colors[randomIndex];
+        }
+
+        // 페이지가 로드될 때 모든 .bookTable 요소에 랜덤 색상을 적용
+        document.addEventListener('DOMContentLoaded', function() {
+            var bookTables = document.querySelectorAll('.bookTable');
+            bookTables.forEach(function(bookTable) {
+                bookTable.style.backgroundColor = getRandomColor();
+            });
+        });
     </script>
 
     <style>
@@ -135,7 +150,9 @@
             margin: 10px;
             float: left;
             border: 1px solid #ccc;
+            border-radius: 4px;
             text-align: center;
+
         }
 
         .container {

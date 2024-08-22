@@ -16,8 +16,8 @@ public class Coin {
     @Column(name = "coin_id")
     private Long id;
 
-    private double KDR_coin;//변경 코인
-    private double YES_coin;//변경 코인
+    private Double KDR_coin;//변경 코인
+    private Double YES_coin;//변경 코인
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "point_id")

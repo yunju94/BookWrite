@@ -45,7 +45,7 @@ public class OrderController {
     }
 
 
-    @GetMapping(value = {"/order/list", "/order/list/page"})
+    @GetMapping(value = {"/order/list", "/order/list/{page}"})
     public String orderList(Principal principal, Model model,
                             @PathVariable("page") Optional<Integer> page,
                             OrderCoinDto orderCoinDto,  BindingResult result){

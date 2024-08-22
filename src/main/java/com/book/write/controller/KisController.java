@@ -99,6 +99,20 @@ public class KisController {
         System.out.println("totalPoint: "+ totalPoint);
 
         List<Coin> coinList = coinService.SearchIdtocoin(member.getId());
+        double kdr_coin= 0.0;
+        double yes_coin= 0.0;
+        for (int i = 0 ; i < coinList.size() ; i++){
+            System.out.println("KDRcoin====>"+ coinList.get(i).getKDR_coin());
+            kdr_coin += coinList.get(i).getKDR_coin();
+        }
+        // 소수점 첫째자리까지로 제어를 위한 과정
+        double KDR_coin = Math.round(kdr_coin*100)/100.0;
+
+        for (int i = 0 ; i < coinList.size() ; i++){
+            System.out.println("YEScoin====>"+ coinList.get(i).getYES_coin());
+            yes_coin += coinList.get(i).getYES_coin();
+        }
+        double YES_coin = Math.round(yes_coin*100)/100.0;
 
         //그래프 정보
         List<Integer> KDR =  kisService.getKDR();
@@ -108,6 +122,10 @@ public class KisController {
         model.addAttribute("YES", YES);
         model.addAttribute("total", totalPoint);
         model.addAttribute("coinList", coinList);
+        model.addAttribute("kdr_coin", KDR_coin);
+        model.addAttribute("yes_coin", YES_coin);
+
+
 
 
         return "coin/Listup";

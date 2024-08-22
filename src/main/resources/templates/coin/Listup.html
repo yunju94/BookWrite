@@ -7,10 +7,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Title</title>
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-
-    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!--그래프 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
@@ -28,329 +28,269 @@
 
         $(document).ready(function () {
 
-           var List = [[${coinList}]]; // Thymeleaf 템플릿에서 pointList를 배열로 변환하여 전달합니다.
-            var KDRcoin = 0.0;
-            var YEScoin = 0.0;
-
-            // 배열을 반복하여 KDR_coin과 YES_coin의 합계를 계산합니다.
-            for (let i = 0; i < List.length; i++) {
-                KDRcoin += List[i].kdr_coin; // 객체의 속성에 접근합니다.
-
-                YEScoin += List[i].yes_coin; // 객체의 속성에 접근합니다.
-
-            }
-
-            // jQuery를 사용하여 HTML 요소의 텍스트를 업데이트합니다.
-            $('#KDRCoin').text(KDRcoin);
-            $('#YESCoin').text(YEScoin);
-
-              $('#current').change(function() {
-                  // 선택된 값 가져오기
-                  var selectValue = $(this).val();
-
-                  // 모든 카드 숨기기
-                  $('.card').hide();
-                  $('#myChartKDR').hide();
-                   $('#myChartYES').hide();
-
-                  // 선택된 값에 따라 카드 표시
-                  if (selectValue === "KDR") {
-                      $('#KDR').show();
-                      $('#myChartKDR').show();
-                      KDR();
-                  } else if (selectValue === "YES") {
-                      $('#YES').show();
-                      $('#myChartYES').show();
-                      YES();
-                  }
-              });
-
-              // 페이지 로드 시 현재 선택된 값에 따라 카드 표시
-              $('#current').trigger('change');
-
-
-
-                $('#KDR_coin').change(function(){
-            //코인을 선택하면 현재 가격에 대한 합계 포인트 사용 비용이 나온다.
-            var KDR_stck=$('#KDR_stck_prpr').text();
-            var count = $(this).val();
-
-
-            var total =  (KDR_stck) * (count);
-            $('#KDR_total').text(total);
-
-            var client = [[${total}]]
-               var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
-             if(clientNumber<total){
-                 $('#KDR_coinBtn').hide();
-                 $('#KDR_pointBtn').show();
-             }else{
-                $('#KDR_coinBtn').show();
-                $('#KDR_pointBtn').hide();
-             }
-
-
-
-        })
-
-
-                $('#YES_coin').change(function(){
-            //코인을 선택하면 현재 가격에 대한 합계 포인트 사용 비용이 나온다.
-            var YES_stck=$('#YES_stck_prpr').text();
-            var count = $(this).val();
-
-
-            var total =  (YES_stck) * (count);
-            $('#YES_total').text(total);
-
-               var client = [[${total}]]
-               var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
-
-             if(clientNumber<total){
-                 $('#YES_coinBtn').hide();
-                 $('#YES_pointBtn').show();
-             }else{
-                $('#YES_coinBtn').show();
-                $('#YES_pointBtn').hide();
-             }
-
-
-        })
-
-
-
-        });
-
-
-          //만약에 키다리 스튜디오를 선택할 경우, 해당 주식 금액이 나온다.
-        function KDR() {
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
-
-            url = "/equities/020120";
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                contentType: "application/json",
-                beforeSend: function (xhr) {
-                    // 데이터 전송하기 전에 헤더에 csrf 값을 설정
-                    xhr.setRequestHeader(header, token);
-                },
-                dataType: "json",
-                cache: false,
-                success: function (result, status) {
-                    var equity = result.equity;
-
-                    var stck_prpr = equity.stck_prpr;
-
-                        var prdy_vrss = equity.prdy_vrss;
-                        var prdy_vrss_sign = equity.prdy_vrss_sign;
-
-                           var color;
-                            if (prdy_vrss_sign < 3) {
-                                color = 'red';
-                            } else if (prdy_vrss_sign > 3) {
-                                color = 'blue';
-                            } else {
-                                color = 'black';}
-
-                    $('#KDR_stck_prpr').text(stck_prpr);
-                    $('#KDR_prdy_vrss').text(prdy_vrss).css('color', color);
-
-                    $('#KDR_total').text(stck_prpr);
-
-                    var client = [[${total}]]
-                    var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
-
-                        if(clientNumber<stck_prpr){
-                         $('#KDR_coinBtn').hide();
-                         $('#KDR_pointBtn').show();
-                          console.log("2222222")
-                     }else{
-                        $('#KDR_coinBtn').show();
-                        $('#KDR_pointBtn').hide();
-                     }
-
-
-                },
-                error: function (jqXHR, status, error) {
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseText);
-                    }
-                }
-            });
-        }
-
-
-
-
-         function YES() {//예스 24를 선택할 경우 해당 주식의 가격이 나온다.
-                var token = $("meta[name='_csrf']").attr("content");
-                var header = $("meta[name='_csrf_header']").attr("content");
-
-                url = "/equities/053280";
-
-                $.ajax({
-                    url: url,
-                    type: "POST",
-                    contentType: "application/json",
-                    beforeSend: function (xhr) {
-                        // 데이터 전송하기 전에 헤더에 csrf 값을 설정
-                        xhr.setRequestHeader(header, token);
-                    },
-                    dataType: "json",
-                    cache: false,
-                    success: function (result, status) {
-                        var equity = result.equity;
-
-                        var stck_prpr = equity.stck_prpr;
-                        var prdy_vrss = equity.prdy_vrss;
-                        var prdy_vrss_sign = equity.prdy_vrss_sign;
-
-                              var color;
-                            if (prdy_vrss_sign < 3) {
-                                color = 'red';
-                            } else if (prdy_vrss_sign > 3) {
-                                color = 'blue';
-                            } else {
-                                color = 'black';}
-
-                        $('#YES_stck_prpr').text(stck_prpr);
-                        $('#YES_prdy_vrss').text(prdy_vrss).css('color', color);
-
-                        $('#YES_total').text(stck_prpr)
-
-
-                        var client = [[${total}]]
-                    var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
-
-                        if(clientNumber<stck_prpr){
-                         $('#YES_coinBtn').hide();
-                         $('#YES_pointBtn').show();
-                     }else{
-                        $('#YES_coinBtn').show();
-                        $('#YES_pointBtn').hide();
-                     }
-
-
-                    },
-                    error: function (jqXHR, status, error) {
-                        if (jqXHR.status == '401') {
-                            alert('로그인 후 이용해주세요');
-                            location.href = '/members/login';
-                        } else {
-                            alert(jqXHR.responseText);
-                        }
-                    }
-                });
-            }
-
-        function point(){
-            location.href="/charge"
-        }
-
-        function KDR_coin(){
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
-
-
-            var coinMoney = $('#KDR_total').text();
-            var client = [[${total}]]
-            var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
-            var coin=$('#KDR_coin').val()
-
-            url="/coin/add/KDR/"+ coin + "/" + coinMoney
-            var paramData = {
-                coinMoney: coinMoney,
-                coin: coin,
-            };
-
-             var param = JSON.stringify(paramData);
-               $.ajax({
-                url: url,
-                type: "POST",
-                contentType: "application/json",
-                data: param,
-                beforeSend: function (xhr) {
-                    // 데이터 전송하기 전에 헤더에 csrf 값을 설정
-                    xhr.setRequestHeader(header, token);
-                },
-                dataType: "json",
-                cache: false,
-                success: function (result, status) {
-                    alert("코인 구매 완료!");
-                    location.href="/coinList"
-                },
-                error: function (jqXHR, status, error) {
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요.');
-                        location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseText);
-                    }
-                }
-            });
-        }
-
-
-        function YES_coin(){
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
-
-
-            var coinMoney = $('#YES_total').text();
-            var client = [[${total}]]
-            var clientNumber = parseInt(client.replace(/\D/g, ''), 10);
-            var coin=$('#KDR_coin').val()
-
-            url="/coin/add/YES/"+ coin + "/" + coinMoney
-            var paramData = {
-                coinMoney: coinMoney,
-                coin: coin,
-            };
-
-             var param = JSON.stringify(paramData);
-               $.ajax({
-                url: url,
-                type: "POST",
-                contentType: "application/json",
-                data: param,
-                beforeSend: function (xhr) {
-                    // 데이터 전송하기 전에 헤더에 csrf 값을 설정
-                    xhr.setRequestHeader(header, token);
-                },
-                dataType: "json",
-                cache: false,
-                success: function (result, status) {
-                    alert("코인 구매 완료!");
-                    location.href="/coinList"
-                },
-                error: function (jqXHR, status, error) {
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요.');
-                        location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseText);
-                    }
-                }
-            });
-        }
-
-          function sliding() {
-        var context = document.getElementById('slide_context');
-        // 'show' 클래스를 토글하여 슬라이드 효과 적용
-        if (context.classList.contains('show')) {
-            context.classList.remove('show');
-        } else {
-            context.classList.add('show');
-        }
-    }
-
-
+        kdr_coin = [[${kdr_coin}]]; // double 타입으로 값 전달
+        console.log("KDR Coin Value: " + kdr_coin);
+        yes_coin = [[${yes_coin}]]; // double 타입으로 값 전달
+        console.log("YES Coin Value: " + yes_coin);
+
+
+
+      // 계산된 값을 HTML 요소에 업데이트
+      $('#KDRCoin').text(kdr_coin);
+      $('#YESCoin').text(yes_coin);
+
+      // 선택박스 값이 변경될 때 호출되는 함수
+      $('#current').change(function () {
+          var selectValue = $(this).val(); // 선택된 값 가져오기
+
+          // 모든 카드와 차트 숨기기
+          $('.card').hide();
+          $('#myChartKDR').hide();
+          $('#myChartYES').hide();
+
+          // 선택된 값에 따라 카드와 차트 표시
+          if (selectValue === "KDR") {
+              $('#KDR').show();
+              $('#myChartKDR').show();
+              KDR(); // KDR 관련 데이터 로드
+          } else if (selectValue === "YES") {
+              $('#YES').show();
+              $('#myChartYES').show();
+              YES(); // YES 관련 데이터 로드
+          }
+      });
+
+      // 페이지 로드 시 현재 선택된 값에 따라 카드와 차트 표시
+      $('#current').trigger('change');
+
+      // KDR_coin 선택 시 호출되는 함수
+      $('#KDR_coin').change(function () {
+          var KDR_stck = parseFloat($('#KDR_stck_prpr').text()); // 현재 KDR 주식 가격
+          var count = parseFloat($(this).val()); // 선택된 개수
+
+          var total = KDR_stck * count; // 총 가격 계산
+          $('#KDR_total').text(total.toFixed(2)); // 총 가격 표시
+
+          // 클라이언트의 현재 총액과 비교
+          var client = parseFloat($('#client_total').text().replace(/[^0-9.]/g, ''));
+          if (client < total) {
+              $('#KDR_coinBtn').hide(); // 부족할 경우 버튼 숨기기
+              $('#KDR_pointBtn').show(); // 포인트 버튼 표시
+          } else {
+              $('#KDR_coinBtn').show(); // 충분할 경우 코인 버튼 표시
+              $('#KDR_pointBtn').hide(); // 포인트 버튼 숨기기
+          }
+      });
+
+      // YES_coin 선택 시 호출되는 함수
+      $('#YES_coin').change(function () {
+          var YES_stck = parseFloat($('#YES_stck_prpr').text()); // 현재 YES 주식 가격
+          var count = parseFloat($(this).val()); // 선택된 개수
+
+          var total = YES_stck * count; // 총 가격 계산
+          $('#YES_total').text(total.toFixed(2)); // 총 가격 표시
+
+          // 클라이언트의 현재 총액과 비교
+          var client = parseFloat($('#client_total').text().replace(/[^0-9.]/g, ''));
+          if (client < total) {
+              $('#YES_coinBtn').hide(); // 부족할 경우 버튼 숨기기
+              $('#YES_pointBtn').show(); // 포인트 버튼 표시
+          } else {
+              $('#YES_coinBtn').show(); // 충분할 경우 코인 버튼 표시
+              $('#YES_pointBtn').hide(); // 포인트 버튼 숨기기
+          }
+      });
+  });
+
+  function KDR() {
+      var token = $("meta[name='_csrf']").attr("content"); // CSRF 토큰 가져오기
+      var header = $("meta[name='_csrf_header']").attr("content"); // CSRF 헤더 가져오기
+
+      var url = "/equities/020120"; // KDR 주식 정보 요청 URL
+
+      $.ajax({
+          url: url,
+          type: "POST",
+          contentType: "application/json",
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token); // CSRF 값 설정
+          },
+          dataType: "json",
+          cache: false,
+          success: function (result) {
+              var equity = result.equity;
+
+              var stck_prpr = equity.stck_prpr; // 주식 가격
+              var prdy_vrss = equity.prdy_vrss; // 전일 대비 변동
+              var prdy_vrss_sign = equity.prdy_vrss_sign; // 전일 대비 변동 기호
+
+              // 전일 대비 변동 기호에 따른 색상 설정
+              var color = (prdy_vrss_sign < 3) ? 'red' : (prdy_vrss_sign > 3) ? 'blue' : 'black';
+
+              $('#KDR_stck_prpr').text(stck_prpr); // 주식 가격 표시
+              $('#KDR_prdy_vrss').text(prdy_vrss).css('color', color); // 변동 표시
+
+              $('#KDR_total').text(stck_prpr); // 총 가격 업데이트
+
+              var client = parseFloat($('#client_total').text().replace(/[^0-9.]/g, '')); // 클라이언트 총액
+              if (client < stck_prpr) {
+                  $('#KDR_coinBtn').hide(); // 부족할 경우 버튼 숨기기
+                  $('#KDR_pointBtn').show(); // 포인트 버튼 표시
+              } else {
+                  $('#KDR_coinBtn').show(); // 충분할 경우 코인 버튼 표시
+                  $('#KDR_pointBtn').hide(); // 포인트 버튼 숨기기
+              }
+          },
+          error: function (jqXHR) {
+              if (jqXHR.status == '401') {
+                  alert('로그인 후 이용해주세요'); // 로그인 요구 알림
+                  location.href = '/members/login'; // 로그인 페이지로 이동
+              } else {
+                  alert(jqXHR.responseText); // 기타 오류 알림
+              }
+          }
+      });
+  }
+
+  function YES() {
+      var token = $("meta[name='_csrf']").attr("content"); // CSRF 토큰 가져오기
+      var header = $("meta[name='_csrf_header']").attr("content"); // CSRF 헤더 가져오기
+
+      var url = "/equities/053280"; // YES 주식 정보 요청 URL
+
+      $.ajax({
+          url: url,
+          type: "POST",
+          contentType: "application/json",
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token); // CSRF 값 설정
+          },
+          dataType: "json",
+          cache: false,
+          success: function (result) {
+              var equity = result.equity;
+
+              var stck_prpr = equity.stck_prpr; // 주식 가격
+              var prdy_vrss = equity.prdy_vrss; // 전일 대비 변동
+              var prdy_vrss_sign = equity.prdy_vrss_sign; // 전일 대비 변동 기호
+
+              // 전일 대비 변동 기호에 따른 색상 설정
+              var color = (prdy_vrss_sign < 3) ? 'red' : (prdy_vrss_sign > 3) ? 'blue' : 'black';
+
+              $('#YES_stck_prpr').text(stck_prpr); // 주식 가격 표시
+              $('#YES_prdy_vrss').text(prdy_vrss).css('color', color); // 변동 표시
+
+              $('#YES_total').text(stck_prpr); // 총 가격 업데이트
+
+              var client = parseFloat($('#client_total').text().replace(/[^0-9.]/g, '')); // 클라이언트 총액
+              if (client < stck_prpr) {
+                  $('#YES_coinBtn').hide(); // 부족할 경우 버튼 숨기기
+                  $('#YES_pointBtn').show(); // 포인트 버튼 표시
+              } else {
+                  $('#YES_coinBtn').show(); // 충분할 경우 코인 버튼 표시
+                  $('#YES_pointBtn').hide(); // 포인트 버튼 숨기기
+              }
+          },
+          error: function (jqXHR) {
+              if (jqXHR.status == '401') {
+                  alert('로그인 후 이용해주세요'); // 로그인 요구 알림
+                  location.href = '/members/login'; // 로그인 페이지로 이동
+              } else {
+                  alert(jqXHR.responseText); // 기타 오류 알림
+              }
+          }
+      });
+  }
+
+  function point() {
+      location.href = "/charge"; // 충전 페이지로 이동
+  }
+
+  function KDR_coin() {
+      var token = $("meta[name='_csrf']").attr("content"); // CSRF 토큰 가져오기
+      var header = $("meta[name='_csrf_header']").attr("content"); // CSRF 헤더 가져오기
+
+      var coinMoney = $('#KDR_total').text(); // KDR 총 가격
+      var coin = $('#KDR_coin').val(); // 선택된 코인 개수
+
+      var url = "/coin/add/KDR/" + coin + "/" + coinMoney; // KDR 코인 구매 요청 URL
+      var paramData = {
+          coinMoney: coinMoney,
+          coin: coin
+      };
+
+      $.ajax({
+          url: url,
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(paramData), // JSON 형식으로 데이터 전송
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token); // CSRF 값 설정
+          },
+          dataType: "json",
+          cache: false,
+          success: function () {
+              alert("코인 구매 완료!"); // 구매 완료 알림
+              location.href = "/coinList"; // 코인 목록 페이지로 이동
+          },
+          error: function (jqXHR) {
+              if (jqXHR.status == '401') {
+                  alert('로그인 후 이용해주세요.'); // 로그인 요구 알림
+                  location.href = '/members/login'; // 로그인 페이지로 이동
+              } else {
+                  alert(jqXHR.responseText); // 기타 오류 알림
+              }
+          }
+      });
+  }
+
+  function YES_coin() {
+      var token = $("meta[name='_csrf']").attr("content"); // CSRF 토큰 가져오기
+      var header = $("meta[name='_csrf_header']").attr("content"); // CSRF 헤더 가져오기
+
+      var coinMoney = $('#YES_total').text(); // YES 총 가격
+      var coin = $('#YES_coin').val(); // 선택된 코인 개수
+
+      var url = "/coin/add/YES/" + coin + "/" + coinMoney; // YES 코인 구매 요청 URL
+      var paramData = {
+          coinMoney: coinMoney,
+          coin: coin
+      };
+
+      $.ajax({
+          url: url,
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(paramData), // JSON 형식으로 데이터 전송
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token); // CSRF 값 설정
+          },
+          dataType: "json",
+          cache: false,
+          success: function () {
+              alert("코인 구매 완료!"); // 구매 완료 알림
+              location.href = "/coinList"; // 코인 목록 페이지로 이동
+          },
+          error: function (jqXHR) {
+              if (jqXHR.status == '401') {
+                  alert('로그인 후 이용해주세요.'); // 로그인 요구 알림
+                  location.href = '/members/login'; // 로그인 페이지로 이동
+              } else {
+                  alert(jqXHR.responseText); // 기타 오류 알림
+              }
+          }
+      });
+  }
+
+  function sliding() {
+      var context = document.getElementById('slide_context');
+      // 'show' 클래스를 토글하여 슬라이드 효과 적용
+      if (context.classList.contains('show')) {
+          context.classList.remove('show');
+      } else {
+          context.classList.add('show');
+      }
+  }
 
     </script>
 </th:block>
@@ -362,6 +302,7 @@
              max-width: 600px; /* 최대 너비 설정 */
              min-width: 300px; /* 최소 너비 설정 */
              margin: 0 auto; /* 중앙 정렬 */
+              flex-direction: column;
              padding: 0 15px; /* 좌우 여백 설정 */
          }
 
@@ -376,13 +317,17 @@
 
            .sel_1, .sel_2 {
              margin: 10px;
+
          }
 
 
          .sel_2, .sel_3 {
-             text-align: right;
+            text-align: right; /* 텍스트 오른쪽 정렬 */
+            width: 350px; /* 너비 설정 */
+            margin-left: auto; /* 왼쪽 여백 자동으로 설정 */
+            margin-right: 0; /* 오른쪽 여백 0 설정 */
+        }
 
-         }
 
          .fs-2 {
              font-size: 0.8em; /* 폰트 사이즈 조정 */
@@ -392,21 +337,6 @@
              margin-top: 10px;
          }
 
-         /* 미디어 쿼리로 모바일에서의 스타일 조정 */
-         @media (max-width: 576px) {
-             .sel_1, .sel_2 {
-
-                  text-align: center;
-             }
-
-             .fs-2 {
-                 font-size: 0.9em;
-             }
-
-             .btnBtn {
-                 margin-left: 0;
-             }
-         }
 
 
          /* 슬라이드 컨테이너 */
