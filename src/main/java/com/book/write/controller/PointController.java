@@ -92,4 +92,13 @@ public class PointController {
 
         return "point/fail-payment";
     }
+
+
+    @GetMapping(value = "/point/add")
+    public String poindAdd (){
+
+        return "point/Add";
+    }
+
+
 }
