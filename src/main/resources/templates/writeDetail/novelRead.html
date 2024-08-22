@@ -819,12 +819,81 @@ textarea[readonly] {
             padding: 10px; /* 여백 설정 (선택 사항) */
             overflow-y: auto; /* 수직 스크롤을 허용 */
         }
+
+
+
+        /*맨위와 맨 아래버튼*/
+          #scrollToTopBtn, #scrollToBottomBtn {
+            position: fixed;
+            right: 20px;
+            z-index: 100;
+            border: none;
+            outline: none;
+            background-color: #white;
+            color: grey;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50px;
+            border: 1px solid #ccc;
+        }
+
+        #scrollToTopBtn {
+            bottom: 100px; /* Position the "Top" button slightly above the "Bottom" button */
+        }
+
+        #scrollToBottomBtn {
+            bottom: 20px; /* Position the "Bottom" button at the bottom of the screen */
+        }
+
+        #scrollToTopBtn:hover, #scrollToBottomBtn:hover {
+            background-color: #333;
+        }
     </style>
 
 </head>
 
 <body>
 <div layout:fragment="content">
+
+
+    <button onclick="scrollToTop()" id="scrollToTopBtn" title="Go to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-bar-up" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5m-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5"/>
+        </svg>
+    </button>
+    <button onclick="scrollToBottom()" id="scrollToBottomBtn" title="Go to Bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5M8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6"/>
+        </svg>
+    </button>
+
+    <script>
+        // Get the buttons
+        var scrollToTopButton = document.getElementById("scrollToTopBtn");
+        var scrollToBottomButton = document.getElementById("scrollToBottomBtn");
+
+        // Always show both buttons
+        function scrollFunction() {
+            scrollToTopButton.style.display = "block";
+            scrollToBottomButton.style.display = "block";
+        }
+
+        // Call scrollFunction initially to ensure buttons are displayed
+        scrollFunction();
+
+        // When the user clicks on the 'scrollToTop' button, scroll to the top of the document
+        function scrollToTop() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+
+        // When the user clicks on the 'scrollToBottom' button, scroll to the bottom of the document
+        function scrollToBottom() {
+            document.body.scrollTop = document.body.scrollHeight; // For Safari
+            document.documentElement.scrollTop = document.documentElement.scrollHeight; // For Chrome, Firefox, IE and Opera
+        }
+    </script>
+
     <div class="container">
         <header class="header">
             <h1 th:text="${writeInfo.title}" class="title" onclick="writeInfo()"></h1>
@@ -914,6 +983,7 @@ textarea[readonly] {
 
             </div>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
         </form>
 
 

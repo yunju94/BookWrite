@@ -4,6 +4,66 @@
     <meta charset="UTF-8">
     <title>조은북</title>
 </head>
+<style>
+    body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .section span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .button-group1 ,  .button-group2{
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            font-size: 14px;
+            outline: none;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button svg {
+            margin-right: 8px;
+        }
+        .button-group button {
+            flex: 1 1 auto;
+            min-width: 120px;
+            text-align: center;
+        }
+        .button-group1 button {
+            background-color: #e6f7ff;
+        }
+        .button-group2 button {
+            background-color: #e8fbf0;
+        }
+
+        .section:nth-child(2) .button-group button {
+            background-color: #e6f7ff;
+        }
+</style>
 <body>
 
 <div class="container">
