@@ -22,7 +22,7 @@ public abstract class BaseTimeEntity extends BaseDateEntity {
     @Column(updatable = false)
     private LocalDateTime regTime;
 
-    @LastModifiedDate
+
     private LocalDateTime updateTime;
 }
 
