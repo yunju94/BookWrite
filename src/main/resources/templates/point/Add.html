@@ -15,11 +15,17 @@
     <script th:inline="javascript">
         $(document).ready(function(){
 
+             var errorMessage = [[${errorMessage}]] ;
+            if (errorMessage != null) {
+                 alert(errorMessage);
+            }
+
+
          const $c = document.querySelector("canvas");
          const ctx = $c.getContext(`2d`);
 
          const product = [
-           "100p", "200p" ,"50p", "100p", "200p", "1000p", "100p", "200p", "500p",
+           "100", "200" ,"50", "100", "200", "1000", "100", "200", "500",
          ];
 
          const colors = ["#dc0936", "#e6471d", "#f7a416", "#efe61f", "#60b236", "#209b6c", "#169ed8", "#3f297e", "#87207b", "#be107f", "#e7167b"];
@@ -75,8 +81,61 @@
              $c.style.transition = `2s`;
 
              setTimeout(() => {
-              alert(`오늘의 포인트 ${product[ran]} 적립 완료!`);
+              alert(`오늘의 포인트 ${product[ran]} `);
               $('#point').val(product[ran]); // text()는 <input> 요소에 대해 사용하지 않습니다.
+
+              var value = product[ran];
+               var checking = $('#check').val();
+               var memberId = $('#member').val();
+
+              if(checking.trim() === ""){
+                     var token = $("meta[name='_csrf']").attr("content");
+                      var header = $("meta[name='_csrf_header']").attr("content");
+                      var url = '/point/add/check/'+ memberId+'/'+ value;
+                       var data = {
+                           memberId: memberId,
+                           value:value,
+
+                       };
+                       var param = JSON.stringify(data);
+
+                        $.ajax({
+                           url: url,
+                           type: "POST",
+                           contentType: "application/json",
+                           data: param,
+                           beforeSend: function (xhr) {
+                               xhr.setRequestHeader(header, token);
+                           },
+                           dataType: "json",
+                           cache: false,
+                           success: function (result) {
+                               alert("등록 완료! 내일 만나여~~~~");
+
+
+                           },
+                           error: function (jqXHR) {
+                               if (jqXHR.status == 401) {
+                                   alert('로그인 후 이용해주세요');
+                                   location.href = '/members/login';
+                               } else {
+                                   alert(jqXHR.responseText);
+
+                               }
+                           }
+                       });
+
+
+
+
+
+
+              }else{
+               alert("오늘치는 이미 적립되었습니다.");
+              }
+
+
+
             }, 2000)
 
 
@@ -88,6 +147,8 @@
 
          // Bind the rotate function to the button's click event
          $('#rotateButton').click(rotate);
+
+
 
      });
 
@@ -101,9 +162,15 @@
     * {
       font-family: Pretendard;
     }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
 
     body {
+      display: flex;
       background: #f7f8fc;
+      justify-content: center; /* 수평 가운데 정렬 */
     }
 
     canvas {
@@ -155,12 +222,14 @@
 <div layout:fragment="content">
     <h3>포인트 적립소</h3>
 
-    <div>
+    <div class="canvas">
         <canvas width="380" height='380'></canvas>
-        <button type="button" id="rotateButton" >출석 체크하기</button>
+        <button type="button" class="btn btn-outline-secondary" id="rotateButton" >출석 체크하기</button>
     </div>
 
-    <input type="text" id="point">
+    <input type="hidden" id="point" >
+    <input type="hidden" id="check" th:value="${checking}">
+    <input type="hidden" id="member" th:value="${member.id}">
 
 
 

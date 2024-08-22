@@ -16,6 +16,12 @@
 
         }
 
+        function writeInfo(){
+            var InfoId = $('#writeId').val();
+            location.href = "/writeNovel/"+InfoId;
+
+        }
+
        function deleteEntry() {
     var detailId = $('#id').val();  // 폼에서 ID를 가져옵니다.
     var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
@@ -50,6 +56,22 @@
 
 
         $(document).ready(function() {
+        //---------댓글 글자 수 생성----------//
+         const maxLength = 500;  // 최대 글자 수
+
+        $('#input').on('input', function() {
+            var textLength = $(this).val().length;
+            var remaining = maxLength - textLength;
+            $('#charCount').text(`글자 수: ${textLength}/${maxLength}`);
+            if (remaining < 0) {
+                $('#charCount').css('color', 'red');
+            } else {
+                $('#charCount').css('color', '#6c757d');
+            }
+        });
+
+        //------------------------------------------------------//
+
      view();
      $('#non_heart').show();
      $('#heart').hide();
@@ -519,6 +541,49 @@
        }
 
 
+
+        function deleteComment (){
+              var token = $("meta[name='_csrf']").attr("content");
+             var header = $("meta[name='_csrf_header']").attr("content");
+
+            var commentId = $('#hiddenId').val();
+            console.log(commentId)
+               var url = '/comment/delete/'+commentId
+               var data = {
+                   commentId: commentId,
+                   }
+
+                   var param = JSON.stringify(data);
+
+                    $.ajax({
+                   url: url,
+                   type: "DELETE",
+                   contentType: "application/json",
+                   data: param,
+                   beforeSend: function (xhr) {
+                       xhr.setRequestHeader(header, token);
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function (result) {
+                       alert("삭제 되었습니다.....");
+                        location.reload();
+                   },
+                   error: function (jqXHR) {
+                       if (jqXHR.status == 401) {
+                           alert('로그인 후 이용해주세요');
+                           location.href = '/members/login';
+                       } else {
+                           alert(jqXHR.responseText);
+
+                       }
+                   }
+               });
+
+
+        }
+
+
     </script>
 
     <style>
@@ -603,7 +668,7 @@
 
 
           .textarea-container {
-    max-width: 600px; /* 최대 너비 설정 */
+    max-width: 800px; /* 최대 너비 설정 */
     margin: 20px auto; /* 중앙 정렬 */
     padding: 10px; /* 여백 설정 */
 
@@ -762,35 +827,15 @@ textarea[readonly] {
 <div layout:fragment="content">
     <div class="container">
         <header class="header">
-            <h1 th:text="${writeInfo.title}" class="title"></h1>
+            <h1 th:text="${writeInfo.title}" class="title" onclick="writeInfo()"></h1>
+            <input type="hidden" th:value="${writeInfo.id}" id="writeId">
         </header>
         <div th:if="${writeInfo.member.id == member.id}">
             <button type="button" onclick="update()">수정하기</button>
             <button type="button" onclick="deleteEntry()">삭제하기</button>
         </div>
 
-       <div class="index">
-           <a href="javascript:void(0);" th:onclick="prev(this)" th:data-id="${writeDetail.id}">이전화</a>
-           <div>
-               <a  th:onclick="sliding()">
-                <span th:text="${writeDetail.miniTitle}" id="titleIndex"></span>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
-                   <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>
-               </svg>
-               </a>
-           </div>
 
-           <a href="javascript:void(0);" th:onclick="next(this)" th:data-id="${writeDetail.id}">다음화</a>
-       </div>
-        <div id="scrollBox">
-            <div th:each="detail : ${writeDetailList}">
-                <a th:text="${detail.miniTitle}"
-                   th:onclick="'clickRead(' + ${detail.id} + ')'"
-                   href="javascript:void(0);"></a>
-            </div>
-        </div>
-        <input type="hidden" id="buttonId">
-        <input type="hidden" id="buttonStr">
 
 
         <main class="content">
@@ -821,6 +866,29 @@ textarea[readonly] {
             </div>
 
         </div>
+        <div class="index">
+            <a href="javascript:void(0);" th:onclick="prev(this)" th:data-id="${writeDetail.id}">이전화</a>
+            <div>
+                <a  th:onclick="sliding()">
+                    <span th:text="${writeDetail.miniTitle}" id="titleIndex"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>
+                    </svg>
+                </a>
+            </div>
+
+            <a href="javascript:void(0);" th:onclick="next(this)" th:data-id="${writeDetail.id}">다음화</a>
+        </div>
+        <div id="scrollBox">
+            <div th:each="detail : ${writeDetailList}">
+                <a th:text="${detail.miniTitle}"
+                   th:onclick="'clickRead(' + ${detail.id} + ')'"
+                   href="javascript:void(0);"></a>
+            </div>
+        </div>
+        <input type="hidden" id="buttonId">
+        <input type="hidden" id="buttonStr">
+
     </div>
 
     <div class="divComment">
@@ -835,9 +903,14 @@ textarea[readonly] {
                 <div>
                     <input th:field="*{member.nickname}" readonly >
                 </div>
-                 <textarea th:field="*{content}" placeholder="주제와 무관한 댓글이나 악플은 경고 없이 삭제 될 수 있으며 징계의 대상이 될 수 있습니다."
-                           aria-label="댓글 입력"></textarea>
-                <button class="btn" type="submit">등록하기</button>
+                <div>
+                     <textarea id="input" th:field="*{content}" placeholder="주제와 무관한 댓글이나 악플은 경고 없이 삭제 될 수 있으며 징계의 대상이 될 수 있습니다."
+                               aria-label="댓글 입력"></textarea>
+                    <div id="charCount" class="char-count">글자 수: 0/500</div>
+                    <button class="btn" type="submit">등록하기</button>
+
+
+                </div>
 
             </div>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -851,6 +924,11 @@ textarea[readonly] {
 
             <div>
                 <span th:text="${comment.member.nickname}"></span>
+                <span style="color: red;"
+
+                      onclick="deleteComment()"
+                      th:if="${comment.member.id == member.id}">X</span>
+                <input type="hidden" th:value="${comment.id}" id="hiddenId">
             </div>
             <div>
                 <span th:text="${comment.content}"></span>

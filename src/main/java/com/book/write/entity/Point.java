@@ -90,5 +90,17 @@ public class Point extends BaseDateEntity{
         return  order;
     }
 
+    public  static Point savePoint(Member member, int point){
+        Point order = new Point();
+        order.setOrderUid(UUID.randomUUID().toString());
+        order.setContent("출석 체크 적립");
+        order.setMember(member);
+        order.setMoney(0);
+        order.setPoint(point);
+        order.setOrderstatus(Order.OK);
+
+        return  order;
+    }
+
 
 }

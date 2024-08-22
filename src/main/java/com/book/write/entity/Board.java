@@ -7,7 +7,7 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "board")
+@Table(name = "board")//문의
 @Getter
 @Setter
 public class Board {

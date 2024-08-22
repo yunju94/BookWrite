@@ -22,4 +22,13 @@ public class CommentService {
     public List<Comment> searchCommentList(Long detailId){
         return  commentRepository.findByWriteDetailId(detailId);
     }
+
+    public  Comment searchComment(Long id){
+        return  commentRepository.findById(id).orElseThrow();
+    }
+
+    public  void  deleteCommnet(Comment comment){
+        commentRepository.delete(comment);
+    }
+
 }

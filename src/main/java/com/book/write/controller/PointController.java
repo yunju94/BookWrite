@@ -4,12 +4,10 @@ import com.book.write.constant.Order;
 import com.book.write.dto.PaymentCallbackRequest;
 import com.book.write.dto.RequestPayDto;
 import com.book.write.dto.SessionUser;
+import com.book.write.entity.Checking;
 import com.book.write.entity.Member;
 import com.book.write.entity.Point;
-import com.book.write.service.MemberService;
-import com.book.write.service.PaymentService;
-import com.book.write.service.PaymentServiceImpl;
-import com.book.write.service.PointService;
+import com.book.write.service.*;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.servlet.http.HttpSession;
@@ -31,6 +29,7 @@ public class PointController {
     private final MemberService memberService;
     private  final PointService pointService;
     private  final PaymentService paymentService;
+    private  final CheckingService checkingService;
 
 
     private final HttpSession httpSession;
@@ -95,9 +94,36 @@ public class PointController {
 
 
     @GetMapping(value = "/point/add")
-    public String poindAdd (){
+    public String poindAdd (Model model, Principal principal){
+        String Login=getEmailFromPrincipalOrSession(principal);
+        if (Login == null){
+            return "member/login";
+        }
+
+        Member member = memberService.memberLoginId(Login);
+
+        Checking checking = checkingService.searchfromMember(member.getId());
+
+        if (checking != null){
+            model.addAttribute("errorMessage", "오늘의 출석 체크는 완료 되었습니다!.");
+        }
+
+        model.addAttribute("member", member);
+        model.addAttribute("checking", checking);
+
 
         return "point/Add";
+    }
+
+
+
+    @PostMapping(value = "/point/add/check/{Id}/{point}")
+    public  @ResponseBody ResponseEntity saveChecking(@PathVariable Long Id,
+                                                     @PathVariable int point ){
+        Member member = memberService.searchMemberId(Id);
+
+        Checking checking = checkingService.saveChecking(member, point);
+        return  new ResponseEntity(checking.getId(), HttpStatus.OK);
     }
 
 

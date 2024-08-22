@@ -68,6 +68,12 @@ public class PointService {
         return point;
     }
 
+    public  Point savepoint(Member member, int point){
+        Point points = Point.savePoint(member, point);
+        pointRepository.save(points);
+        return points;
+    }
+
 
 
 }
