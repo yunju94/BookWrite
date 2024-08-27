@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -28,6 +29,8 @@ public class WriteDetailDto {
 
 
     private int heart;//추천
+
+    private LocalDate regDate;//등록일
 
     //---------------------------------------------//
 
