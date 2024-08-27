@@ -140,6 +140,7 @@
             <div th:if="${writeInfoDto.writeImg != null and writeInfoDto.writeImg.imgUrl != null and not #strings.isEmpty(writeInfoDto.writeImg.imgUrl)}">
                 <input type="file" id="ImgFile" name="ImgFile"  onchange="previewImage(event)">
                 <div class="preview">
+                    <input type="hidden" class="image input-group-text" th:field="*{writeImg}">
                     <img th:src="${writeInfoDto.writeImg.imgUrl}" id="preview" alt="이미지 미리 보기">
                 </div>
             </div>

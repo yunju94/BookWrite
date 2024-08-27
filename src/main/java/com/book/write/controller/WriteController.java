@@ -176,6 +176,8 @@ public class WriteController {
         Page<NovelListDto> items = writeInfoService.getCategoryPage(writeInfoDto, pageable, orderByFront, orderByBack);
 
         model.addAttribute("items", items);
+
+
         model.addAttribute("writeInfoDto", writeInfoDto);
         model.addAttribute("pageable", pageable);
         model.addAttribute("maxPage", 20);

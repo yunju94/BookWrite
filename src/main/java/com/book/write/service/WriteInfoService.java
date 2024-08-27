@@ -59,15 +59,18 @@ public class WriteInfoService {
     }
 
     public void updateWriteInfoFromDto(WriteInfoDto writeInfoDto, MultipartFile imgFile) throws Exception {
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaa");
         WriteInfo writeInfo = writeInfoRepository.findById(writeInfoDto.getId()).orElseThrow();
+        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
         writeInfo.setTitle(writeInfoDto.getTitle());
         writeInfo.setDetail(writeInfoDto.getDetail());
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
         writeInfo.setUpdateTime(LocalDateTime.now());
-
+        System.out.println("cccccccccccccccccccccccccc");
         WriteImg writeImg = writeInfoDto.getWriteImg();
-
+        System.out.println("dddddddddddddddddddddddddddddddd");
         writeImgService.updateImg(imgFile, writeInfo, writeImg);
+        System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     }
 
     public void updaInfoFromDto(WriteInfoDto writeInfoDto){

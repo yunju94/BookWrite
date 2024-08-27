@@ -22,6 +22,42 @@
 
         }
 
+
+        function on() {
+                document.getElementById('on').style.display = 'none';
+                document.getElementById('off').style.display = 'inline';
+
+                const firstMessage = "다음 페이지로 넘어가면서 자동 결제가 이루어질 수 있습니다.";
+                if (confirm(firstMessage)) {
+                    const secondMessage = "키다리 코인(KDR coin)으로 결제를 진행하겠습니까?";
+                    if (confirm(secondMessage)) {
+                        alert("키다리 코인(KDR coin)으로 진행하겠습니다.");
+
+                    } else {
+                        alert("예스 코인(YES coin)으로 진행하겠습니다.");
+
+                    }
+                    // 버튼 상태는 이미 업데이트 되었으므로 여기서는 변경할 필요 없음
+                } else {
+                    // 사용자가 '아니요'를 선택한 경우
+                    document.getElementById('on').style.display = 'inline';
+                    document.getElementById('off').style.display = 'none';
+                }
+            }
+
+          function off() {
+            document.getElementById('on').style.display = 'inline';
+            document.getElementById('off').style.display = 'none';
+
+        }
+
+
+
+
+
+
+
+
        function deleteEntry() {
     var detailId = $('#id').val();  // 폼에서 ID를 가져옵니다.
     var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
@@ -719,6 +755,51 @@ button:hover {
     background-color: #e8fbf0; /* 버튼 호버 시 배경 색상 변경 */
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-between; /* 버튼과 LTE를 양쪽으로 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+.button-container button {
+    margin-right: 10px; /* 버튼 사이 여백 추가 */
+}
+
+.LTE {
+    display: flex;
+    align-items: center;
+}
+
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+button svg {
+    vertical-align: middle; /* SVG를 버튼 가운데 정렬 */
+}
+
+button.on {
+    display: inline;
+}
+
+button.off {
+    display: none;
+}
+
+/* 스타일이 필요할 경우 추가 */
+button.on.hidden,
+button.off.visible {
+    display: none;
+}
+
+button.on.visible,
+button.off.hidden {
+    display: inline;
+}
+
 
         /* Readonly input 스타일 */
 textarea[readonly],
@@ -899,9 +980,23 @@ textarea[readonly] {
             <h1 th:text="${writeInfo.title}" class="title" onclick="writeInfo()"></h1>
             <input type="hidden" th:value="${writeInfo.id}" id="writeId">
         </header>
-        <div th:if="${writeInfo.member.id == member.id}">
-            <button type="button" onclick="update()">수정하기</button>
-            <button type="button" onclick="deleteEntry()">삭제하기</button>
+        <div class="button-container">
+            <div th:if="${writeInfo.member.id == member.id}">
+                <button type="button" onclick="update()">수정하기</button>
+                <button type="button" onclick="deleteEntry()">삭제하기</button>
+            </div>
+            <div class="LTE">
+                <button class="on" id="on" onclick="on()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
+                        <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                    </svg>
+                </button>
+                <button class="off" id="off" onclick="off()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+                        <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
 
