@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -103,19 +104,25 @@ public class WriteController {
     }
 
     @PostMapping(value = "/write/InfoForm/update/complete")
-    public  String updateComplete(@Valid WriteInfoDto writeInfoDto,
-                                  @RequestParam("ImgFile") MultipartFile imgFile) throws Exception {
-
-        if (!imgFile.isEmpty()){
-
+    public  String updateComplete(@Valid WriteInfoDto writeInfoDto, BindingResult bindingResult,
+                                  @RequestParam("ImgFile") MultipartFile imgFile, Model model) throws Exception {
+        if (bindingResult.hasErrors()){
+            return "item/itemForm";
+        }
+        if (imgFile.isEmpty() && writeInfoDto.getId() ==null){
+            model.addAttribute("errorMessage", "상품 이미지는 필수 입력 값입니다.");
+            return  "item/itemForm";
+        }
+        try{
             writeInfoService.updateWriteInfoFromDto(writeInfoDto,imgFile);
             return "redirect:/";
 
-        }else {
-            writeInfoService.updaInfoFromDto(writeInfoDto);
+        }catch (Exception e){
+            model.addAttribute("errorMessage", " 수정 중 에러가 발생했습니다");
+            return  "item/itemForm";
 
-            return "redirect:/";
         }
+
 
 
     }

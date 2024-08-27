@@ -38,6 +38,7 @@ public class WriteDetailController {
     private  final WriteDetailRepository writeDetailRepository;
     private  final WriteInfoRepository writeInfoRepository;
     private  final  CommentService commentService;
+    private  final  WriteImgService writeImgService;
 
 
     private final HttpSession httpSession;
@@ -106,6 +107,7 @@ public class WriteDetailController {
     @DeleteMapping("/novel/delete/{id}")
     public ResponseEntity<String> deleteDetail(@PathVariable Long id) {
         try {
+            writeImgService.deleteImg(id);
             writeDetailService.deleteWriteDetail(id);
             return new ResponseEntity<>("삭제되었습니다.", HttpStatus.OK);
         } catch (Exception e) {

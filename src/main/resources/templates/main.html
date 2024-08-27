@@ -231,7 +231,7 @@
             <div th:each="book : ${writeInfoList}">
                 <div th:if="${book.category == T(com.book.write.constant.Category).Romance }" class="book-item">
                     <a th:href="'/writeNovel/' + ${book.id}">
-                        <img th:src="${book.writeImg.imgUrl}" alt="Book Image">
+                        <img th:\\src="${book.writeImg.imgUrl}" alt="Book Image">
                         <p th:text="${book.title}"></p>
                         <p th:text="${book.member.Nickname}"></p>
                         <div class="heart">

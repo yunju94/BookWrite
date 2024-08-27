@@ -72,79 +72,79 @@
 
         //------------------------------------------------------//
 
-     view();
-     $('#non_heart').show();
-     $('#heart').hide();
+         view();
+         $('#non_heart').show();
+         $('#heart').hide();
 
-     var id = $('#id').val();
-     var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
-     var header = $("meta[name='_csrf_header']").attr("content");  // CSRF 헤더 이름을 가져옵니다.
+         var id = $('#id').val();
+         var token = $("meta[name='_csrf']").attr("content");  // CSRF 토큰을 가져옵니다.
+         var header = $("meta[name='_csrf_header']").attr("content");  // CSRF 헤더 이름을 가져옵니다.
 
-     var Heart = [[ ${writeDetail.heart} ]];  // 이 부분은 서버 측에서 올바르게 렌더링되었는지 확인해야 합니다.
-     console.log(Heart);
-
-     //-------------- 빈 하트 누를 경우 +1 -------------//
-     $('#non_heart').click(function() {
+         var Heart = [[ ${writeDetail.heart} ]];  // 이 부분은 서버 측에서 올바르게 렌더링되었는지 확인해야 합니다.
          console.log(Heart);
-         var url = '/novel/heartCount/plus/' + id;  // URL에 '/'를 추가하여 올바른 형식으로 만듭니다.
 
-         $.ajax({
-             url: url,
-             type: "POST",
-             contentType: "application/json",
-             beforeSend: function(xhr) {
-                 xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
-             },
-             dataType: "json",
-             cache: false,
-             success: function(result) {
-                 console.log("result:" + result);
-                 $('#heart').show();
-                 $('#non_heart').hide();
-                 $('#detailHeart').text(result)
-             },
-             error: function(jqXHR) {
-                 if (jqXHR.status == 401) {
-                     alert('로그인 후 이용해주세요');
-                     location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
-                 } else {
-                     alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+         //-------------- 빈 하트 누를 경우 +1 -------------//
+         $('#non_heart').click(function() {
+             console.log(Heart);
+             var url = '/novel/heartCount/plus/' + id;  // URL에 '/'를 추가하여 올바른 형식으로 만듭니다.
+
+             $.ajax({
+                 url: url,
+                 type: "POST",
+                 contentType: "application/json",
+                 beforeSend: function(xhr) {
+                     xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
+                 },
+                 dataType: "json",
+                 cache: false,
+                 success: function(result) {
+                     console.log("result:" + result);
+                     $('#heart').show();
+                     $('#non_heart').hide();
+                     $('#detailHeart').text(result)
+                 },
+                 error: function(jqXHR) {
+                     if (jqXHR.status == 401) {
+                         alert('로그인 후 이용해주세요');
+                         location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
+                     } else {
+                         alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+                     }
                  }
-             }
+             });
          });
-     });
 
      //-------------- 하트 누를 경우 -1 -------------//
-     $('#heart').click(function() {
-         console.log(Heart);
-         var url = '/novel/heartCount/minus/' + id;  // URL에 '/'를 추가하여 올바른 형식으로 만듭니다.
+         $('#heart').click(function() {
+             console.log(Heart);
+             var url = '/novel/heartCount/minus/' + id;  // URL에 '/'를 추가하여 올바른 형식으로 만듭니다.
 
-         $.ajax({
-             url: url,
-             type: "POST",
-             contentType: "application/json",
-             beforeSend: function(xhr) {
-                 xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
-             },
-             dataType: "json",
-             cache: false,
-             success: function(result) {
-                 console.log("result:" + result);
-                 $('#heart').hide();
-                 $('#non_heart').show();
-                  $('#detailNonHeart').text(result)
+             $.ajax({
+                 url: url,
+                 type: "POST",
+                 contentType: "application/json",
+                 beforeSend: function(xhr) {
+                     xhr.setRequestHeader(header, token);  // CSRF 토큰을 요청 헤더에 추가합니다.
+                 },
+                 dataType: "json",
+                 cache: false,
+                 success: function(result) {
+                     console.log("result:" + result);
+                     $('#heart').hide();
+                     $('#non_heart').show();
+                      $('#detailNonHeart').text(result)
 
-             },
-             error: function(jqXHR) {
-                 if (jqXHR.status == 401) {
-                     alert('로그인 후 이용해주세요');
-                     location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
-                 } else {
-                     alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+                 },
+                 error: function(jqXHR) {
+                     if (jqXHR.status == 401) {
+                         alert('로그인 후 이용해주세요');
+                         location.href = '/members/login';  // 로그인 페이지로 리다이렉트합니다.
+                     } else {
+                         alert(jqXHR.responseText);  // 에러 메시지를 표시합니다.
+                     }
                  }
-             }
+             });
          });
-     });
 
      function view() {
          var id = $('#id').val();  // 'id' 값을 가져옵니다.

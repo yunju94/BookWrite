@@ -134,7 +134,7 @@
             <div th:if="${writeInfoDto.writeImg  == null or #strings.isEmpty(writeInfoDto.writeImg.imgUrl)}">
                 <input type="file" id="ImgFile" name="ImgFile" onchange="previewImage(event)">
                 <div class="preview">
-                    <img th:src="@{/css/image/basic.jpg}" id="preview" alt="이미지 미리 보기">
+                    <img src="/css/image/basic.JPG" id="preview" alt="이미지 미리 보기">
                 </div>
             </div>
             <div th:if="${writeInfoDto.writeImg != null and writeInfoDto.writeImg.imgUrl != null and not #strings.isEmpty(writeInfoDto.writeImg.imgUrl)}">

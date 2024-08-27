@@ -65,7 +65,9 @@ public class WriteInfoService {
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
         writeInfo.setUpdateTime(LocalDateTime.now());
 
-        writeImgService.updateImg(imgFile, writeInfo);
+        WriteImg writeImg = writeInfoDto.getWriteImg();
+
+        writeImgService.updateImg(imgFile, writeInfo, writeImg);
     }
 
     public void updaInfoFromDto(WriteInfoDto writeInfoDto){

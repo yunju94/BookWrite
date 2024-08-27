@@ -1,8 +1,10 @@
 package com.book.write.service;
 
+import com.book.write.dto.WriteInfoDto;
 import com.book.write.entity.WriteImg;
 import com.book.write.entity.WriteInfo;
 import com.book.write.repository.WriteImgRepository;
+import com.book.write.repository.WriteInfoRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +18,10 @@ import org.thymeleaf.util.StringUtils;
 @RequiredArgsConstructor
 public class WriteImgService {
     @Value("${itemImgLocation}")
-    private String ImgLocation;
+    private String ImgLocation;  ///home/ec2-user/Test/item
     private final FileService fileService;
     private  final WriteImgRepository writeImgRepository;
+    private  final WriteInfoRepository writeInfoRepository;
 
     public  WriteImg  createImg(MultipartFile imgFile)throws Exception{
         WriteImg writeImg = new WriteImg();
@@ -37,17 +40,27 @@ public class WriteImgService {
         return writeImg;
 
     }
-    public  void  updateImg(MultipartFile imgFile, WriteInfo writeInfo) throws Exception {
-        WriteImg writeImg = writeImgRepository.findById(writeInfo.getWriteImg().getId()).orElseThrow();
-        if (!StringUtils.isEmpty(writeImg.getImgName())){
-            fileService.deleteFile(ImgLocation+"/"+writeImg.getImgName());
-        }
+    public  void  updateImg(MultipartFile imgFile, WriteInfo writeInfo, WriteImg writeImg) throws Exception {
+       if (!imgFile.isEmpty()) {// 상품 이미지를 수정 한 경우 상품 이미지 업데이트
+           //기존의 엔티티 조회
+           WriteImg writeImgs = writeImgRepository.findById(writeImg.getId())
+                   .orElseThrow();
+           if (!StringUtils.isEmpty(writeImgs.getImgName())) {
+               fileService.deleteFile(ImgLocation + "/" + writeImgs.getImgName());
+           }
 
-        String oriImgName = imgFile.getOriginalFilename();
-        String imgName = fileService.uploadFile(ImgLocation,oriImgName,
-                imgFile.getBytes());
-        String imgUrl = "/images/item/"+imgName;
-        writeImg.uploadImg(oriImgName, imgName, imgUrl);
+           String oriImgName = imgFile.getOriginalFilename();
+           String imgName = fileService.uploadFile(ImgLocation, oriImgName, imgFile.getBytes());
+           String imgUrl = "/image/item/" + imgName;
+           writeImgs.uploadImg(oriImgName, imgName, imgUrl);
 
+       }
     }
+
+    public void  deleteImg(long Infoid){
+        WriteInfo writeInfo = writeInfoRepository.findByWriteInfoId(Infoid);
+        WriteImg writeImg = writeImgRepository.findById(writeInfo.getWriteImg().getId()).orElseThrow();
+        writeImgRepository.delete(writeImg);
+    }
+
 }

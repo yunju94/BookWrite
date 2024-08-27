@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.0</version>
+		<version>3.2.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 
 	</parent>
@@ -213,6 +213,13 @@
 			<version>1.4.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+
+
 		<!--슬릭-->
 		<dependency>
 			<groupId>org.webjars.npm</groupId>
@@ -250,13 +257,11 @@
 
 
 
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${parent.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>
@@ -266,8 +271,12 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
+
+
 	</build>
+
 
 
 </project>
