@@ -65,9 +65,7 @@ public class WriteInfoService {
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
         writeInfo.setUpdateTime(LocalDateTime.now());
 
-        WriteImg writeImg = writeInfoDto.getWriteImg();
-
-        writeImgService.updateImg(imgFile, writeInfo, writeImg);
+        writeImgService.updateImg(imgFile, writeInfo, writeInfoDto);
     }
 
     public  WriteInfoDto searchInfo(Long Id){

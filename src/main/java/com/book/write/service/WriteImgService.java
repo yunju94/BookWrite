@@ -41,10 +41,10 @@ public class WriteImgService {
         return writeImg;
 
     }
-    public  void   updateImg(MultipartFile imgFile, WriteInfo writeInfo, WriteImg writeImg) throws Exception {
+    public  void   updateImg(MultipartFile imgFile, WriteInfo writeInfo, WriteInfoDto writeInfoDto) throws Exception {
         if (!imgFile.isEmpty()) {
             //기존의 엔티티 조회
-               WriteImg savedItemImg = writeImgRepository.findById(writeInfo.getWriteImg().getId())
+               WriteImg savedItemImg = writeImgRepository.findById(writeInfoDto.getWriteImg().getId())
                     .orElseThrow(EntityNotFoundException::new);//기존 엔티
             if (!StringUtils.isEmpty(savedItemImg.getImgName())) {
                 fileService.deleteFile(ImgLocation + "/" + savedItemImg.getImgName());
@@ -52,7 +52,7 @@ public class WriteImgService {
 
             String oriImgName = imgFile.getOriginalFilename();
             String imgName = fileService.uploadFile(ImgLocation, oriImgName, imgFile.getBytes());
-            String imgUrl = "/image/item/" + imgName;
+            String imgUrl = "/images/item/" + imgName;
             savedItemImg.uploadImg(oriImgName, imgName, imgUrl);
         }
     }
