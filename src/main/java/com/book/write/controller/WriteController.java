@@ -107,11 +107,11 @@ public class WriteController {
     public  String updateComplete(@Valid WriteInfoDto writeInfoDto, BindingResult bindingResult,
                                   @RequestParam("ImgFile") MultipartFile imgFile, Model model) throws Exception {
         if (bindingResult.hasErrors()){
-            return "item/itemForm";
+            return "write/InfoForm";
         }
         if (imgFile.isEmpty() && writeInfoDto.getId() ==null){
             model.addAttribute("errorMessage", "상품 이미지는 필수 입력 값입니다.");
-            return  "item/itemForm";
+            return  "write/InfoForm";
         }
         try{
             writeInfoService.updateWriteInfoFromDto(writeInfoDto,imgFile);
@@ -119,7 +119,7 @@ public class WriteController {
 
         }catch (Exception e){
             model.addAttribute("errorMessage", " 수정 중 에러가 발생했습니다");
-            return  "item/itemForm";
+            return  "write/InfoForm";
 
         }
 

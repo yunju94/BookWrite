@@ -171,12 +171,12 @@
                 </li>
             </ul>
         </div>
-        <div th:if="${#strings.isEmpty(writeInfoDto.writeImg)}">
+        <div th:if="${#strings.isEmpty(writeInfoDto.id)}">
             <div class="form-group">
                 <button  th:formaction=@{/write/InfoForm} type="submit">입력</button>
             </div>
         </div>
-        <div th:unless="${#strings.isEmpty(writeInfoDto.writeImg)}">
+        <div th:unless="${#strings.isEmpty(writeInfoDto.id)}">
             <div class="form-group">
                 <button th:formaction=@{/write/InfoForm/update/complete} type="submit" >수정</button>
             </div>

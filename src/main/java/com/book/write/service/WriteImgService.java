@@ -5,6 +5,7 @@ import com.book.write.entity.WriteImg;
 import com.book.write.entity.WriteInfo;
 import com.book.write.repository.WriteImgRepository;
 import com.book.write.repository.WriteInfoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,21 +41,20 @@ public class WriteImgService {
         return writeImg;
 
     }
-    public  void  updateImg(MultipartFile imgFile, WriteInfo writeInfo, WriteImg writeImg) throws Exception {
-       if (!imgFile.isEmpty()) {// 상품 이미지를 수정 한 경우 상품 이미지 업데이트
-           //기존의 엔티티 조회
-           WriteImg writeImgs = writeImgRepository.findById(writeImg.getId())
-                   .orElseThrow();
-           if (!StringUtils.isEmpty(writeImgs.getImgName())) {
-               fileService.deleteFile(ImgLocation + "/" + writeImgs.getImgName());
-           }
+    public  void   updateImg(MultipartFile imgFile, WriteInfo writeInfo, WriteImg writeImg) throws Exception {
+        if (!imgFile.isEmpty()) {
+            //기존의 엔티티 조회
+               WriteImg savedItemImg = writeImgRepository.findById(writeInfo.getWriteImg().getId())
+                    .orElseThrow(EntityNotFoundException::new);//기존 엔티
+            if (!StringUtils.isEmpty(savedItemImg.getImgName())) {
+                fileService.deleteFile(ImgLocation + "/" + savedItemImg.getImgName());
+            }
 
-           String oriImgName = imgFile.getOriginalFilename();
-           String imgName = fileService.uploadFile(ImgLocation, oriImgName, imgFile.getBytes());
-           String imgUrl = "/image/item/" + imgName;
-           writeImgs.uploadImg(oriImgName, imgName, imgUrl);
-
-       }
+            String oriImgName = imgFile.getOriginalFilename();
+            String imgName = fileService.uploadFile(ImgLocation, oriImgName, imgFile.getBytes());
+            String imgUrl = "/image/item/" + imgName;
+            savedItemImg.uploadImg(oriImgName, imgName, imgUrl);
+        }
     }
 
     public void  deleteImg(long Infoid){
