@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -78,8 +79,8 @@ public class PointController {
     }
 
 
-    @GetMapping("/success-payment/{orderUid}")
-    public String successPaymentPage(@PathVariable String orderUid) {
+    @GetMapping(value = {"/success-payment/{orderUid}", "/ch"})
+    public String successPaymentPage(@PathVariable Optional<String> orderUid) {
         return "redirect:/";
     }
 
