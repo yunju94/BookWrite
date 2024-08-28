@@ -54,10 +54,7 @@ public class WriteInfo extends BaseEntity{
         writeInfo.setWriteImg(writeInfoDto.getWriteImg());
         writeInfo.setTotalHeart(0);
         writeInfo.setTotalView(0);
-        writeInfo.setRegDate(LocalDate.now());
-        writeInfo.setUpdateDate(LocalDate.now());
-        writeInfo.setRegTime(LocalDateTime.now());
-        writeInfo.setUpdateTime(LocalDateTime.now());
+
 
         return writeInfo;
     }

@@ -160,6 +160,33 @@
                 <div id="day">
                      예약 설정
                      <input type="text" name="Dday" id="Dday" placeholder="MM/DD/YYYY"/>
+                    <select id="DTime">
+                        <option>--</option>
+                        <option value="00">00</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                    </select>시
                 </div>
 
                 </span>
@@ -171,33 +198,56 @@
             <script>
 
                 $(function() {
-                        var today = moment().startOf('day'); // 오늘 날짜의 시작으로 설정
-                         $('#Dday').daterangepicker({
-                                singleDatePicker: true,
-                                showDropdowns: true,
-                                minYear: 2024,
-                                maxYear: 2025,
-                                minDate: today, // 오늘 날짜보다 이전 날짜 선택 불가
-                                startDate: today // 기본 선택 날짜를 오늘 날짜로 설정
-                            }, function(start, end, label) {
-                                var selectedDate = start; // 선택된 날짜 (moment 객체)
-                                var year = selectedDate.year(); // 년도 추출
-                                var month = selectedDate.month() + 1; // 월 추출 (0 기반 인덱스, 1을 더하여 1 기반으로 변환)
-                                var day = selectedDate.date(); // 일 추출
+                       let Time='';
+                       let Day= '';
+                       let Timer= '';
+                      var today = moment().subtract(1, 'days').startOf('day');
+                      $('#Dday').daterangepicker({
+                          singleDatePicker: true,
+                          showDropdowns: true,
+                          minYear: 2024,
+                          maxYear: 2025,
+                          minDate: today, // 오늘 날짜보다 이전 날짜 선택 불가
+                          startDate: today // 기본 선택 날짜를 오늘 날짜로 설정
+                      }, function(start, end, label) {
+                          var selectedDate = start; // 선택된 날짜 (moment 객체)
+                          var year = selectedDate.year(); // 년도 추출
+                          var month = selectedDate.month() + 1; // 월 추출 (0 기반 인덱스, 1을 더하여 1 기반으로 변환)
+                          var day = selectedDate.date(); // 일 추출
+
+                          var Day = selectedDate.format('YYYY-MM-DD');
+                          $('#regDate').val(Day);
 
 
-                                var Day =selectedDate.format('YYYY-MM-DD')
-                                console.log(Day)
+                          Time = $('#DTime').val();
+                          Day = $('#regDate').val();
 
-                                $('#regDate').val(Day)
+                          if (Day) {
+                             Timer = Day + 'T' + Time + ':00';
+                              $('#regTime').val(Timer);
+                          }
+
+
+                      });
+
+                      $('#DTime').change(function(){
+                          Time = $('#DTime').val();
+                          Day = $('#regDate').val();
+
+                          if (Day) {
+                             Timer = Day + 'T' + Time + ':00';
+                              $('#regTime').val(Timer);
+                          }
+                      });
+                  });
 
 
 
-
-                            });
-                        });
             </script>
-            <input type="text" th:field="*{regDate}" id="regDate" >
+           <input type="hidden" th:field="*{reserveDate}" id="regDate" >
+           <input type="hidden" th:field="*{reserveTime}" id="regTime" >
+
+
 
             <div class="form-group">
                 <div th:if="${#strings.isEmpty(WriteDetailDto.id)}">

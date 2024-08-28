@@ -4,6 +4,7 @@ import com.book.write.dto.WriteDetailDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +31,11 @@ public class WriteDetail extends BaseEntity{
 
     private int viewCount;//조회수
 
+    private  LocalDate reserveDate;// 예약 날짜
+
+    private LocalDateTime reserveTime;//예약 시간
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_info_id", referencedColumnName = "write_info_id")
     private WriteInfo writeInfo;
@@ -39,6 +45,7 @@ public class WriteDetail extends BaseEntity{
 
 
     public static WriteDetail createWrite(WriteDetailDto writeDetailDto){
+  /////////////////////////////////////////////////////////////////////////////
         WriteDetail writeDetail = new WriteDetail();
         writeDetail.setMiniTitle(writeDetailDto.getMiniTitle());
         writeDetail.setMiniWrite(writeDetailDto.getMiniWrite());
@@ -46,8 +53,9 @@ public class WriteDetail extends BaseEntity{
 
         writeDetail.setHeart(0);
         writeDetail.setCommentCount(0);
-        writeDetail.setRegDate(LocalDate.now());
-        writeDetail.setRegTime(LocalDateTime.now());
+
+ writeDetail.setReserveDate(writeDetailDto.getReserveDate() == null?  LocalDate.now() : writeDetailDto.getReserveDate());
+ writeDetail.setReserveTime(writeDetailDto.getReserveTime() == null?  LocalDateTime.now() : writeDetailDto.getReserveTime());
 
 
         return writeDetail;

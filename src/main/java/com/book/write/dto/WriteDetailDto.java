@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,7 +31,8 @@ public class WriteDetailDto {
 
     private int heart;//추천
 
-    private LocalDate regDate;//등록일
+    private  LocalDate reserveDate;//예약 날짜
+    private LocalDateTime reserveTime;//예약 시간
 
     //---------------------------------------------//
 

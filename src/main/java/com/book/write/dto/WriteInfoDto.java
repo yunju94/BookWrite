@@ -45,11 +45,6 @@ public class WriteInfoDto {
 
     private Long view;//조회수
 
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
-
-
 
     //---------------------------------------------//
 

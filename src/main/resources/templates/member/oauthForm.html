@@ -226,10 +226,12 @@
             <li>
                 <input type="text" th:field="*{nickname}" id="NickName" placeholder="별명">
                 <button class="NickCheck" type="button" onclick="NickCheck()">별명 확인</button>
+                <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="fieldError">Incorrect date</p>
 
             </li>
             <li>
-                <input type="text" th:field="*{tel}" placeholder="전화번호">
+                <input type="number" th:field="*{tel}" placeholder="전화번호">
+                <p th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" class="fieldError">Incorrect date</p>
 
             </li>
         </ul>

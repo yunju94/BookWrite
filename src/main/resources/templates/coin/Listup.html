@@ -183,6 +183,9 @@
               $('#YES_total').text(stck_prpr); // 총 가격 업데이트
 
               var client = parseFloat($('#client_total').text().replace(/[^0-9.]/g, '')); // 클라이언트 총액
+              console.log(client)
+              console.log(stck_prpr)
+
               if (client < stck_prpr) {
                   $('#YES_coinBtn').hide(); // 부족할 경우 버튼 숨기기
                   $('#YES_pointBtn').show(); // 포인트 버튼 표시
@@ -378,7 +381,7 @@
 
     <div class="sel_2">
 
-        현재 포인트: <span th:text="${total}"></span>point
+        현재 포인트: <span id="client_total" th:text="${total}"></span>point
 
 
     </div>
@@ -498,7 +501,7 @@
                 </div>
                 <div class="btnBtn">
                     <button type="button" id="YES_coinBtn"  class="btn btn-outline-secondary"
-                            onclick="coin()">코인 결제</button>
+                            onclick="YES_coin()">코인 결제</button>
                     <button type="button" id="YES_pointBtn"  class="btn btn-outline-secondary"
                             onclick='point()'>포인트 결제</button>
 
