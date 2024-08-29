@@ -6,12 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface WriteDetailRepository extends JpaRepository<WriteDetail, Long> {
 
-    @Query("SELECT o FROM WriteDetail o WHERE o.writeInfo.id = :writeInfoId AND o.reserveTime <= CURRENT_TIMESTAMP ORDER BY o.reserveTime DESC")
-    List<WriteDetail> findByWriteInfoId(@Param("writeInfoId") Long writeInfoId);
+
+    @Query("SELECT o FROM WriteDetail o WHERE o.writeInfo.id = :writeInfoId AND o.reserveTime <= :now ORDER BY o.reserveTime DESC")
+    List<WriteDetail> findByWriteInfoId(@Param("writeInfoId") Long writeInfoId, @Param("now") LocalDateTime now);
 
 
 }

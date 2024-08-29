@@ -89,7 +89,8 @@ public class WriteInfoService {
     }
 
     public void deleteWriteDetail(Long id){
-       List<WriteDetail> writeDetailList =  writeDetailRepository.findByWriteInfoId(id);
+        LocalDateTime now = LocalDateTime.now();
+       List<WriteDetail> writeDetailList =  writeDetailRepository.findByWriteInfoId(id, now);
        for (WriteDetail writeDetail : writeDetailList){
            writeDetailRepository.delete(writeDetail);
        }

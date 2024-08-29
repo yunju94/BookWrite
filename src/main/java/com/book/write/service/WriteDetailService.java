@@ -33,7 +33,8 @@ public class WriteDetailService {
     }
 
     public List<WriteDetail> searchListDetail(Long WriteInfoId){
-        return writeDetailRepository.findByWriteInfoId(WriteInfoId);
+        LocalDateTime now = LocalDateTime.now();
+        return writeDetailRepository.findByWriteInfoId(WriteInfoId, now);
     }
 
     @Transactional(readOnly = true)
