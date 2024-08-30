@@ -74,9 +74,8 @@ public class Member {
     public  Member myPageUpdate(MemberFormDto memberFormDto, Member member){
         member.setName(memberFormDto.getName());
         member.setNickname(memberFormDto.getNickname());
-        member.setLoginId(memberFormDto.getLoginId());
         member.setTel(memberFormDto.getTel());
-        member.setEmail(memberFormDto.getEmail());
+
         return  member;
     }
 

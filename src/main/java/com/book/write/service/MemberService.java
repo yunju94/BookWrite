@@ -3,7 +3,11 @@ package com.book.write.service;
 import com.book.write.dto.MemberFormDto;
 import com.book.write.dto.MemberPasswordDto;
 import com.book.write.entity.Member;
+import com.book.write.entity.WriteDetail;
+import com.book.write.entity.WriteInfo;
 import com.book.write.repository.MemberRepository;
+import com.book.write.repository.WriteDetailRepository;
+import com.book.write.repository.WriteInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +26,7 @@ import java.util.Optional;
 public class MemberService implements UserDetailsService {
     private  final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final WriteInfoRepository writeInfoRepository;
     public Member saveMemberForm(MemberFormDto memberFormDto){
 
         Member member = Member.createForm(memberFormDto,passwordEncoder);
@@ -87,6 +92,11 @@ public class MemberService implements UserDetailsService {
 
     public  void  myPageUpdate(MemberFormDto memberFormDto, Member member){
         member.myPageUpdate(memberFormDto, member);
+
+        List<WriteInfo> writeInfoList = writeInfoRepository.findByMemberId(member.getId());
+        for (WriteInfo writeInfo : writeInfoList){
+            writeInfo.setMember(member);
+        }
     }
 
     public List<Member> AllMember(){
