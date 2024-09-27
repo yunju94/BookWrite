@@ -169,7 +169,8 @@ public class MemberController {
 
         confirm = mailService.sendSimpleMessage(email);
         System.out.println("인증코드 : "+ confirm);
-        return new ResponseEntity<String>("인증 메일을 보냈습니다.", HttpStatus.OK);
+        String jsonResponse = "{ \"message\": \"인증 메일을 보냈습니다.\" }";
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
 
 

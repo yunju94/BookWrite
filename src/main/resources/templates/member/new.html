@@ -115,7 +115,7 @@
                         cache   : false,
                         success  : function(result, status){
                             console.log("3")
-                            alert(result);
+                            alert(result.message);
                         },
                         error : function(jqXHR, status, error){
                             if(jqXHR.status == '401'){
